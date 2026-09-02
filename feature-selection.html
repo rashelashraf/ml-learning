@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML/DL Learning Hub - Feature Selection</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .feature-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-demo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            max-width: 600px;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 15px 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .feature-box.selected {
+            background: rgba(255, 215, 0, 0.3);
+            border: 2px solid #FFD700;
+            transform: scale(1.05);
+        }
+
+        .feature-box.removed {
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff4444;
+            opacity: 0.5;
+            transform: scale(0.9);
+        }
+
+        .selection-demo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .demo-arrow {
+            font-size: 3em;
+            color: #FFD700;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.6; transform: scale(1); }
+        }
+
+        .method-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .method-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.5), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .method-card.filter {
+            border-left-color: #4CAF50;
+        }
+
+        .method-card.wrapper {
+            border-left-color: #FF9800;
+        }
+
+        .method-card.embedded {
+            border-left-color: #9C27B0;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .technique-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .technique-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .technique-item:hover::before {
+            left: 100%;
+        }
+
+        .technique-item:hover {
+            transform: scale(1.05) rotateY(5deg);
+        }
+
+        .importance-viz {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .importance-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+
+        .bar-label {
+            width: 120px;
+            font-size: 14px;
+        }
+
+        .bar {
+            height: 25px;
+            border-radius: 12px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 0%; }
+        }
+
+        .bar-high { background: linear-gradient(90deg, #4CAF50, #45a049); }
+        .bar-medium { background: linear-gradient(90deg, #FF9800, #f57c00); }
+        .bar-low { background: linear-gradient(90deg, #f44336, #d32f2f); }
+
+        .interactive-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 50px 20px;
+            border-radius: 20px;
+            margin: 40px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interactive-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .demo-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .demo-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.3s;
+        }
+
+        .demo-btn:hover::before {
+            left: 100%;
+        }
+
+        .demo-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .pros-cons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .pros, .cons {
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .pros {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .cons {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .code-snippet {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            /* keep the author's newlines and indentation */
+            white-space: pre;
+            tab-size: 4;
+            line-height: 1.5;
+        }
+
+        /* a <code>/<pre> child must not restyle or re-wrap the sample */
+        .code-snippet code,
+        .code-snippet pre {
+            display: block;
+            font: inherit;
+            color: inherit;
+            background: none;
+            border: 0;
+            padding: 0;
+            margin: 0;
+            white-space: inherit;
+        }
+
+        .code-snippet::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4CAF50, #2196F3, #9C27B0, #FF9800);
+            animation: rainbow 3s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #ff6b6b;
+            position: relative;
+        }
+
+        .highlight-box::before {
+            content: '💡';
+            position: absolute;
+            top: 15px;
+            left: -15px;
+            background: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .breadcrumb {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 5px;
+            position: relative;
+        }
+
+        .step.active {
+            background: rgba(255, 215, 0, 0.3);
+            border: 2px solid #FFD700;
+        }
+
+        .flowchart {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .flow-step {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            min-width: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .flow-arrow {
+            font-size: 1.5em;
+            color: #FFD700;
+        }
+
+        @media (max-width: 768px) {
+            .selection-demo {
+                flex-direction: column;
+            }
+            
+            .demo-arrow {
+                transform: rotate(90deg);
+                margin: 15px 0;
+            }
+            
+            .pros-cons-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            }
+
+            .flowchart {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="tabular-data.html" class="nav-link">Tabular Data</a></li>
+                <li><a href="nlp-pipeline.html" class="nav-link">NLP Data</a></li>
+                <li><a href="image-processing.html" class="nav-link">Image Data</a></li>
+                <li><a href="encoding.html" class="nav-link">Encoding</a></li>
+                <li><a href="feature-selection.html" class="nav-link active" aria-current="page">Feature Selection</a></li>
+                <li><a href="training-testing.html" class="nav-link">Training</a></li>
+                <li><a href="hyperparameter-tuning.html" class="nav-link">Tuning</a></li>
+                <li><a href="ensemble-techniques.html" class="nav-link">Ensembles</a></li>
+                <li><a href="advanced-topics.html" class="nav-link">Advanced Topics</a></li>
+                <li><a href="dl.html" class="nav-link">Deep Learning</a></li>
+                <li><a href="interactive-demos.html" class="nav-link">Demos</a></li>
+            </ul>
+            <div class="hamburger" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="container breadcrumb-bar">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> / <strong>Feature Selection</strong>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Feature Selection in Machine Learning</h1>
+                <p class="hero-subtitle">Learn how to identify and select the most relevant features to improve model performance and reduce complexity</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-filter"></i>
+                        <span>3 Main Methods</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-rocket"></i>
+                        <span>Better Performance</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-compress-alt"></i>
+                        <span>Reduced Complexity</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-demo">
+            <h2 style="text-align: center; margin-bottom: 20px;">Feature Selection Process</h2>
+            <div class="selection-demo">
+                <div>
+                    <h4 style="text-align: center; margin-bottom: 15px;">Original Features (1000+)</h4>
+                    <div class="feature-grid">
+                        <div class="feature-box">F1</div>
+                        <div class="feature-box">F2</div>
+                        <div class="feature-box removed">F3</div>
+                        <div class="feature-box">F4</div>
+                        <div class="feature-box removed">F5</div>
+                        <div class="feature-box">F6</div>
+                        <div class="feature-box removed">F7</div>
+                        <div class="feature-box">F8</div>
+                        <div class="feature-box removed">F9</div>
+                        <div class="feature-box">F10</div>
+                        <div class="feature-box removed">F11</div>
+                        <div class="feature-box">F12</div>
+                    </div>
+                </div>
+                <div class="demo-arrow">→</div>
+                <div>
+                    <h4 style="text-align: center; margin-bottom: 15px;">Selected Features (Top 50)</h4>
+                    <div class="feature-grid">
+                        <div class="feature-box selected">F1</div>
+                        <div class="feature-box selected">F2</div>
+                        <div class="feature-box selected">F4</div>
+                        <div class="feature-box selected">F6</div>
+                        <div class="feature-box selected">F8</div>
+                        <div class="feature-box selected">F10</div>
+                        <div class="feature-box selected">F12</div>
+                        <div class="feature-box selected">F15</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flowchart">
+                <div class="flow-step">Raw Data</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Feature Scoring</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Selection Method</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Optimal Subset</div>
+            </div>
+
+            <p style="text-align: center; font-size: 1.1em; margin-top: 20px;">
+                Transform high-dimensional data into focused, relevant feature sets for better model performance
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="container" style="padding: 40px 20px;">
+        <div class="highlight-box">
+            <h3>Why Feature Selection Matters</h3>
+            <p>Feature selection is crucial for building efficient and accurate machine learning models. It helps reduce overfitting, improves model interpretability, decreases training time, and eliminates irrelevant or redundant features that can hurt performance.</p>
+        </div>
+
+        <!-- Benefits Section -->
+        <h2>Benefits of Feature Selection</h2>
+        <div class="comparison-grid">
+            <div class="comparison-card">
+                <h3><i class="fas fa-tachometer-alt"></i> Improved Performance</h3>
+                <p>Removing irrelevant features reduces noise and helps models focus on meaningful patterns, often leading to better accuracy and generalization.</p>
+            </div>
+            <div class="comparison-card">
+                <h3><i class="fas fa-clock"></i> Faster Training</h3>
+                <p>Fewer features mean less computational complexity, resulting in faster model training and prediction times.</p>
+            </div>
+            <div class="comparison-card">
+                <h3><i class="fas fa-eye"></i> Better Interpretability</h3>
+                <p>Models with fewer, more relevant features are easier to understand and explain to stakeholders.</p>
+            </div>
+            <div class="comparison-card">
+                <h3><i class="fas fa-shield-alt"></i> Reduced Overfitting</h3>
+                <p>Eliminating irrelevant features helps prevent models from memorizing noise in the training data.</p>
+            </div>
+        </div>
+
+        <!-- Main Methods -->
+        <h2>Three Main Approaches to Feature Selection</h2>
+
+        <div class="method-card filter">
+            <h3><i class="fas fa-filter"></i> Filter Methods</h3>
+            <p><strong>Principle:</strong> Evaluate features independently based on statistical properties, without involving machine learning algorithms.</p>
+            
+            <div class="highlight-box">
+                <strong>How Filter Methods Work:</strong>
+                <ol>
+                    <li>Calculate a statistical score for each feature</li>
+                    <li>Rank features based on their scores</li>
+                    <li>Select top-k features or apply threshold</li>
+                    <li>Use selected features to train model</li>
+                </ol>
+            </div>
+
+            <div class="technique-grid">
+                <div class="technique-item" onclick="showDetails('correlation')">
+                    <h4><i class="fas fa-chart-line"></i> Correlation</h4>
+                    <p>Measures linear relationship between features and target</p>
+                    <small>Best for: Linear relationships</small>
+                </div>
+                <div class="technique-item" onclick="showDetails('chi-square')">
+                    <h4><i class="fas fa-square-root-alt"></i> Chi-Square Test</h4>
+                    <p>Tests independence between categorical features and target</p>
+                    <small>Best for: Categorical data</small>
+                </div>
+                <div class="technique-item" onclick="showDetails('mutual-info')">
+                    <h4><i class="fas fa-info-circle"></i> Mutual Information</h4>
+                    <p>Measures dependency between variables (linear and non-linear)</p>
+                    <small>Best for: Non-linear relationships</small>
+                </div>
+                <div class="technique-item" onclick="showDetails('variance')">
+                    <h4><i class="fas fa-expand-arrows-alt"></i> Variance Threshold</h4>
+                    <p>Removes features with low variance (near-constant)</p>
+                    <small>Best for: Removing constant features</small>
+                </div>
+            </div>
+
+            <div class="pros-cons-grid">
+                <div class="pros">
+                    <h4><i class="fas fa-thumbs-up"></i> Advantages</h4>
+                    <ul>
+                        <li>Fast and computationally efficient</li>
+                        <li>Model-agnostic (works with any algorithm)</li>
+                        <li>Good for initial feature reduction</li>
+                        <li>No risk of overfitting in selection process</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Limitations</h4>
+                    <ul>
+                        <li>Ignores feature interactions</li>
+                        <li>May select redundant features</li>
+                        <li>Statistical relevance ≠ predictive relevance</li>
+                        <li>Threshold selection can be arbitrary</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="method-card wrapper">
+            <h3><i class="fas fa-sync-alt"></i> Wrapper Methods</h3>
+            <p><strong>Principle:</strong> Use machine learning algorithms to evaluate feature subsets based on model performance.</p>
+            
+            <div class="highlight-box">
+                <strong>How Wrapper Methods Work:</strong>
+                <ol>
+                    <li>Start with a feature subset (empty, full, or random)</li>
+                    <li>Train model and evaluate performance</li>
+                    <li>Add or remove features based on performance change</li>
+                    <li>Repeat until stopping criterion is met</li>
+                </ol>
+            </div>
+
+            <div class="technique-grid">
+                <div class="technique-item" onclick="showDetails('forward')">
+                    <h4><i class="fas fa-arrow-right"></i> Forward Selection</h4>
+                    <p>Start empty, iteratively add best features</p>
+                    <small>Best for: Starting with small sets</small>
+                </div>
+                <div class="technique-item" onclick="showDetails('backward')">
+                    <h4><i class="fas fa-arrow-left"></i> Backward Elimination</h4>
+                    <p>Start with all features, iteratively remove worst</p>
+                    <small>Best for: Starting with full sets</small>
+                </div>
+                <div class="technique-item" onclick="showDetails('rfe')">
+                    <h4><i class="fas fa-layer-group"></i> Recursive Feature Elimination</h4>
+                    <p>Recursively eliminate features with lowest importance</p>
+                    <small>Best for: Tree-based models</small>
+                </div>
+                <div class="technique-item" onclick="showDetails('genetic')">
+                    <h4><i class="fas fa-dna"></i> Genetic Algorithm</h4>
+                    <p>Evolutionary approach to find optimal feature subset</p>
+                    <small>Best for: Complex search spaces</small>
+                </div>
+            </div>
+
+            <div class="pros-cons-grid">
+                <div class="pros">
+                    <h4><i class="fas fa-thumbs-up"></i> Advantages</h4>
+                    <ul>
+                        <li>Considers feature interactions</li>
+                        <li>Optimizes for specific algorithm</li>
+                        <li>Can find optimal subset for given model</li>
+                        <li>Performance-based selection</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Limitations</h4>
+                    <ul>
+                        <li>Computationally expensive</li>
+                        <li>Risk of overfitting to validation set</li>
+                        <li>Model-dependent results</li>
+                        <li>May get stuck in local optima</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="method-card embedded">
+            <h3><i class="fas fa-puzzle-piece"></i> Embedded Methods</h3>
+            <p><strong>Principle:</strong> Feature selection is integrated into the model training process itself.</p>
+            
+            <div class="highlight-box">
+                <strong>How Embedded Methods Work:</strong>
+                <ol>
+                    <li>Feature selection happens during model training</li>
+                    <li>Algorithm assigns importance/weights to features</li>
+                    <li>Regularization or importance scores guide selection</li>
+                    <li>Final model uses only relevant features</li>
+                </ol>
+            </div>
+
+            <div class="technique-grid">
+                <div class="technique-item" onclick="showDetails('lasso')">
+                    <h4><i class="fas fa-compress"></i> LASSO Regularization</h4>
+                    <p>L1 penalty drives irrelevant feature coefficients to zero</p>
+                    <small>Best for: Linear models</small>
+                </div>
+                <div class="technique-item" onclick="showDetails('ridge')">
+                    <h4><i class="fas fa-wave-square"></i> Ridge Regularization</h4>
+                    <p>L2 penalty shrinks feature coefficients</p>
+                    <small>Best for: Handling multicollinearity</small>
+                </div>
+                <div class="technique-item" onclick="showDetails('tree-importance')">
+                    <h4><i class="fas fa-tree"></i> Tree-based Importance</h4>
+                    <p>Uses feature importance from tree-based models</p>
+                    <small>Best for: Non-linear relationships</small>
+                </div>
+                <div class="technique-item" onclick="showDetails('elastic-net')">
+                    <h4><i class="fas fa-network-wired"></i> Elastic Net</h4>
+                    <p>Combines L1 and L2 regularization</p>
+                    <small>Best for: Grouped features</small>
+                </div>
+            </div>
+
+            <div class="pros-cons-grid">
+                <div class="pros">
+                    <h4><i class="fas fa-thumbs-up"></i> Advantages</h4>
+                    <ul>
+                        <li>Considers feature interactions</li>
+                        <li>Less computationally expensive than wrappers</li>
+                        <li>No separate validation needed</li>
+                        <li>Algorithm-specific optimization</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Limitations</h4>
+                    <ul>
+                        <li>Algorithm-dependent</li>
+                        <li>May not work with all models</li>
+                        <li>Limited to specific types of importance</li>
+                        <li>Hyperparameter tuning required</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Importance Visualization -->
+        <h2>Understanding Feature Importance</h2>
+        <div class="importance-viz">
+            <h3 style="text-align: center; margin-bottom: 20px;">Feature Importance Scores</h3>
+            <div class="importance-bar">
+                <div class="bar-label">Age</div>
+                <div class="bar bar-high" style="width: 85%;"></div>
+                <span>0.85</span>
+            </div>
+            <div class="importance-bar">
+                <div class="bar-label">Income</div>
+                <div class="bar bar-high" style="width: 72%;"></div>
+                <span>0.72</span>
+            </div>
+            <div class="importance-bar">
+                <div class="bar-label">Education</div>
+                <div class="bar bar-medium" style="width: 58%;"></div>
+                <span>0.58</span>
+            </div>
+            <div class="importance-bar">
+                <div class="bar-label">Experience</div>
+                <div class="bar bar-medium" style="width: 45%;"></div>
+                <span>0.45</span>
+            </div>
+            <div class="importance-bar">
+                <div class="bar-label">Location</div>
+                <div class="bar bar-low" style="width: 23%;"></div>
+                <span>0.23</span>
+            </div>
+            <div class="importance-bar">
+                <div class="bar-label">Hobby</div>
+                <div class="bar bar-low" style="width: 12%;"></div>
+                <span>0.12</span>
+            </div>
+        </div>
+
+        <!-- Code Examples -->
+        <h2>Implementation Examples</h2>
+        
+        <h3>Filter Methods</h3>
+        <pre class="code-snippet"><code># Correlation-based feature selection
+import pandas as pd
+from sklearn.feature_selection import SelectKBest, f_regression
+
+# Calculate correlation with target
+correlation_scores = X.corrwith(y).abs()
+top_features = correlation_scores.nlargest(10).index
+
+# SelectKBest with F-test
+selector = SelectKBest(score_func=f_regression, k=10)
+X_selected = selector.fit_transform(X, y)
+selected_features = X.columns[selector.get_support()]</code></pre>
+
+        <h3>Wrapper Methods</h3>
+        <pre class="code-snippet"><code># Recursive Feature Elimination
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import RandomForestRegressor
+
+# Create estimator and selector
+estimator = RandomForestRegressor(n_estimators=100, random_state=42)
+selector = RFE(estimator, n_features_to_select=10, step=1)
+
+# Fit and transform
+X_selected = selector.fit_transform(X, y)
+selected_features = X.columns[selector.support_]
+feature_ranking = selector.ranking_</code></pre>
+
+        <h3>Embedded Methods</h3>
+        <pre class="code-snippet"><code># LASSO for feature selection
+from sklearn.linear_model import LassoCV
+from sklearn.feature_selection import SelectFromModel
+
+# Train LASSO with cross-validation
+lasso = LassoCV(cv=5, random_state=42)
+lasso.fit(X, y)
+
+# Select features with non-zero coefficients
+selector = SelectFromModel(lasso, prefit=True)
+X_selected = selector.transform(X)
+selected_features = X.columns[selector.get_support()]</code></pre>
+
+        <!-- Best Practices -->
+        <h2>Best Practices for Feature Selection</h2>
+        <div class="comparison-grid">
+            <div class="comparison-card">
+                <h3><i class="fas fa-balance-scale"></i> Combine Methods</h3>
+                <p>Use multiple approaches and compare results. Start with filter methods for initial screening, then apply wrapper or embedded methods.</p>
+            </div>
+            <div class="comparison-card">
+                <h3><i class="fas fa-check-double"></i> Cross-Validation</h3>
+                <p>Always use proper cross-validation to avoid overfitting. Feature selection should be part of the CV loop, not done beforehand.</p>
+            </div>
+            <div class="comparison-card">
+                <h3><i class="fas fa-chart-bar"></i> Domain Knowledge</h3>
+                <p>Incorporate domain expertise. Statistical significance doesn't always equal business relevance.</p>
+            </div>
+            <div class="comparison-card">
+                <h3><i class="fas fa-redo"></i> Iterative Process</h3>
+                <p>Feature selection is iterative. Start simple, evaluate results, and refine your approach based on model performance.</p>
+            </div>
+        </div>
+
+        <!-- Interactive Section -->
+        <div class="interactive-section">
+            <h2><i class="fas fa-play-circle"></i> Interactive Feature Selection</h2>
+            <p>Experience different feature selection techniques with hands-on demonstrations</p>
+            <div class="demo-buttons">
+                <a href="#" class="demo-btn" onclick="launchDemo('filter')">
+                    <i class="fas fa-filter"></i> Filter Methods Demo
+                </a>
+                <a href="#" class="demo-btn" onclick="launchDemo('wrapper')">
+                    <i class="fas fa-sync-alt"></i> Wrapper Methods Demo
+                </a>
+                <a href="#" class="demo-btn" onclick="launchDemo('embedded')">
+                    <i class="fas fa-puzzle-piece"></i> Embedded Methods Demo
+                </a>
+                <a href="#" class="demo-btn" onclick="launchDemo('comparison')">
+                    <i class="fas fa-chart-line"></i> Compare All Methods
+                </a>
+            </div>
+        </div>
+
+        <!-- Decision Guide -->
+        <h2>When to Use Which Method?</h2>
+        <div class="highlight-box">
+            <h3><i class="fas fa-map"></i> Decision Guide</h3>
+            <ul>
+                <li><strong>Large datasets with many features:</strong> Start with filter methods for initial reduction</li>
+                <li><strong>Small to medium datasets:</strong> Wrapper methods can be computationally feasible</li>
+                <li><strong>Linear models:</strong> LASSO/Ridge regularization works well</li>
+                <li><strong>Tree-based models:</strong> Use built-in feature importance</li>
+                <li><strong>Need interpretability:</strong> Filter methods provide clear statistical reasoning</li>
+                <li><strong>Maximum performance:</strong> Wrapper methods with proper CV</li>
+                <li><strong>Feature interactions matter:</strong> Avoid pure filter methods</li>
+                <li><strong>Computational constraints:</strong> Embedded methods offer good balance</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <section class="page-navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="encoding.html" class="nav-btn prev">
+                    <i class="fas fa-arrow-left"></i> Encoding & Scaling
+                </a>
+                <a href="training-testing.html" class="nav-btn next">
+                    Training & Testing <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines, stage by stage.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>1 &middot; Data Processing</h4>
+                <ul>
+                    <li><a href="tabular-data.html">Tabular Data Processing</a></li>
+                    <li><a href="nlp-pipeline.html">NLP Data Processing</a></li>
+                    <li><a href="image-processing.html">Image Data Processing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>2 &middot; Feature Engineering</h4>
+                <ul>
+                    <li><a href="encoding.html">Encoding &amp; Scaling</a></li>
+                    <li><a href="feature-selection.html">Feature Selection</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>3 &middot; Modelling</h4>
+                <ul>
+                    <li><a href="training-testing.html">Training &amp; Testing</a></li>
+                    <li><a href="hyperparameter-tuning.html">Hyperparameter Tuning</a></li>
+                    <li><a href="ensemble-techniques.html">Ensemble Techniques</a></li>
+                    <li><a href="advanced-topics.html">Advanced Topics</a></li>
+                    <li><a href="dl.html">Deep Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>4 &middot; Practice</h4>
+                <ul>
+                    <li><a href="interactive-demos.html">All Demos</a></li>
+                    <li><a href="interactive-demos.html#classification">Classification</a></li>
+                    <li><a href="interactive-demos.html#regression">Regression</a></li>
+                    <li><a href="interactive-demos.html#clustering">Clustering</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>

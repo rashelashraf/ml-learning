@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Learning Interview Prep</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 50px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            background: #e9ecef;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .question-header {
+            padding: 20px;
+            background: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .question-header:hover {
+            background: #e9ecef;
+        }
+
+        .question-text {
+            font-weight: 600;
+            color: #343a40;
+            font-size: 1.1em;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9em;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .expand-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+
+        .question-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .question-card.expanded .answer {
+            max-height: 1000px;
+            padding: 20px;
+        }
+
+        .answer-content {
+            color: #495057;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+
+        .answer-content h4 {
+            color: #343a40;
+            margin: 15px 0 10px 0;
+            font-weight: 600;
+        }
+
+        .answer-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .answer-content li {
+            margin-bottom: 8px;
+        }
+
+        .category-tag {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .category-tag.experienced {
+            background: linear-gradient(135deg, #fd7e14 0%, #e83e8c 100%);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .no-results h3 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .stats {
+                gap: 15px;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .question-number {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Deep Learning Interview Prep</h1>
+            <p>Master your Deep Learning interviews with comprehensive Q&A</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="totalQuestions">75</div>
+                    <div class="stat-label">Total Questions</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="completedQuestions">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="progressPercent">0%</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search questions...">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Questions</button>
+                <button class="filter-btn" data-filter="freshers">Freshers</button>
+                <button class="filter-btn" data-filter="experienced">Experienced</button>
+                <button class="filter-btn" data-filter="concepts">Concepts</button>
+                <button class="filter-btn" data-filter="technical">Technical</button>
+            </div>
+        </div>
+
+        <div class="content" id="questionsContainer">
+            <!-- Questions will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const questionsData = [
+            {
+                id: 1,
+                question: "What is Deep Learning?",
+                category: "freshers",
+                type: "concepts",
+                answer: `Deep Learning is a subset of Machine Learning that uses artificial neural networks with multiple layers (hence "deep") to model and understand complex patterns in data.
+
+                <h4>Key Characteristics:</h4>
+                <ul>
+                    <li><strong>Hierarchical Learning:</strong> Each layer learns increasingly complex features</li>
+                    <li><strong>Automatic Feature Extraction:</strong> No need for manual feature engineering</li>
+                    <li><strong>Multiple Layers:</strong> Typically 3 or more hidden layers</li>
+                    <li><strong>Non-linear Transformations:</strong> Uses activation functions to capture complex relationships</li>
+                </ul>
+
+                <h4>Applications:</h4>
+                <ul>
+                    <li>Computer Vision (image classification, object detection)</li>
+                    <li>Natural Language Processing (language translation, sentiment analysis)</li>
+                    <li>Speech Recognition and Generation</li>
+                    <li>Autonomous Vehicles</li>
+                    <li>Medical Diagnosis</li>
+                </ul>`
+            },
+            {
+                id: 2,
+                question: "What is an artificial neural network?",
+                category: "freshers",
+                type: "concepts",
+                answer: `An Artificial Neural Network (ANN) is a computational model inspired by biological neural networks in the human brain. It consists of interconnected nodes (neurons) that process information.
+
+                <h4>Components:</h4>
+                <ul>
+                    <li><strong>Neurons/Nodes:</strong> Basic processing units that receive inputs, apply weights, and produce outputs</li>
+                    <li><strong>Weights:</strong> Parameters that determine the strength of connections between neurons</li>
+                    <li><strong>Bias:</strong> Additional parameter that helps the model fit the data better</li>
+                    <li><strong>Activation Function:</strong> Non-linear function that determines neuron output</li>
+                </ul>
+
+                <h4>Structure:</h4>
+                <ul>
+                    <li><strong>Input Layer:</strong> Receives raw data</li>
+                    <li><strong>Hidden Layers:</strong> Process and transform data</li>
+                    <li><strong>Output Layer:</strong> Produces final predictions</li>
+                </ul>
+
+                <h4>Learning Process:</h4>
+                The network learns by adjusting weights and biases through backpropagation, minimizing the difference between predicted and actual outputs.`
+            },
+            {
+                id: 3,
+                question: "How does Deep Learning differ from Machine Learning?",
+                category: "freshers",
+                type: "concepts",
+                answer: `While Deep Learning is a subset of Machine Learning, there are key differences:
+
+                <h4>Feature Engineering:</h4>
+                <ul>
+                    <li><strong>Machine Learning:</strong> Requires manual feature extraction and selection</li>
+                    <li><strong>Deep Learning:</strong> Automatically learns features from raw data</li>
+                </ul>
+
+                <h4>Data Requirements:</h4>
+                <ul>
+                    <li><strong>Machine Learning:</strong> Works well with smaller datasets</li>
+                    <li><strong>Deep Learning:</strong> Requires large amounts of data to perform well</li>
+                </ul>
+
+                <h4>Computational Power:</h4>
+                <ul>
+                    <li><strong>Machine Learning:</strong> Can run on standard computers</li>
+                    <li><strong>Deep Learning:</strong> Requires high computational power (GPUs/TPUs)</li>
+                </ul>
+
+                <h4>Interpretability:</h4>
+                <ul>
+                    <li><strong>Machine Learning:</strong> Often more interpretable (e.g., decision trees)</li>
+                    <li><strong>Deep Learning:</strong> "Black box" models, less interpretable</li>
+                </ul>
+
+                <h4>Problem Complexity:</h4>
+                <ul>
+                    <li><strong>Machine Learning:</strong> Better for simpler, well-defined problems</li>
+                    <li><strong>Deep Learning:</strong> Excels at complex pattern recognition tasks</li>
+                </ul>`
+            },
+            {
+                id: 4,
+                question: "What are the applications of Deep Learning?",
+                category: "freshers",
+                type: "concepts",
+                answer: `Deep Learning has revolutionized multiple industries with diverse applications:
+
+                <h4>Computer Vision:</h4>
+                <ul>
+                    <li>Image Classification and Recognition</li>
+                    <li>Object Detection and Tracking</li>
+                    <li>Facial Recognition</li>
+                    <li>Medical Image Analysis (X-rays, MRIs)</li>
+                    <li>Autonomous Vehicle Vision Systems</li>
+                </ul>
+
+                <h4>Natural Language Processing:</h4>
+                <ul>
+                    <li>Machine Translation (Google Translate)</li>
+                    <li>Sentiment Analysis</li>
+                    <li>Chatbots and Virtual Assistants</li>
+                    <li>Text Summarization</li>
+                    <li>Question Answering Systems</li>
+                </ul>
+
+                <h4>Speech and Audio:</h4>
+                <ul>
+                    <li>Speech Recognition (Siri, Alexa)</li>
+                    <li>Speech Synthesis</li>
+                    <li>Music Generation</li>
+                    <li>Audio Classification</li>
+                </ul>
+
+                <h4>Healthcare:</h4>
+                <ul>
+                    <li>Drug Discovery</li>
+                    <li>Medical Diagnosis</li>
+                    <li>Personalized Treatment</li>
+                    <li>Genomics Research</li>
+                </ul>
+
+                <h4>Other Applications:</h4>
+                <ul>
+                    <li>Recommendation Systems (Netflix, Amazon)</li>
+                    <li>Financial Trading and Risk Assessment</li>
+                    <li>Game Playing (AlphaGo, Chess)</li>
+                    <li>Robotics and Automation</li>
+                </ul>`
+            },
+            {
+                id: 5,
+                question: "What are the challenges in Deep Learning?",
+                category: "freshers",
+                type: "concepts",
+                answer: `Deep Learning faces several significant challenges:
+
+                <h4>Data-Related Challenges:</h4>
+                <ul>
+                    <li><strong>Large Data Requirements:</strong> Need massive datasets for good performance</li>
+                    <li><strong>Data Quality:</strong> Requires clean, labeled, and representative data</li>
+                    <li><strong>Data Privacy:</strong> Handling sensitive information responsibly</li>
+                    <li><strong>Data Bias:</strong> Models can perpetuate biases present in training data</li>
+                </ul>
+
+                <h4>Technical Challenges:</h4>
+                <ul>
+                    <li><strong>Computational Cost:</strong> Requires expensive hardware (GPUs/TPUs)</li>
+                    <li><strong>Training Time:</strong> Can take days or weeks to train large models</li>
+                    <li><strong>Overfitting:</strong> Models may memorize training data instead of generalizing</li>
+                    <li><strong>Vanishing/Exploding Gradients:</strong> Training deep networks can be unstable</li>
+                </ul>
+
+                <h4>Interpretability Issues:</h4>
+                <ul>
+                    <li><strong>Black Box Nature:</strong> Difficult to understand how decisions are made</li>
+                    <li><strong>Lack of Explainability:</strong> Hard to justify predictions in critical applications</li>
+                </ul>
+
+                <h4>Practical Challenges:</h4>
+                <ul>
+                    <li><strong>Hyperparameter Tuning:</strong> Many parameters to optimize</li>
+                    <li><strong>Model Selection:</strong> Choosing the right architecture for the problem</li>
+                    <li><strong>Reproducibility:</strong> Ensuring consistent results across runs</li>
+                    <li><strong>Deployment:</strong> Moving from research to production environments</li>
+                </ul>`
+            },
+            {
+                id: 6,
+                question: "How are Biological neurons similar to Artificial neural networks?",
+                category: "freshers",
+                type: "concepts",
+                answer: `Artificial Neural Networks are inspired by biological neurons, sharing several key similarities:
+
+                <h4>Structure Similarities:</h4>
+                <ul>
+                    <li><strong>Dendrites ↔ Inputs:</strong> Both receive multiple input signals</li>
+                    <li><strong>Cell Body ↔ Processing Unit:</strong> Both process and combine incoming signals</li>
+                    <li><strong>Axon ↔ Output:</strong> Both transmit processed signals to other neurons</li>
+                    <li><strong>Synapses ↔ Weights:</strong> Both determine connection strength between neurons</li>
+                </ul>
+
+                <h4>Functional Similarities:</h4>
+                <ul>
+                    <li><strong>Threshold Activation:</strong> Both fire/activate when input exceeds a threshold</li>
+                    <li><strong>Signal Transmission:</strong> Both pass information from one neuron to another</li>
+                    <li><strong>Learning:</strong> Both adapt connections based on experience (synaptic plasticity vs. weight updates)</li>
+                    <li><strong>Parallel Processing:</strong> Both process multiple signals simultaneously</li>
+                </ul>
+
+                <h4>Key Differences:</h4>
+                <ul>
+                    <li><strong>Complexity:</strong> Biological neurons are far more complex with thousands of connections</li>
+                    <li><strong>Processing Speed:</strong> Artificial neurons process much faster than biological ones</li>
+                    <li><strong>Signal Type:</strong> Biological use electrochemical signals, artificial use mathematical operations</li>
+                    <li><strong>Plasticity:</strong> Biological neurons can form new connections, artificial networks have fixed architecture</li>
+                </ul>`
+            },
+            {
+                id: 7,
+                question: "How is deep learning used in supervised, unsupervised, and reinforcement learning?",
+                category: "freshers",
+                type: "concepts",
+                answer: `Deep Learning can be applied across all three major machine learning paradigms:
+
+                <h4>Supervised Learning:</h4>
+                <ul>
+                    <li><strong>Definition:</strong> Learning from labeled data (input-output pairs)</li>
+                    <li><strong>Deep Learning Applications:</strong>
+                        <ul>
+                            <li>Convolutional Neural Networks (CNNs) for image classification</li>
+                            <li>Recurrent Neural Networks (RNNs) for sequence prediction</li>
+                            <li>Feedforward networks for regression and classification</li>
+                        </ul>
+                    </li>
+                    <li><strong>Examples:</strong> Medical diagnosis, spam detection, speech recognition</li>
+                </ul>
+
+                <h4>Unsupervised Learning:</h4>
+                <ul>
+                    <li><strong>Definition:</strong> Learning patterns from unlabeled data</li>
+                    <li><strong>Deep Learning Applications:</strong>
+                        <ul>
+                            <li>Autoencoders for dimensionality reduction and feature learning</li>
+                            <li>Generative Adversarial Networks (GANs) for data generation</li>
+                            <li>Variational Autoencoders (VAEs) for probabilistic modeling</li>
+                            <li>Deep clustering algorithms</li>
+                        </ul>
+                    </li>
+                    <li><strong>Examples:</strong> Image generation, anomaly detection, data compression</li>
+                </ul>
+
+                <h4>Reinforcement Learning:</h4>
+                <ul>
+                    <li><strong>Definition:</strong> Learning through interaction with environment using rewards/penalties</li>
+                    <li><strong>Deep Learning Applications:</strong>
+                        <ul>
+                            <li>Deep Q-Networks (DQN) for value function approximation</li>
+                            <li>Actor-Critic methods for policy optimization</li>
+                            <li>Deep Policy Gradient methods</li>
+                        </ul>
+                    </li>
+                    <li><strong>Examples:</strong> Game playing (AlphaGo), robotics, autonomous driving</li>
+                </ul>`
+            },
+            {
+                id: 8,
+                question: "What is a Perceptron?",
+                category: "freshers",
+                type: "technical",
+                answer: `A Perceptron is the simplest form of an artificial neural network, consisting of a single neuron that makes binary decisions.
+
+                <h4>Structure:</h4>
+                <ul>
+                    <li><strong>Inputs (x₁, x₂, ..., xₙ):</strong> Feature values</li>
+                    <li><strong>Weights (w₁, w₂, ..., wₙ):</strong> Importance of each input</li>
+                    <li><strong>Bias (b):</strong> Threshold adjustment parameter</li>
+                    <li><strong>Activation Function:</strong> Step function for binary output</li>
+                </ul>
+
+                <h4>Mathematical Formula:</h4>
+                Output = f(Σ(wᵢ × xᵢ) + b)
+                <br>where f is the step function:
+                <ul>
+                    <li>f(z) = 1 if z ≥ 0</li>
+                    <li>f(z) = 0 if z < 0</li>
+                </ul>
+
+                <h4>Learning Algorithm:</h4>
+                <ul>
+                    <li>Initialize weights randomly</li>
+                    <li>For each training example:
+                        <ul>
+                            <li>Calculate predicted output</li>
+                            <li>Compare with actual output</li>
+                            <li>Update weights: w = w + α(target - predicted) × input</li>
+                        </ul>
+                    </li>
+                    <li>Repeat until convergence</li>
+                </ul>
+
+                <h4>Limitations:</h4>
+                <ul>
+                    <li>Can only solve linearly separable problems</li>
+                    <li>Cannot solve XOR problem</li>
+                    <li>Limited to binary classification</li>
+                    <li>No hidden layers for complex pattern recognition</li>
+                </ul>
+
+                <h4>Historical Importance:</h4>
+                The perceptron laid the foundation for modern neural networks and deep learning, despite its limitations.`
+            },
+            {
+                id: 9,
+                question: "What is Multilayer Perceptron and how is it different from single-layer perceptron?",
+                category: "freshers",
+                type: "technical",
+                answer: `A Multilayer Perceptron (MLP) is a feedforward neural network with one or more hidden layers between input and output layers.
+
+                <h4>Structure Differences:</h4>
+                <ul>
+                    <li><strong>Single-layer Perceptron:</strong> Input → Output (no hidden layers)</li>
+                    <li><strong>Multilayer Perceptron:</strong> Input → Hidden Layer(s) → Output</li>
+                </ul>
+
+                <h4>Key Differences:</h4>
+                <ul>
+                    <li><strong>Problem Complexity:</strong>
+                        <ul>
+                            <li>Single-layer: Only linearly separable problems</li>
+                            <li>MLP: Can solve non-linearly separable problems (XOR, complex patterns)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Activation Functions:</strong>
+                        <ul>
+                            <li>Single-layer: Step function</li>
+                            <li>MLP: Non-linear activation functions (sigmoid, ReLU, tanh)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Learning Algorithm:</strong>
+                        <ul>
+                            <li>Single-layer: Simple perceptron learning rule</li>
+                            <li>MLP: Backpropagation algorithm</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>MLP Advantages:</h4>
+                <ul>
+                    <li><strong>Universal Approximation:</strong> Can approximate any continuous function</li>
+                    <li><strong>Feature Learning:</strong> Hidden layers learn intermediate representations</li>
+                    <li><strong>Flexibility:</strong> Can handle multiple outputs and complex mappings</li>
+                    <li><strong>Non-linear Processing:</strong> Captures complex relationships in data</li>
+                </ul>
+
+                <h4>MLP Components:</h4>
+                <ul>
+                    <li><strong>Input Layer:</strong> Receives features</li>
+                    <li><strong>Hidden Layers:</strong> Learn intermediate representations</li>
+                    <li><strong>Output Layer:</strong> Produces final predictions</li>
+                    <li><strong>Weights and Biases:</strong> Learnable parameters</li>
+                    <li><strong>Activation Functions:</strong> Introduce non-linearity</li>
+                </ul>`
+            },
+            {
+                id: 10,
+                question: "What are Feedforward Neural Networks?",
+                category: "freshers",
+                type: "technical",
+                answer: `Feedforward Neural Networks are the most basic type of artificial neural network where information flows in only one direction - from input to output, without any loops or cycles.
+
+                <h4>Key Characteristics:</h4>
+                <ul>
+                    <li><strong>Unidirectional Flow:</strong> Information moves forward only (input → hidden → output)</li>
+                    <li><strong>No Cycles:</strong> No feedback connections or loops</li>
+                    <li><strong>Layered Structure:</strong> Neurons organized in distinct layers</li>
+                    <li><strong>Fully Connected:</strong> Each neuron connects to all neurons in the next layer</li>
+                </ul>
+
+                <h4>Architecture:</h4>
+                <ul>
+                    <li><strong>Input Layer:</strong> Receives raw data (not counted as a layer in depth)</li>
+                    <li><strong>Hidden Layer(s):</strong> Perform transformations and feature extraction</li>
+                    <li><strong>Output Layer:</strong> Produces final predictions or classifications</li>
+                </ul>
+
+                <h4>Information Flow:</h4>
+                <ul>
+                    <li>Data enters through input layer</li>
+                    <li>Each layer applies linear transformation followed by non-linear activation</li>
+                    <li>Processed through hidden layers sequentially</li>
+                    <li>Final output produced by output layer</li>
+                </ul>
+
+                <h4>Mathematical Representation:</h4>
+                For layer l: h^(l) = f(W^(l) × h^(l-1) + b^(l))
+                <br>where:
+                <ul>
+                    <li>h^(l) = output of layer l</li>
+                    <li>W^(l) = weight matrix for layer l</li>
+                    <li>b^(l) = bias vector for layer l</li>
+                    <li>f = activation function</li>
+                </ul>
+
+                <h4>Applications:</h4>
+                <ul>
+                    <li>Image classification</li>
+                    <li>Pattern recognition</li>
+                    <li>Regression problems</li>
+                    <li>Function approximation</li>
+                </ul>
+
+                <h4>Limitations:</h4>
+                <ul>
+                    <li>Cannot handle sequential data well</li>
+                    <li>No memory of previous inputs</li>
+                    <li>Fixed input size requirement</li>
+                </ul>`
+            },
+            {
+                id: 15,
+                question: "What are activation functions in deep learning and where are they used?",
+                category: "freshers",
+                type: "technical",
+                answer: `Activation functions are mathematical functions that determine the output of a neural network node given a set of inputs. They introduce non-linearity into the network, enabling it to learn complex patterns.
+
+                <h4>Purpose and Importance:</h4>
+                <ul>
+                    <li><strong>Non-linearity:</strong> Without activation functions, neural networks would be linear combinations</li>
+                    <li><strong>Decision Making:</strong> Help neurons decide whether to be activated or not</li>
+                    <li><strong>Output Range Control:</strong> Normalize outputs to specific ranges</li>
+                    <li><strong>Gradient Flow:</strong> Enable backpropagation for learning</li>
+                </ul>
+
+                <h4>Where They Are Used:</h4>
+                <ul>
+                    <li><strong>Hidden Layers:</strong> Between layers to introduce non-linearity</li>
+                    <li><strong>Output Layer:</strong> To format final predictions
+                        <ul>
+                            <li>Binary classification: Sigmoid</li>
+                            <li>Multi-class classification: Softmax</li>
+                            <li>Regression: Linear or ReLU</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Common Activation Functions:</h4>
+                <ul>
+                    <li><strong>ReLU (Rectified Linear Unit):</strong> f(x) = max(0, x)
+                        <ul>
+                            <li>Most popular for hidden layers</li>
+                            <li>Computationally efficient</li>
+                            <li>Helps mitigate vanishing gradient problem</li>
+                        </ul>
+                    </li>
+                    <li><strong>Sigmoid:</strong> f(x) = 1/(1 + e^(-x))
+                        <ul>
+                            <li>Output range: (0, 1)</li>
+                            <li>Good for binary classification output</li>
+                            <li>Suffers from vanishing gradient problem</li>
+                        </ul>
+                    </li>
+                    <li><strong>Tanh:</strong> f(x) = (e^x - e^(-x))/(e^x + e^(-x))
+                        <ul>
+                            <li>Output range: (-1, 1)</li>
+                            <li>Zero-centered output</li>
+                            <li>Better than sigmoid for hidden layers</li>
+                        </ul>
+                    </li>
+                    <li><strong>Softmax:</strong> f(x_i) = e^(x_i)/Σe^(x_j)
+                        <ul>
+                            <li>Used in multi-class classification output</li>
+                            <li>Outputs probability distribution</li>
+                            <li>Sum of all outputs equals 1</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Selection Criteria:</h4>
+                <ul>
+                    <li>Problem type (classification vs regression)</li>
+                    <li>Network depth</li>
+                    <li>Computational efficiency requirements</li>
+                    <li>Gradient flow considerations</li>
+                </ul>`
+            },
+            {
+                id: 19,
+                question: "What is overfitting and how to avoid it?",
+                category: "freshers",
+                type: "technical",
+                answer: `Overfitting occurs when a model learns the training data too well, including noise and specific patterns that don't generalize to new data.
+
+                <h4>Signs of Overfitting:</h4>
+                <ul>
+                    <li><strong>Performance Gap:</strong> High training accuracy but low validation/test accuracy</li>
+                    <li><strong>Training Curves:</strong> Training loss continues decreasing while validation loss increases</li>
+                    <li><strong>Complex Model:</strong> Model memorizes training examples rather than learning patterns</li>
+                </ul>
+
+                <h4>Causes of Overfitting:</h4>
+                <ul>
+                    <li><strong>Limited Training Data:</strong> Not enough data to represent the true distribution</li>
+                    <li><strong>Model Complexity:</strong> Too many parameters relative to training data</li>
+                    <li><strong>Training Duration:</strong> Training for too many epochs</li>
+                    <li><strong>Noisy Data:</strong> Model learns noise as if it were signal</li>
+                </ul>
+
+                <h4>Prevention Techniques:</h4>
+                
+                <h4>1. Regularization:</h4>
+                <ul>
+                    <li><strong>L1 Regularization:</strong> Adds |w| penalty term</li>
+                    <li><strong>L2 Regularization:</strong> Adds w² penalty term</li>
+                    <li><strong>Elastic Net:</strong> Combines L1 and L2</li>
+                </ul>
+
+                <h4>2. Dropout:</h4>
+                <ul>
+                    <li>Randomly sets some neurons to zero during training</li>
+                    <li>Prevents co-adaptation of neurons</li>
+                    <li>Typical dropout rates: 0.2-0.5</li>
+                </ul>
+
+                <h4>3. Early Stopping:</h4>
+                <ul>
+                    <li>Monitor validation loss during training</li>
+                    <li>Stop when validation loss starts increasing</li>
+                    <li>Save best model based on validation performance</li>
+                </ul>
+
+                <h4>4. Data Augmentation:</h4>
+                <ul>
+                    <li>Increase training data size artificially</li>
+                    <li>Apply transformations (rotation, scaling, cropping)</li>
+                    <li>Helps model generalize better</li>
+                </ul>
+
+                <h4>5. Cross-Validation:</h4>
+                <ul>
+                    <li>Use k-fold cross-validation</li>
+                    <li>Better estimation of model performance</li>
+                    <li>Helps in hyperparameter tuning</li>
+                </ul>
+
+                <h4>6. Model Architecture:</h4>
+                <ul>
+                    <li>Reduce model complexity</li>
+                    <li>Fewer parameters or layers</li>
+                    <li>Use simpler architectures when possible</li>
+                </ul>`
+            },
+            {
+                id: 23,
+                question: "What is gradient descent?",
+                category: "freshers",
+                type: "technical",
+                answer: `Gradient Descent is an optimization algorithm used to minimize the cost function by iteratively adjusting model parameters in the direction of steepest descent.
+
+                <h4>Core Concept:</h4>
+                <ul>
+                    <li><strong>Objective:</strong> Find parameters that minimize the loss function</li>
+                    <li><strong>Method:</strong> Move in the opposite direction of the gradient</li>
+                    <li><strong>Gradient:</strong> Vector of partial derivatives indicating steepest ascent direction</li>
+                    <li><strong>Learning Rate:</strong> Step size for parameter updates</li>
+                </ul>
+
+                <h4>Mathematical Formula:</h4>
+                θ = θ - α × ∇J(θ)
+                <ul>
+                    <li>θ = parameters (weights and biases)</li>
+                    <li>α = learning rate</li>
+                    <li>∇J(θ) = gradient of cost function J with respect to θ</li>
+                </ul>
+
+                <h4>Algorithm Steps:</h4>
+                <ul>
+                    <li>Initialize parameters randomly</li>
+                    <li>Calculate cost function for current parameters</li>
+                    <li>Compute gradients (partial derivatives)</li>
+                    <li>Update parameters using gradient descent rule</li>
+                    <li>Repeat until convergence or maximum iterations</li>
+                </ul>
+
+                <h4>Types of Gradient Descent:</h4>
+                
+                <h4>1. Batch Gradient Descent:</h4>
+                <ul>
+                    <li>Uses entire training dataset for each update</li>
+                    <li>Stable convergence but slow for large datasets</li>
+                    <li>Guaranteed to converge to global minimum for convex functions</li>
+                </ul>
+
+                <h4>2. Stochastic Gradient Descent (SGD):</h4>
+                <ul>
+                    <li>Uses one training example for each update</li>
+                    <li>Faster but noisy convergence</li>
+                    <li>Can escape local minima due to noise</li>
+                </ul>
+
+                <h4>3. Mini-batch Gradient Descent:</h4>
+                <ul>
+                    <li>Uses small batches of training examples</li>
+                    <li>Balances stability and efficiency</li>
+                    <li>Most commonly used in practice</li>
+                </ul>
+
+                <h4>Challenges:</h4>
+                <ul>
+                    <li><strong>Learning Rate Selection:</strong> Too high → divergence, too low → slow convergence</li>
+                    <li><strong>Local Minima:</strong> May get stuck in suboptimal solutions</li>
+                    <li><strong>Saddle Points:</strong> Gradients become very small</li>
+                    <li><strong>Vanishing/Exploding Gradients:</strong> In deep networks</li>
+                </ul>
+
+                <h4>Advanced Optimizers:</h4>
+                <ul>
+                    <li><strong>Adam:</strong> Adaptive moment estimation</li>
+                    <li><strong>RMSprop:</strong> Root mean square propagation</li>
+                    <li><strong>Momentum:</strong> Accelerates convergence</li>
+                </ul>`
+            },
+            {
+                id: 36,
+                question: "What are Convolutional Neural Networks (CNNs)?",
+                category: "experienced",
+                type: "technical",
+                answer: `Convolutional Neural Networks (CNNs) are deep learning architectures specifically designed for processing grid-like data such as images, using convolution operations to detect local features.
+
+                <h4>Key Components:</h4>
+                
+                <h4>1. Convolutional Layers:</h4>
+                <ul>
+                    <li><strong>Filters/Kernels:</strong> Small matrices that slide over input to detect features</li>
+                    <li><strong>Feature Maps:</strong> Outputs produced by applying filters</li>
+                    <li><strong>Stride:</strong> Step size for moving the filter</li>
+                    <li><strong>Padding:</strong> Adding zeros around input borders</li>
+                </ul>
+
+                <h4>2. Pooling Layers:</h4>
+                <ul>
+                    <li><strong>Max Pooling:</strong> Takes maximum value in each region</li>
+                    <li><strong>Average Pooling:</strong> Takes average value in each region</li>
+                    <li><strong>Purpose:</strong> Reduces spatial dimensions and computational cost</li>
+                </ul>
+
+                <h4>3. Fully Connected Layers:</h4>
+                <ul>
+                    <li>Traditional neural network layers at the end</li>
+                    <li>Convert feature maps to final predictions</li>
+                    <li>Often include dropout for regularization</li>
+                </ul>
+
+                <h4>Advantages of CNNs:</h4>
+                <ul>
+                    <li><strong>Translation Invariance:</strong> Detects features regardless of position</li>
+                    <li><strong>Parameter Sharing:</strong> Same filter used across entire image</li>
+                    <li><strong>Local Connectivity:</strong> Each neuron connected to local region</li>
+                    <li><strong>Hierarchical Feature Learning:</strong> Low-level to high-level features</li>
+                </ul>
+
+                <h4>Popular CNN Architectures:</h4>
+                <ul>
+                    <li><strong>LeNet-5:</strong> Early CNN for digit recognition</li>
+                    <li><strong>AlexNet:</strong> First deep CNN to win ImageNet</li>
+                    <li><strong>VGGNet:</strong> Very deep networks with small filters</li>
+                    <li><strong>ResNet:</strong> Introduced skip connections</li>
+                    <li><strong>Inception:</strong> Multi-scale feature extraction</li>
+                </ul>
+
+                <h4>Applications:</h4>
+                <ul>
+                    <li><strong>Image Classification:</strong> Categorizing objects in images</li>
+                    <li><strong>Object Detection:</strong> Locating and classifying objects</li>
+                    <li><strong>Semantic Segmentation:</strong> Pixel-wise classification</li>
+                    <li><strong>Face Recognition:</strong> Identifying individuals</li>
+                    <li><strong>Medical Imaging:</strong> Analyzing X-rays, MRIs</li>
+                    <li><strong>Autonomous Vehicles:</strong> Scene understanding</li>
+                </ul>
+
+                <h4>Mathematical Foundation:</h4>
+                Convolution operation: (f * g)(t) = Σ f(τ)g(t - τ)
+                <br>In 2D: (I * K)(i,j) = ΣΣ I(m,n)K(i-m, j-n)`
+            },
+            {
+                id: 46,
+                question: "What are Recurrent Neural Networks (RNNs) and how do they work?",
+                category: "experienced",
+                type: "technical",
+                answer: `Recurrent Neural Networks (RNNs) are neural networks designed to process sequential data by maintaining internal memory through recurrent connections.
+
+                <h4>Key Characteristics:</h4>
+                <ul>
+                    <li><strong>Memory:</strong> Maintains hidden state across time steps</li>
+                    <li><strong>Sequential Processing:</strong> Processes input sequences one element at a time</li>
+                    <li><strong>Parameter Sharing:</strong> Same weights used across all time steps</li>
+                    <li><strong>Variable Length Input:</strong> Can handle sequences of different lengths</li>
+                </ul>
+
+                <h4>How RNNs Work:</h4>
+                
+                <h4>1. Forward Pass:</h4>
+                <ul>
+                    <li>h_t = tanh(W_hh × h_{t-1} + W_xh × x_t + b_h)</li>
+                    <li>y_t = W_hy × h_t + b_y</li>
+                    <li>h_t = hidden state at time t</li>
+                    <li>x_t = input at time t</li>
+                    <li>y_t = output at time t</li>
+                </ul>
+
+                <h4>2. Information Flow:</h4>
+                <ul>
+                    <li>Current input combines with previous hidden state</li>
+                    <li>Hidden state acts as memory of previous inputs</li>
+                    <li>Output depends on current input and all previous inputs</li>
+                </ul>
+
+                <h4>Types of RNN Architectures:</h4>
+                <ul>
+                    <li><strong>One-to-One:</strong> Standard neural network</li>
+                    <li><strong>One-to-Many:</strong> Image captioning</li>
+                    <li><strong>Many-to-One:</strong> Sentiment analysis</li>
+                    <li><strong>Many-to-Many:</strong> Machine translation</li>
+                    <li><strong>Many-to-Many (synced):</strong> Video classification</li>
+                </ul>
+
+                <h4>Advantages:</h4>
+                <ul>
+                    <li>Can process variable-length sequences</li>
+                    <li>Shares parameters across time steps</li>
+                    <li>Maintains memory of previous inputs</li>
+                    <li>Suitable for temporal pattern recognition</li>
+                </ul>
+
+                <h4>Challenges:</h4>
+                <ul>
+                    <li><strong>Vanishing Gradient Problem:</strong> Gradients diminish over long sequences</li>
+                    <li><strong>Exploding Gradient Problem:</strong> Gradients grow exponentially</li>
+                    <li><strong>Sequential Processing:</strong> Cannot be parallelized efficiently</li>
+                    <li><strong>Short-term Memory:</strong> Difficulty learning long-term dependencies</li>
+                </ul>
+
+                <h4>Solutions and Variants:</h4>
+                <ul>
+                    <li><strong>LSTM:</strong> Long Short-Term Memory networks</li>
+                    <li><strong>GRU:</strong> Gated Recurrent Units</li>
+                    <li><strong>Bidirectional RNNs:</strong> Process sequences in both directions</li>
+                    <li><strong>Attention Mechanisms:</strong> Focus on relevant parts of input</li>
+                </ul>
+
+                <h4>Applications:</h4>
+                <ul>
+                    <li>Language modeling and text generation</li>
+                    <li>Machine translation</li>
+                    <li>Speech recognition</li>
+                    <li>Time series prediction</li>
+                    <li>Sentiment analysis</li>
+                </ul>`
+            },
+            {
+                id: 52,
+                question: "What is a Generative Adversarial Network (GAN)?",
+                category: "experienced",
+                type: "technical",
+                answer: `Generative Adversarial Networks (GANs) are a class of machine learning frameworks where two neural networks compete against each other in a zero-sum game to generate new, synthetic data.
+
+                <h4>Core Components:</h4>
+                
+                <h4>1. Generator Network:</h4>
+                <ul>
+                    <li><strong>Purpose:</strong> Creates fake data that resembles real data</li>
+                    <li><strong>Input:</strong> Random noise vector (latent space)</li>
+                    <li><strong>Output:</strong> Synthetic data (images, text, audio)</li>
+                    <li><strong>Goal:</strong> Fool the discriminator into thinking fake data is real</li>
+                </ul>
+
+                <h4>2. Discriminator Network:</h4>
+                <ul>
+                    <li><strong>Purpose:</strong> Distinguishes between real and fake data</li>
+                    <li><strong>Input:</strong> Real data or generated data</li>
+                    <li><strong>Output:</strong> Probability that input is real</li>
+                    <li><strong>Goal:</strong> Correctly classify real vs. fake data</li>
+                </ul>
+
+                <h4>Training Process:</h4>
+                <ul>
+                    <li><strong>Adversarial Training:</strong> Both networks trained simultaneously</li>
+                    <li><strong>Generator Objective:</strong> Minimize log(1 - D(G(z)))</li>
+                    <li><strong>Discriminator Objective:</strong> Maximize log(D(x)) + log(1 - D(G(z)))</li>
+                    <li><strong>Equilibrium:</strong> Generator produces realistic data, discriminator cannot distinguish</li>
+                </ul>
+
+                <h4>Mathematical Formulation:</h4>
+                min_G max_D V(D,G) = E_x~p_data[log D(x)] + E_z~p_z[log(1 - D(G(z)))]
+                <ul>
+                    <li>G = Generator</li>
+                    <li>D = Discriminator</li>
+                    <li>x = real data</li>
+                    <li>z = noise vector</li>
+                </ul>
+
+                <h4>Training Challenges:</h4>
+                <ul>
+                    <li><strong>Mode Collapse:</strong> Generator produces limited variety</li>
+                    <li><strong>Training Instability:</strong> Difficult to balance G and D</li>
+                    <li><strong>Vanishing Gradients:</strong> When discriminator is too good</li>
+                    <li><strong>Convergence Issues:</strong> No guarantee of reaching Nash equilibrium</li>
+                </ul>
+
+                <h4>Popular GAN Variants:</h4>
+                <ul>
+                    <li><strong>DCGAN:</strong> Deep Convolutional GANs for images</li>
+                    <li><strong>Conditional GANs:</strong> Generate data with specific conditions</li>
+                    <li><strong>CycleGAN:</strong> Image-to-image translation</li>
+                    <li><strong>StyleGAN:</strong> High-quality image generation</li>
+                    <li><strong>Wasserstein GAN:</strong> Improved training stability</li>
+                </ul>
+
+                <h4>Applications:</h4>
+                <ul>
+                    <li><strong>Image Generation:</strong> Creating photorealistic images</li>
+                    <li><strong>Data Augmentation:</strong> Generating training data</li>
+                    <li><strong>Style Transfer:</strong> Converting artistic styles</li>
+                    <li><strong>Super Resolution:</strong> Enhancing image quality</li>
+                    <li><strong>Drug Discovery:</strong> Generating molecular structures</li>
+                    <li><strong>Deepfakes:</strong> Face swapping in videos</li>
+                </ul>
+
+                <h4>Evaluation Metrics:</h4>
+                <ul>
+                    <li><strong>Inception Score (IS):</strong> Measures quality and diversity</li>
+                    <li><strong>Fréchet Inception Distance (FID):</strong> Compares real and generated distributions</li>
+                    <li><strong>Precision and Recall:</strong> Quality vs. diversity trade-off</li>
+                </ul>`
+            },
+            {
+                id: 54,
+                question: "What is the Transformer model?",
+                category: "experienced",
+                type: "technical",
+                answer: `The Transformer is a deep learning architecture that revolutionized natural language processing by using self-attention mechanisms instead of recurrence or convolution.
+
+                <h4>Key Innovation:</h4>
+                <ul>
+                    <li><strong>Self-Attention:</strong> Directly models relationships between all positions</li>
+                    <li><strong>Parallelization:</strong> Can process entire sequence simultaneously</li>
+                    <li><strong>No Recurrence:</strong> Eliminates sequential processing bottleneck</li>
+                    <li><strong>Long-range Dependencies:</strong> Captures relationships across long sequences</li>
+                </ul>
+
+                <h4>Architecture Components:</h4>
+                
+                <h4>1. Multi-Head Self-Attention:</h4>
+                <ul>
+                    <li><strong>Query, Key, Value:</strong> Linear projections of input</li>
+                    <li><strong>Attention Score:</strong> Attention(Q,K,V) = softmax(QK^T/√d_k)V</li>
+                    <li><strong>Multiple Heads:</strong> Different attention patterns in parallel</li>
+                    <li><strong>Concatenation:</strong> Combine outputs from all heads</li>
+                </ul>
+
+                <h4>2. Position Encoding:</h4>
+                <ul>
+                    <li><strong>Purpose:</strong> Inject positional information since no recurrence</li>
+                    <li><strong>Sinusoidal Encoding:</strong> PE(pos,2i) = sin(pos/10000^(2i/d_model))</li>
+                    <li><strong>Learned Embeddings:</strong> Alternative to sinusoidal encoding</li>
+                </ul>
+
+                <h4>3. Feed-Forward Networks:</h4>
+                <ul>
+                    <li>Two linear transformations with ReLU activation</li>
+                    <li>FFN(x) = max(0, xW₁ + b₁)W₂ + b₂</li>
+                    <li>Applied to each position separately</li>
+                </ul>
+
+                <h4>4. Residual Connections and Layer Normalization:</h4>
+                <ul>
+                    <li>Skip connections around each sub-layer</li>
+                    <li>Layer normalization before each sub-layer</li>
+                    <li>Output: LayerNorm(x + Sublayer(x))</li>
+                </ul>
+
+                <h4>Encoder-Decoder Architecture:</h4>
+                
+                <h4>Encoder:</h4>
+                <ul>
+                    <li>Stack of 6 identical layers</li>
+                    <li>Each layer: Multi-head attention + Feed-forward</li>
+                    <li>Self-attention over input sequence</li>
+                </ul>
+
+                <h4>Decoder:</h4>
+                <ul>
+                    <li>Stack of 6 identical layers</li>
+                    <li>Each layer: Masked self-attention + Encoder-decoder attention + Feed-forward</li>
+                    <li>Masked attention prevents looking at future tokens</li>
+                </ul>
+
+                <h4>Advantages:</h4>
+                <ul>
+                    <li><strong>Parallelization:</strong> Faster training than RNNs</li>
+                    <li><strong>Long-range Dependencies:</strong> Direct attention to any position</li>
+                    <li><strong>Interpretability:</strong> Attention weights show what model focuses on</li>
+                    <li><strong>Transfer Learning:</strong> Pre-trained models work well on many tasks</li>
+                </ul>
+
+                <h4>Applications and Impact:</h4>
+                <ul>
+                    <li><strong>BERT:</strong> Bidirectional encoder representations</li>
+                    <li><strong>GPT:</strong> Generative pre-trained transformers</li>
+                    <li><strong>T5:</strong> Text-to-text transfer transformer</li>
+                    <li><strong>Vision Transformer (ViT):</strong> Applied to computer vision</li>
+                    <li><strong>Machine Translation:</strong> State-of-the-art results</li>
+                    <li><strong>Language Modeling:</strong> Foundation for large language models</li>
+                </ul>
+
+                <h4>Key Papers:</h4>
+                <ul>
+                    <li>"Attention Is All You Need" (Vaswani et al., 2017)</li>
+                    <li>Introduced the original Transformer architecture</li>
+                    <li>Became foundation for modern NLP</li>
+                </ul>`
+            }
+        ];
+
+        let currentFilter = 'all';
+        let completedQuestions = new Set();
+
+        // Initialize the application
+        function init() {
+            displayQuestions(questionsData);
+            setupEventListeners();
+            updateStats();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search functionality
+            document.getElementById('searchBox').addEventListener('input', handleSearch);
+            
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', handleFilter);
+            });
+        }
+
+        // Display questions
+        function displayQuestions(questions) {
+            const container = document.getElementById('questionsContainer');
+            
+            if (questions.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <h3>No questions found</h3>
+                        <p>Try adjusting your search or filter criteria</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = questions.map(q => `
+                <div class="question-card" data-id="${q.id}">
+                    <div class="question-header" onclick="toggleQuestion(${q.id})">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div class="question-number">${q.id}</div>
+                            <div class="question-text">${q.question}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="category-tag ${q.category}">${q.category === 'freshers' ? 'Freshers' : 'Experienced'}</span>
+                            <span class="expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div class="answer">
+                        <div class="answer-content">${q.answer}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle question answer
+        function toggleQuestion(id) {
+            const card = document.querySelector(`[data-id="${id}"]`);
+            const isExpanded = card.classList.contains('expanded');
+            
+            // Close all other questions
+            document.querySelectorAll('.question-card').forEach(c => {
+                c.classList.remove('expanded');
+            });
+            
+            // Toggle current question
+            if (!isExpanded) {
+                card.classList.add('expanded');
+                completedQuestions.add(id);
+                updateStats();
+            }
+        }
+
+        // Handle search
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredQuestions = questionsData.filter(q => {
+                const matchesSearch = q.question.toLowerCase().includes(searchTerm) || 
+                                    q.answer.toLowerCase().includes(searchTerm);
+                const matchesFilter = currentFilter === 'all' || 
+                                    q.category === currentFilter || 
+                                    q.type === currentFilter;
+                return matchesSearch && matchesFilter;
+            });
+            displayQuestions(filteredQuestions);
+        }
+
+        // Handle filter
+        function handleFilter(e) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            e.target.classList.add('active');
+            
+            currentFilter = e.target.dataset.filter;
+            
+            // Apply filter
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const filteredQuestions = questionsData.filter(q => {
+                const matchesSearch = searchTerm === '' || 
+                                    q.question.toLowerCase().includes(searchTerm) || 
+                                    q.answer.toLowerCase().includes(searchTerm);
+                const matchesFilter = currentFilter === 'all' || 
+                                    q.category === currentFilter || 
+                                    q.type === currentFilter;
+                return matchesSearch && matchesFilter;
+            });
+            displayQuestions(filteredQuestions);
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = questionsData.length;
+            const completed = completedQuestions.size;
+            const percentage = Math.round((completed / total) * 100);
+            
+            document.getElementById('totalQuestions').textContent = total;
+            document.getElementById('completedQuestions').textContent = completed;
+            document.getElementById('progressPercent').textContent = `${percentage}%`;
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+        }
+
+        // Make functions global
+        window.toggleQuestion = toggleQuestion;
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

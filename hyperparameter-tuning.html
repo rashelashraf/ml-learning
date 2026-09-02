@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML/DL Learning Hub - Hyperparameter Tuning</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="tabular-data.html" class="nav-link">Tabular Data</a></li>
+                <li><a href="nlp-pipeline.html" class="nav-link">NLP Data</a></li>
+                <li><a href="image-processing.html" class="nav-link">Image Data</a></li>
+                <li><a href="encoding.html" class="nav-link">Encoding</a></li>
+                <li><a href="feature-selection.html" class="nav-link">Feature Selection</a></li>
+                <li><a href="training-testing.html" class="nav-link">Training</a></li>
+                <li><a href="hyperparameter-tuning.html" class="nav-link active" aria-current="page">Tuning</a></li>
+                <li><a href="ensemble-techniques.html" class="nav-link">Ensembles</a></li>
+                <li><a href="advanced-topics.html" class="nav-link">Advanced Topics</a></li>
+                <li><a href="dl.html" class="nav-link">Deep Learning</a></li>
+                <li><a href="interactive-demos.html" class="nav-link">Demos</a></li>
+            </ul>
+            <div class="hamburger" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Hyperparameter Tuning</h1>
+            <p>Search the settings you choose, not the parameters the model learns</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> <span>/</span> <span>Hyperparameter Tuning</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="training-pipeline">
+                <div class="pipeline-overview">
+
+                    <!-- 1. Parameters vs hyperparameters -->
+                    <div class="training-stage">
+                        <h3><span class="step-number">1</span> Parameters vs Hyperparameters</h3>
+                        <p class="stage-intro">A model has two kinds of numbers. It <em>learns</em> one kind from
+                        the data during training. You <em>choose</em> the other before training starts &mdash;
+                        those are the hyperparameters, and tuning them is what this page is about.</p>
+
+                        <div class="compare-grid">
+                            <div class="compare-card learned">
+                                <h4><i class="fas fa-graduation-cap"></i> Parameters &mdash; learned</h4>
+                                <ul>
+                                    <li>Fitted by the optimiser from training data</li>
+                                    <li>Weights and biases, split thresholds, support vectors</li>
+                                    <li>Can number in the millions</li>
+                                    <li>You never set them by hand</li>
+                                </ul>
+                                <div class="compare-example">
+                                    <code>model.coef_</code>, <code>model.intercept_</code>
+                                </div>
+                            </div>
+                            <div class="compare-card chosen">
+                                <h4><i class="fas fa-sliders-h"></i> Hyperparameters &mdash; chosen</h4>
+                                <ul>
+                                    <li>Fixed before the fit; control <em>how</em> learning happens</li>
+                                    <li>Learning rate, tree depth, regularisation strength, k</li>
+                                    <li>Usually a handful that actually matter</li>
+                                    <li>Found by searching, not by gradient descent</li>
+                                </ul>
+                                <div class="compare-example">
+                                    <code>max_depth=6</code>, <code>learning_rate=0.05</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="insight-box">
+                            <strong>Why this matters:</strong> hyperparameters set the bias&ndash;variance dial.
+                            Too much capacity (deep trees, tiny regularisation) and the model memorises the
+                            training set; too little and it never learns the signal. Tuning is the search for
+                            the setting that generalises best &mdash; measured on data the model has not seen.
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <!-- 2. What to tune -->
+                    <div class="training-stage">
+                        <h3><span class="step-number">2</span> What to Tune, by Model Family</h3>
+                        <p class="stage-intro">You rarely need to tune everything. Start with the two or three
+                        hyperparameters that dominate performance for your model, then widen the search only
+                        if the gains justify the compute.</p>
+
+                        <div class="hp-family-grid">
+                            <div class="hp-family">
+                                <h4>📈 Linear &amp; Logistic</h4>
+                                <ul class="hp-list">
+                                    <li><code>C</code> / <code>alpha</code><span>Regularisation strength &mdash; the main dial</span></li>
+                                    <li><code>penalty</code><span>L1 for sparsity, L2 for shrinkage, elastic-net for both</span></li>
+                                    <li><code>solver</code><span>Affects speed and which penalties are legal</span></li>
+                                </ul>
+                                <p class="hp-tip">Search <code>C</code> on a log scale &mdash; 0.001 to 100.</p>
+                            </div>
+
+                            <div class="hp-family">
+                                <h4>🌳 Trees &amp; Forests</h4>
+                                <ul class="hp-list">
+                                    <li><code>max_depth</code><span>The single biggest overfitting control</span></li>
+                                    <li><code>min_samples_leaf</code><span>Floor on leaf size; smooths predictions</span></li>
+                                    <li><code>max_features</code><span>De-correlates trees in a forest</span></li>
+                                    <li><code>n_estimators</code><span>More is rarely worse, just slower</span></li>
+                                </ul>
+                                <p class="hp-tip">For forests, tune depth and <code>max_features</code> first.</p>
+                            </div>
+
+                            <div class="hp-family">
+                                <h4>⚡ Gradient Boosting</h4>
+                                <ul class="hp-list">
+                                    <li><code>learning_rate</code><span>Lower is better but needs more rounds</span></li>
+                                    <li><code>n_estimators</code><span>Trades off directly against learning rate</span></li>
+                                    <li><code>max_depth</code><span>3&ndash;8 is the usual sweet spot</span></li>
+                                    <li><code>subsample</code><span>Row sampling adds useful randomness</span></li>
+                                </ul>
+                                <p class="hp-tip">Fix a small learning rate, then use early stopping to pick the round count.</p>
+                            </div>
+
+                            <div class="hp-family">
+                                <h4>🧠 Neural Networks</h4>
+                                <ul class="hp-list">
+                                    <li><code>learning_rate</code><span>Dominates everything else &mdash; tune it first</span></li>
+                                    <li><code>batch_size</code><span>Interacts with learning rate</span></li>
+                                    <li><code>hidden units / depth</code><span>Capacity of the network</span></li>
+                                    <li><code>dropout</code> / <code>weight_decay</code><span>Regularisation</span></li>
+                                </ul>
+                                <p class="hp-tip">Learning rate on a log scale beats almost any other single change.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <!-- 3. Search strategies (interactive) -->
+                    <div class="training-stage">
+                        <h3><span class="step-number">3</span> Search Strategies</h3>
+                        <p class="stage-intro">Every strategy is answering the same question: given a fixed
+                        budget of trials, where should I sample next? Pick a strategy and run the search &mdash;
+                        the heat map is the (unknown) validation score across two hyperparameters, and each dot
+                        is one trial the search actually spent.</p>
+
+                        <div class="search-demo">
+                            <div class="search-controls">
+                                <div class="strategy-buttons" role="group" aria-label="Search strategy">
+                                    <button class="strategy-btn active" data-strategy="grid">Grid Search</button>
+                                    <button class="strategy-btn" data-strategy="random">Random Search</button>
+                                    <button class="strategy-btn" data-strategy="bayesian">Bayesian</button>
+                                    <button class="strategy-btn" data-strategy="halving">Successive Halving</button>
+                                </div>
+
+                                <div class="param-group">
+                                    <label for="budget-slider">Trial budget:</label>
+                                    <input type="range" id="budget-slider" min="9" max="64" step="1" value="25">
+                                    <span id="budget-display">25</span>
+                                </div>
+
+                                <button id="run-search" class="train-button">
+                                    <i class="fas fa-play"></i> Run Search
+                                </button>
+
+                                <div class="search-readout">
+                                    <div class="metric-item">
+                                        <span class="metric-label">Trials used</span>
+                                        <span class="metric-value" id="trials-used">0</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Best score found</span>
+                                        <span class="metric-value" id="best-score">&mdash;</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Best setting</span>
+                                        <span class="metric-value" id="best-params">&mdash;</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Typical result</span>
+                                        <span class="metric-value" id="median-score">&mdash;</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Gap to optimum</span>
+                                        <span class="metric-value" id="score-gap">&mdash;</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="search-canvases">
+                                <div class="canvas-block">
+                                    <h4>Search space explored</h4>
+                                    <canvas id="space-canvas" width="420" height="340"></canvas>
+                                    <p class="canvas-caption" id="strategy-caption">
+                                        Grid search covers the space evenly &mdash; and spends most of its budget
+                                        re-testing the same few values of the hyperparameter that matters.
+                                    </p>
+                                </div>
+                                <div class="canvas-block">
+                                    <h4>Best score vs trials spent</h4>
+                                    <canvas id="progress-canvas" width="420" height="340"></canvas>
+                                    <p class="canvas-caption">
+                                        How quickly each strategy converges. Run several strategies to
+                                        compare them on the same axes.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="strategy-compare">
+                            <table class="strategy-table">
+                                <thead>
+                                    <tr>
+                                        <th>Strategy</th>
+                                        <th>How it picks the next trial</th>
+                                        <th>Best for</th>
+                                        <th>Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Grid</strong></td>
+                                        <td>Every combination on a fixed lattice</td>
+                                        <td>1&ndash;2 hyperparameters, small discrete sets</td>
+                                        <td>Explodes exponentially with dimensions</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Random</strong></td>
+                                        <td>Samples independently from each range</td>
+                                        <td>Sensible default; 3+ hyperparameters</td>
+                                        <td>Same as your budget, and parallel</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Bayesian</strong></td>
+                                        <td>Fits a surrogate of the score, samples where it expects gains</td>
+                                        <td>Expensive fits where every trial counts</td>
+                                        <td>Sequential, so harder to parallelise</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Successive halving</strong> / Hyperband</td>
+                                        <td>Starts many configs cheaply, kills the weak ones early</td>
+                                        <td>Iterative learners with a budget dial (epochs, trees)</td>
+                                        <td>Very efficient when partial results predict final ones</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="insight-box">
+                            <strong>Watch what happens as you drag the budget slider.</strong> Random search
+                            improves smoothly &mdash; every extra trial is a new value of every hyperparameter.
+                            Grid search lurches: it does well when the lattice happens to land near the
+                            optimum (try 16, 36 and 64, the perfect squares) and poorly when it straddles it.
+                            You cannot know in advance which you will get, because you do not know where the
+                            optimum is &mdash; that is the whole point of searching.
+                        </div>
+
+                        <div class="insight-box">
+                            <strong>And this is only two dimensions.</strong> Here grid and random are roughly
+                            even on average. The classic result (Bergstra &amp; Bengio, 2012) is that random
+                            search pulls decisively ahead as you add hyperparameters, because real objectives
+                            have <em>low effective dimensionality</em> &mdash; only a couple of hyperparameters
+                            really matter. A 4&times;4&times;4 grid tests just 4 distinct learning rates using
+                            64 trials; random search tests 64. Bayesian optimisation wins at every budget above
+                            because it spends its trials where the surrogate predicts gains, but it is
+                            sequential and therefore harder to parallelise.
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <!-- 4. Validation curve -->
+                    <div class="training-stage">
+                        <h3><span class="step-number">4</span> Reading a Validation Curve</h3>
+                        <p class="stage-intro">Before searching many hyperparameters at once, it helps to see
+                        what one of them does. Drag the slider to change model capacity and watch the gap
+                        between training and validation score open up.</p>
+
+                        <div class="validation-demo">
+                            <div class="validation-controls">
+                                <div class="param-group">
+                                    <label for="capacity-slider">Model capacity (e.g. tree depth):</label>
+                                    <input type="range" id="capacity-slider" min="1" max="20" step="1" value="6">
+                                    <span id="capacity-display">6</span>
+                                </div>
+                                <div class="fit-verdict" id="fit-verdict">
+                                    <span class="verdict-badge good">Good fit</span>
+                                    <p id="verdict-text">Training and validation scores are close and both high.
+                                    This is the region you want.</p>
+                                </div>
+                                <div class="search-readout compact">
+                                    <div class="metric-item">
+                                        <span class="metric-label">Training score</span>
+                                        <span class="metric-value" id="vc-train">&mdash;</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Validation score</span>
+                                        <span class="metric-value" id="vc-val">&mdash;</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Generalisation gap</span>
+                                        <span class="metric-value" id="vc-gap">&mdash;</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="canvas-block">
+                                <canvas id="validation-canvas" width="480" height="320"></canvas>
+                                <p class="canvas-caption">
+                                    Underfitting on the left, overfitting on the right. The best setting is
+                                    where the validation curve peaks &mdash; not where training score is highest.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <!-- 5. Honest evaluation -->
+                    <div class="training-stage">
+                        <h3><span class="step-number">5</span> Tuning Without Fooling Yourself</h3>
+                        <p class="stage-intro">Every time you look at a score and change something, you leak a
+                        little information from that split into your model. Tune on validation folds; report on
+                        a test set you touched exactly once.</p>
+
+                        <div class="nested-cv">
+                            <div class="cv-level">
+                                <h4>Outer loop &mdash; honest estimate</h4>
+                                <div class="cv-strip">
+                                    <div class="cv-block test">Test</div>
+                                    <div class="cv-block train-outer">Train + validate (tuning happens in here)</div>
+                                </div>
+                                <p>The test fold never participates in any tuning decision.</p>
+                            </div>
+                            <div class="cv-level">
+                                <h4>Inner loop &mdash; hyperparameter search</h4>
+                                <div class="cv-strip">
+                                    <div class="cv-block val">Val</div>
+                                    <div class="cv-block train-inner">Train</div>
+                                    <div class="cv-block train-inner">Train</div>
+                                    <div class="cv-block train-inner">Train</div>
+                                </div>
+                                <div class="cv-strip">
+                                    <div class="cv-block train-inner">Train</div>
+                                    <div class="cv-block val">Val</div>
+                                    <div class="cv-block train-inner">Train</div>
+                                    <div class="cv-block train-inner">Train</div>
+                                </div>
+                                <p>Each candidate setting is scored by averaging across the inner folds.</p>
+                            </div>
+                        </div>
+
+                        <div class="warning-box">
+                            <strong>The most common leak:</strong> fitting a scaler, encoder or feature selector
+                            on the whole dataset <em>before</em> splitting. The transform then carries information
+                            from the validation rows, and your tuned score comes out optimistic. Put every
+                            preprocessing step inside a <code>Pipeline</code> so it is refitted within each fold.
+                        </div>
+
+                        <div class="code-example">
+                            <pre><code>from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import RandomizedSearchCV, cross_val_score
+
+pipe = Pipeline([
+    ("scale", StandardScaler()),          # refitted inside every fold
+    ("clf",   RandomForestClassifier(random_state=0)),
+])
+
+search = RandomizedSearchCV(
+    pipe,
+    {                                     # note the "step__param" naming
+        "clf__max_depth":        [3, 5, 8, 12, None],
+        "clf__min_samples_leaf": [1, 2, 4, 8],
+        "clf__max_features":     ["sqrt", "log2", 0.5],
+    },
+    n_iter=40,                            # budget, not the full grid
+    cv=5,                                 # inner loop
+    scoring="roc_auc",
+    random_state=0,
+    n_jobs=-1,
+)
+
+# outer loop: an honest estimate of the *tuning procedure*
+scores = cross_val_score(search, X, y, cv=5, scoring="roc_auc")
+print(f"nested CV: {scores.mean():.3f} +/- {scores.std():.3f}")</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <!-- 6. Playbook -->
+                    <div class="training-stage">
+                        <h3><span class="step-number">6</span> A Practical Playbook</h3>
+                        <div class="playbook">
+                            <div class="playbook-step">
+                                <span class="playbook-num">1</span>
+                                <div>
+                                    <h4>Get a baseline first</h4>
+                                    <p>Fit the model on defaults and record the score. Tuning that cannot beat
+                                    the default is telling you the problem is elsewhere &mdash; usually in the features.</p>
+                                </div>
+                            </div>
+                            <div class="playbook-step">
+                                <span class="playbook-num">2</span>
+                                <div>
+                                    <h4>Search wide and coarse before narrow and fine</h4>
+                                    <p>Use log scales for anything spanning orders of magnitude. A coarse pass
+                                    tells you which region deserves the budget.</p>
+                                </div>
+                            </div>
+                            <div class="playbook-step">
+                                <span class="playbook-num">3</span>
+                                <div>
+                                    <h4>Tune the few that matter</h4>
+                                    <p>Learning rate for boosting and networks; depth and leaf size for trees;
+                                    regularisation for linear models. Adding a fourth or fifth rarely pays.</p>
+                                </div>
+                            </div>
+                            <div class="playbook-step">
+                                <span class="playbook-num">4</span>
+                                <div>
+                                    <h4>Check the winner is not on a boundary</h4>
+                                    <p>If the best value sits at the edge of your range, the range was too
+                                    narrow. Extend it and search again.</p>
+                                </div>
+                            </div>
+                            <div class="playbook-step">
+                                <span class="playbook-num">5</span>
+                                <div>
+                                    <h4>Prefer the simpler setting when scores tie</h4>
+                                    <p>Differences inside the fold-to-fold standard deviation are noise. Take
+                                    the shallower tree, the stronger regularisation, the smaller network.</p>
+                                </div>
+                            </div>
+                            <div class="playbook-step">
+                                <span class="playbook-num">6</span>
+                                <div>
+                                    <h4>Refit on all the data, then report once</h4>
+                                    <p>Retrain the chosen setting on train + validation, then evaluate on the
+                                    held-out test set a single time.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Concepts -->
+    <section class="concepts-section">
+        <div class="container">
+            <h2>Pitfalls Worth Knowing</h2>
+            <div class="concepts-grid">
+                <div class="concept-card">
+                    <h3><i class="fas fa-triangle-exclamation"></i> Tuning on the test set</h3>
+                    <ul>
+                        <li>Every peek at test performance is a tuning decision</li>
+                        <li>The score stops being an estimate of future performance</li>
+                        <li>Keep a split you evaluate exactly once</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h3><i class="fas fa-dice"></i> Chasing noise</h3>
+                    <ul>
+                        <li>With enough trials, some setting wins by luck alone</li>
+                        <li>Compare against the fold-to-fold standard deviation</li>
+                        <li>Repeat the search with a different seed to check it holds</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h3><i class="fas fa-scale-unbalanced"></i> The wrong metric</h3>
+                    <ul>
+                        <li>Accuracy on imbalanced data rewards predicting the majority</li>
+                        <li>Tune the metric you actually care about</li>
+                        <li>Use the same metric for search and for reporting</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h3><i class="fas fa-hourglass-half"></i> Ignoring the budget</h3>
+                    <ul>
+                        <li>Doubling trials for +0.001 AUC is rarely worth it</li>
+                        <li>Better features usually beat better hyperparameters</li>
+                        <li>Set a stopping rule before you start</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="training-testing.html" class="nav-btn prev">
+                    <i class="fas fa-arrow-left"></i> Training & Testing
+                </a>
+                <a href="ensemble-techniques.html" class="nav-btn next">
+                    Ensemble Techniques <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines, stage by stage.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>1 &middot; Data Processing</h4>
+                <ul>
+                    <li><a href="tabular-data.html">Tabular Data Processing</a></li>
+                    <li><a href="nlp-pipeline.html">NLP Data Processing</a></li>
+                    <li><a href="image-processing.html">Image Data Processing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>2 &middot; Feature Engineering</h4>
+                <ul>
+                    <li><a href="encoding.html">Encoding &amp; Scaling</a></li>
+                    <li><a href="feature-selection.html">Feature Selection</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>3 &middot; Modelling</h4>
+                <ul>
+                    <li><a href="training-testing.html">Training &amp; Testing</a></li>
+                    <li><a href="hyperparameter-tuning.html">Hyperparameter Tuning</a></li>
+                    <li><a href="ensemble-techniques.html">Ensemble Techniques</a></li>
+                    <li><a href="advanced-topics.html">Advanced Topics</a></li>
+                    <li><a href="dl.html">Deep Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>4 &middot; Practice</h4>
+                <ul>
+                    <li><a href="interactive-demos.html">All Demos</a></li>
+                    <li><a href="interactive-demos.html#classification">Classification</a></li>
+                    <li><a href="interactive-demos.html#regression">Regression</a></li>
+                    <li><a href="interactive-demos.html#clustering">Clustering</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/tuning.js"></script>
+</body>
+</html>

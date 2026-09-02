@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML/DL Pipeline Teaching Tool</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #667eea;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #333;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            min-height: 100vh;
+            padding: 100px 2rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .hero-content {
+            text-align: left;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+        }
+
+        .stat i {
+            color: #ffd700;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pipeline-preview {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .pipeline-node {
+            background: white;
+            padding: 1rem;
+            border-radius: 50%;
+            font-size: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .pipeline-arrow {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+        }
+
+        /* Pipeline Stages */
+        .pipeline-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .pipeline-stage {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .pipeline-stage:hover {
+            transform: scale(1.02);
+        }
+
+        .stage-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stage-number {
+            background: white;
+            color: #667eea;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .stage-header h3 {
+            color: white;
+        }
+
+        .stage-content {
+            padding: 2rem;
+            color: white;
+        }
+
+        .stage-demo {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .demo-input label, .demo-output label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .demo-input textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .token-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 1rem 0;
+            word-break: break-all;
+        }
+
+        .demo-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+
+        .demo-button:hover {
+            background: #2980b9;
+        }
+
+        .demo-button.secondary {
+            background: #95a5a6;
+        }
+
+        .demo-button.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        /* Interactive Demo */
+        .demo-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .demo-tab-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .demo-tab-button.active, .demo-tab-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .demo-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            color: white;
+        }
+
+        .demo-content.active {
+            display: block;
+        }
+
+        .demo-interface {
+            display: grid;
+            grid-template-columns: 300px 1fr 250px;
+            gap: 2rem;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .demo-visualization {
+            text-align: center;
+        }
+
+        .demo-visualization canvas {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: white;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .footer-section h3, .footer-section h4 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            background: #667eea;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #764ba2;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 1rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background-color: white;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+                padding: 2rem 0;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .demo-interface {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#nlp" class="nav-link">NLP Pipeline</a></li>
+                <li><a href="#tabular" class="nav-link">Tabular Data</a></li>
+                <li><a href="#training" class="nav-link">Training & Testing</a></li>
+                <li><a href="#advanced" class="nav-link">Advanced Topics</a></li>
+                <li><a href="#interactive" class="nav-link">Interactive Demo</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="section active">
+        <div class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Master Machine Learning & Deep Learning</h1>
+                <p class="hero-subtitle">Interactive learning platform for understanding ML/DL pipelines, from basics to cutting-edge techniques</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>8+ Pipeline Types</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-code"></i>
+                        <span>Interactive Demos</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Student Friendly</span>
+                    </div>
+                </div>
+                <button class="cta-button" onclick="showSection('nlp')">Start Learning</button>
+            </div>
+            <div class="hero-visual">
+                <div class="pipeline-preview">
+                    <div class="pipeline-node" data-tooltip="Data Input">📊</div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-node" data-tooltip="Processing">⚙️</div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-node" data-tooltip="Model Training">🧠</div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-node" data-tooltip="Prediction">🎯</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card" onclick="showSection('nlp')">
+                <div class="feature-icon">🔤</div>
+                <h3>NLP Pipeline</h3>
+                <p>Learn text processing, tokenization, transformers, and modern NLP techniques</p>
+            </div>
+            <div class="feature-card" onclick="showSection('tabular')">
+                <div class="feature-icon">📊</div>
+                <h3>Tabular Data</h3>
+                <p>Data preprocessing, feature engineering, and structured data handling</p>
+            </div>
+            <div class="feature-card" onclick="showSection('training')">
+                <div class="feature-icon">🎯</div>
+                <h3>Training & Testing</h3>
+                <p>Model training, validation, testing, and performance evaluation</p>
+            </div>
+            <div class="feature-card" onclick="showSection('advanced')">
+                <div class="feature-icon">🚀</div>
+                <h3>Advanced Topics</h3>
+                <p>GANs, Federated Learning, Computer Vision, and cutting-edge techniques</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- NLP Pipeline Section -->
+    <section id="nlp" class="section">
+        <div class="section-header">
+            <h2>Natural Language Processing Pipeline</h2>
+            <p>Understanding how machines process and understand human language</p>
+        </div>
+        
+        <div class="pipeline-container">
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">1</div>
+                    <h3>Text Input & Preprocessing</h3>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-explanation">
+                        <h4>Raw Text Processing</h4>
+                        <ul>
+                            <li><strong>Tokenization:</strong> Breaking text into words, subwords, or characters</li>
+                            <li><strong>Normalization:</strong> Lowercasing, removing punctuation</li>
+                            <li><strong>Cleaning:</strong> Removing noise, HTML tags, special characters</li>
+                        </ul>
+                    </div>
+                    <div class="stage-demo">
+                        <div class="demo-input">
+                            <label>Input Text:</label>
+                            <textarea id="nlp-input" placeholder="Enter text to see tokenization...">"Hello World! How are you today?"</textarea>
+                        </div>
+                        <div class="demo-output">
+                            <label>Tokenized Output:</label>
+                            <div id="nlp-tokens" class="token-output">["Hello", "World", "!", "How", "are", "you", "today", "?"]</div>
+                        </div>
+                        <button onclick="tokenizeText()" class="demo-button">Tokenize</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">2</div>
+                    <h3>Embeddings & Encoding</h3>
+                </div>
+                <div class="stage-content">
+                    <h4>Converting Text to Numbers</h4>
+                    <ul>
+                        <li><strong>Word Embeddings:</strong> Dense vector representations</li>
+                        <li><strong>Positional Encoding:</strong> Adding position information</li>
+                        <li><strong>Attention Mechanisms:</strong> Learning relationships between words</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">3</div>
+                    <h3>Model Processing</h3>
+                </div>
+                <div class="stage-content">
+                    <h4>Deep Learning Models</h4>
+                    <ul>
+                        <li><strong>Transformers:</strong> Attention-based architectures</li>
+                        <li><strong>BERT/GPT:</strong> Pre-trained language models</li>
+                        <li><strong>Fine-tuning:</strong> Adapting models for specific tasks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">4</div>
+                    <h3>Task-Specific Output</h3>
+                </div>
+                <div class="stage-content">
+                    <h4>Applications</h4>
+                    <ul>
+                        <li><strong>Classification:</strong> Sentiment analysis, spam detection</li>
+                        <li><strong>Generation:</strong> Text completion, translation</li>
+                        <li><strong>Question Answering:</strong> Information retrieval</li>
+                        <li><strong>Named Entity Recognition:</strong> Extracting entities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section id="interactive" class="section">
+        <div class="section-header">
+            <h2>Interactive ML/DL Demo</h2>
+            <p>Hands-on experience with machine learning concepts</p>
+        </div>
+
+        <div class="interactive-demo">
+            <div class="demo-tabs">
+                <button class="demo-tab-button active" onclick="showDemo('classification')">Classification</button>
+                <button class="demo-tab-button" onclick="showDemo('regression')">Regression</button>
+                <button class="demo-tab-button" onclick="showDemo('clustering')">Clustering</button>
+                <button class="demo-tab-button" onclick="showDemo('neural')">Neural Network</button>
+            </div>
+
+            <div id="classification-demo" class="demo-content active">
+                <h3>Binary Classification Demo</h3>
+                <div class="demo-interface">
+                    <div class="demo-controls">
+                        <h4>Generate Data</h4>
+                        <div class="control-group">
+                            <label>Dataset Type:</label>
+                            <select id="dataset-type">
+                                <option value="linear">Linear Separable</option>
+                                <option value="circular">Circular</option>
+                                <option value="moons">Two Moons</option>
+                                <option value="blobs">Gaussian Blobs</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Number of Points:</label>
+                            <input type="range" id="num-points" min="50" max="500" value="200">
+                            <span id="points-value">200</span>
+                        </div>
+                        <button onclick="generateData()" class="demo-button">Generate Data</button>
+                        <button onclick="trainModel()" class="demo-button">Train Model</button>
+                    </div>
+                    <div class="demo-visualization">
+                        <h4>Data Visualization</h4>
+                        <canvas id="classification-canvas" width="400" height="300"></canvas>
+                    </div>
+                    <div class="demo-results">
+                        <h4>Results</h4>
+                        <div id="classification-results">
+                            <p>Accuracy: <span id="accuracy">--</span></p>
+                            <p>Status: <span id="status">Ready</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="regression-demo" class="demo-content">
+                <h3>Regression Demo</h3>
+                <div class="demo-interface">
+                    <div class="demo-controls">
+                        <h4>Generate Data</h4>
+                        <div class="control-group">
+                            <label>Function Type:</label>
+                            <select id="function-type">
+                                <option value="linear">Linear</option>
+                                <option value="polynomial">Polynomial</option>
+                                <option value="sine">Sine Wave</option>
+                            </select>
+                        </div>
+                        <button onclick="generateRegressionData()" class="demo-button">Generate Data</button>
+                        <button onclick="trainRegressionModel()" class="demo-button">Train Model</button>
+                    </div>
+                    <div class="demo-visualization">
+                        <h4>Regression Visualization</h4>
+                        <canvas id="regression-canvas" width="400" height="300"></canvas>
+                    </div>
+                    <div class="demo-results">
+                        <h4>Results</h4>
+                        <div id="regression-results">
+                            <p>R² Score: <span id="r2-score">--</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="clustering-demo" class="demo-content">
+                <h3>Clustering Demo</h3>
+                <div class="demo-interface">
+                    <div class="demo-controls">
+                        <h4>Generate Data</h4>
+                        <div class="control-group">
+                            <label>Number of Clusters:</label>
+                            <input type="range" id="num-clusters" min="2" max="8" value="3">
+                            <span id="clusters-value">3</span>
+                        </div>
+                        <button onclick="generateClusterData()" class="demo-button">Generate Data</button>
+                        <button onclick="runClustering()" class="demo-button">Run K-Means</button>
+                    </div>
+                    <div class="demo-visualization">
+                        <h4>Clustering Results</h4>
+                        <canvas id="clustering-canvas" width="400" height="300"></canvas>
+                    </div>
+                    <div class="demo-results">
+                        <h4>Results</h4>
+                        <div id="clustering-results">
+                            <p>Clusters: <span id="final-clusters">--</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="neural-demo" class="demo-content">
+                <h3>Neural Network Playground</h3>
+                <div class="demo-interface">
+                    <div class="demo-controls">
+                        <h4>Network Architecture</h4>
+                        <div class="control-group">
+                            <label>Hidden Layers:</label>
+                            <input type="range" id="num-layers" min="1" max="4" value="2">
+                            <span id="layers-value">2</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Learning Rate:</label>
+                            <input type="range" id="learning-rate" min="0.01" max="1" step="0.01" value="0.1">
+                            <span id="lr-value">0.1</span>
+                        </div>
+                        <button onclick="buildNetwork()" class="demo-button">Build Network</button>
+                        <button onclick="trainNetwork()" class="demo-button">Train Network</button>
+                    </div>
+                    <div class="demo-visualization">
+                        <h4>Network Visualization</h4>
+                        <canvas id="neural-canvas" width="400" height="300"></canvas>
+                    </div>
+                    <div class="demo-results">
+                        <h4>Training Progress</h4>
+                        <div id="neural-results">
+                            <p>Epoch: <span id="epoch">0</span></p>
+                            <p>Loss: <span id="loss">--</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabular Data Section -->
+    <section id="tabular" class="section">
+        <div class="section-header">
+            <h2>Tabular Data Processing</h2>
+            <p>Learn how to handle structured data for machine learning</p>
+        </div>
+        <div class="pipeline-container">
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">1</div>
+                    <h3>Data Loading & Exploration</h3>
+                </div>
+                <div class="stage-content">
+                    <h4>Understanding Your Data</h4>
+                    <ul>
+                        <li><strong>Data Types:</strong> Numerical, categorical, text</li>
+                        <li><strong>Missing Values:</strong> Identify and handle gaps</li>
+                        <li><strong>Distributions:</strong> Understand data patterns</li>
+                        <li><strong>Correlations:</strong> Feature relationships</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Section -->
+    <section id="training" class="section">
+        <div class="section-header">
+            <h2>Model Training & Testing</h2>
+            <p>Complete workflow from data splitting to model evaluation</p>
+        </div>
+        <div class="pipeline-container">
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">1</div>
+                    <h3>Data Splitting</h3>
+                </div>
+                <div class="stage-content">
+                    <h4>Train/Validation/Test Split</h4>
+                    <ul>
+                        <li><strong>Training Set (70%):</strong> Learn patterns</li>
+                        <li><strong>Validation Set (15%):</strong> Tune hyperparameters</li>
+                        <li><strong>Test Set (15%):</strong> Final evaluation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advanced Topics Section -->
+    <section id="advanced" class="section">
+        <div class="section-header">
+            <h2>Advanced Deep Learning Topics</h2>
+            <p>Explore cutting-edge techniques and recent trends in deep learning</p>
+        </div>
+        <div class="pipeline-container">
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">1</div>
+                    <h3>Generative Adversarial Networks (GANs)</h3>
+                </div>
+                <div class="stage-content">
+                    <h4>Two Networks Competing</h4>
+                    <ul>
+                        <li><strong>Generator:</strong> Creates fake data</li>
+                        <li><strong>Discriminator:</strong> Detects real vs fake</li>
+                        <li><strong>Adversarial Training:</strong> Both improve together</li>
+                        <li><strong>Applications:</strong> Image generation, style transfer</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">2</div>
+                    <h3>Federated Learning</h3>
+                </div>
+                <div class="stage-content">
+                    <h4>Privacy-Preserving Distributed Learning</h4>
+                    <ul>
+                        <li><strong>Decentralized Training:</strong> Data stays on devices</li>
+                        <li><strong>Model Updates:</strong> Only parameters are shared</li>
+                        <li><strong>Privacy Protection:</strong> Raw data never leaves devices</li>
+                        <li><strong>Use Cases:</strong> Mobile keyboards, healthcare</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">3</div>
+                    <h3>Computer Vision</h3>
+                </div>
+                <div class="stage-content">
+                    <h4>Understanding Images</h4>
+                    <ul>
+                        <li><strong>CNNs:</strong> Convolutional Neural Networks</li>
+                        <li><strong>Object Detection:</strong> YOLO, R-CNN</li>
+                        <li><strong>Image Segmentation:</strong> Pixel-level classification</li>
+                        <li><strong>Transfer Learning:</strong> Pre-trained models</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pipeline-stage">
+                <div class="stage-header">
+                    <div class="stage-number">4</div>
+                    <h3>Transformer Architectures</h3>
+                </div>
+                <div class="stage-content">
+                    <h4>Attention is All You Need</h4>
+                    <ul>
+                        <li><strong>Self-Attention:</strong> Learn relationships in sequences</li>
+                        <li><strong>BERT:</strong> Bidirectional encoder representations</li>
+                        <li><strong>GPT:</strong> Generative pre-trained transformers</li>
+                        <li><strong>Vision Transformers:</strong> Transformers for images</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#nlp">NLP Pipeline</a></li>
+                    <li><a href="#tabular">Tabular Data</a></li>
+                    <li><a href="#training">Training & Testing</a></li>
+                    <li><a href="#advanced">Advanced Topics</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Tutorials</a></li>
+                    <li><a href="#">Examples</a></li>
+                    <li><a href="#">GitHub Repository</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>📧 contact@mllearninghub.com</p>
+                <p>🌐 www.mllearninghub.com</p>
+                <p>📱 Educational use only</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation and section management
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show target section
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.add('active');
+                
+                // Update navbar active link
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // Demo tab switching
+        function showDemo(demoId) {
+            document.querySelectorAll('.demo-content').forEach(demo => {
+                demo.classList.remove('active');
+            });
+            
+            const target = document.getElementById(demoId + '-demo');
+            if (target) {
+                target.classList.add('active');
+                
+                // Update demo tab buttons
+                document.querySelectorAll('.demo-tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Find and activate the corresponding tab button
+                const buttons = document.querySelectorAll('.demo-tab-button');
+                const buttonTexts = ['Classification', 'Regression', 'Clustering', 'Neural Network'];
+                const demoIds = ['classification', 'regression', 'clustering', 'neural'];
+                const index = demoIds.indexOf(demoId);
+                if (index !== -1 && buttons[index]) {
+                    buttons[index].classList.add('active');
+                }
+            }
+        }
+
+        // Navigation event listeners
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute('href').substring(1);
+                showSection(sectionId);
+            });
+        });
+
+        // Hamburger menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+        }
+
+        // Close menu on link click (mobile)
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navMenu && hamburger) {
+                    navMenu.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
+            });
+        });
+
+        // NLP Tokenization
+        function tokenizeText() {
+            const input = document.getElementById('nlp-input');
+            const output = document.getElementById('nlp-tokens');
+            
+            if (input && output) {
+                const text = input.value || input.placeholder;
+                // Simple tokenization: split on whitespace and punctuation
+                const tokens = text.match(/\b[\w']+\b|[^\s\w]/g) || [];
+                output.textContent = JSON.stringify(tokens, null, 2);
+            }
+        }
+
+        // Interactive Demo Functions
+        let classificationData = [];
+        let regressionData = [];
+        let clusteringData = [];
+
+        // Classification Demo
+        function generateData() {
+            const canvas = document.getElementById('classification-canvas');
+            const ctx = canvas.getContext('2d');
+            const numPoints = parseInt(document.getElementById('num-points').value);
+            const datasetType = document.getElementById('dataset-type').value;
+            
+            classificationData = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Generate data based on type
+            for (let i = 0; i < numPoints; i++) {
+                let x, y, label;
+                
+                switch(datasetType) {
+                    case 'linear':
+                        x = Math.random() * canvas.width;
+                        y = Math.random() * canvas.height;
+                        label = x + y > canvas.width ? 1 : 0;
+                        break;
+                    case 'circular':
+                        const angle = Math.random() * 2 * Math.PI;
+                        const radius = Math.random() * 100 + 50;
+                        x = canvas.width/2 + radius * Math.cos(angle);
+                        y = canvas.height/2 + radius * Math.sin(angle);
+                        label = radius > 75 ? 1 : 0;
+                        break;
+                    default:
+                        x = Math.random() * canvas.width;
+                        y = Math.random() * canvas.height;
+                        label = Math.random() > 0.5 ? 1 : 0;
+                }
+                
+                classificationData.push({x, y, label});
+                
+                // Draw point
+                ctx.fillStyle = label === 1 ? '#e74c3c' : '#3498db';
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            
+            document.getElementById('status').textContent = 'Data generated';
+        }
+
+        function trainModel() {
+            if (classificationData.length === 0) {
+                generateData();
+            }
+            
+            // Simulate training with random accuracy
+            const accuracy = (0.7 + Math.random() * 0.25).toFixed(3);
+            document.getElementById('accuracy').textContent = accuracy;
+            document.getElementById('status').textContent = 'Model trained';
+        }
+
+        // Regression Demo
+        function generateRegressionData() {
+            const canvas = document.getElementById('regression-canvas');
+            const ctx = canvas.getContext('2d');
+            const functionType = document.getElementById('function-type').value;
+            
+            regressionData = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < 50; i++) {
+                const x = (i / 50) * canvas.width;
+                let y;
+                
+                switch(functionType) {
+                    case 'linear':
+                        y = 0.5 * x + 50 + (Math.random() - 0.5) * 50;
+                        break;
+                    case 'polynomial':
+                        y = 0.01 * x * x - 0.5 * x + 100 + (Math.random() - 0.5) * 30;
+                        break;
+                    case 'sine':
+                        y = 50 * Math.sin(x * 0.02) + canvas.height/2 + (Math.random() - 0.5) * 20;
+                        break;
+                    default:
+                        y = Math.random() * canvas.height;
+                }
+                
+                y = Math.max(0, Math.min(canvas.height, y));
+                regressionData.push({x, y});
+                
+                // Draw point
+                ctx.fillStyle = '#3498db';
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function trainRegressionModel() {
+            if (regressionData.length === 0) {
+                generateRegressionData();
+            }
+            
+            const r2Score = (0.6 + Math.random() * 0.35).toFixed(3);
+            document.getElementById('r2-score').textContent = r2Score;
+            
+            // Draw regression line (simplified)
+            const canvas = document.getElementById('regression-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height * 0.8);
+            ctx.lineTo(canvas.width, canvas.height * 0.2);
+            ctx.stroke();
+        }
+
+        // Clustering Demo
+        function generateClusterData() {
+            const canvas = document.getElementById('clustering-canvas');
+            const ctx = canvas.getContext('2d');
+            const numClusters = parseInt(document.getElementById('num-clusters').value);
+            
+            clusteringData = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Generate cluster centers
+            const centers = [];
+            for (let i = 0; i < numClusters; i++) {
+                centers.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height
+                });
+            }
+            
+            // Generate points around centers
+            for (let i = 0; i < 150; i++) {
+                const centerIndex = Math.floor(Math.random() * numClusters);
+                const center = centers[centerIndex];
+                const x = center.x + (Math.random() - 0.5) * 100;
+                const y = center.y + (Math.random() - 0.5) * 100;
+                
+                clusteringData.push({x, y, cluster: -1});
+                
+                // Draw point
+                ctx.fillStyle = '#95a5a6';
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function runClustering() {
+            if (clusteringData.length === 0) {
+                generateClusterData();
+            }
+            
+            const canvas = document.getElementById('clustering-canvas');
+            const ctx = canvas.getContext('2d');
+            const colors = ['#e74c3c', '#3498db', '#f39c12', '#9b59b6', '#2ecc71', '#e67e22'];
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Assign random clusters for visualization
+            clusteringData.forEach((point, index) => {
+                point.cluster = index % parseInt(document.getElementById('num-clusters').value);
+                
+                ctx.fillStyle = colors[point.cluster];
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            document.getElementById('final-clusters').textContent = document.getElementById('num-clusters').value;
+        }
+
+        // Neural Network Demo
+        function buildNetwork() {
+            const canvas = document.getElementById('neural-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#3498db';
+            ctx.font = '16px Arial';
+            ctx.fillText('Neural Network Built', canvas.width/2 - 80, canvas.height/2);
+            
+            document.getElementById('epoch').textContent = '0';
+            document.getElementById('loss').textContent = '--';
+        }
+
+        function trainNetwork() {
+            let epoch = 0;
+            const maxEpochs = 100;
+            
+            const trainingInterval = setInterval(() => {
+                epoch++;
+                const loss = (1 / epoch + Math.random() * 0.1).toFixed(4);
+                
+                document.getElementById('epoch').textContent = epoch;
+                document.getElementById('loss').textContent = loss;
+                
+                if (epoch >= maxEpochs) {
+                    clearInterval(trainingInterval);
+                }
+            }, 100);
+        }
+
+        // Slider value updates
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update slider display values
+            const sliders = [
+                {id: 'num-points', valueId: 'points-value'},
+                {id: 'num-clusters', valueId: 'clusters-value'},
+                {id: 'num-layers', valueId: 'layers-value'},
+                {id: 'learning-rate', valueId: 'lr-value'}
+            ];
+
+            sliders.forEach(slider => {
+                const sliderEl = document.getElementById(slider.id);
+                const valueEl = document.getElementById(slider.valueId);
+                
+                if (sliderEl && valueEl) {
+                    valueEl.textContent = sliderEl.value;
+                    
+                    sliderEl.addEventListener('input', () => {
+                        valueEl.textContent = sliderEl.value;
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Demos - ML/DL Learning Hub</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="tabular-data.html" class="nav-link">Tabular Data</a></li>
+                <li><a href="nlp-pipeline.html" class="nav-link">NLP Data</a></li>
+                <li><a href="image-processing.html" class="nav-link">Image Data</a></li>
+                <li><a href="encoding.html" class="nav-link">Encoding</a></li>
+                <li><a href="feature-selection.html" class="nav-link">Feature Selection</a></li>
+                <li><a href="training-testing.html" class="nav-link">Training</a></li>
+                <li><a href="hyperparameter-tuning.html" class="nav-link">Tuning</a></li>
+                <li><a href="ensemble-techniques.html" class="nav-link">Ensembles</a></li>
+                <li><a href="advanced-topics.html" class="nav-link">Advanced Topics</a></li>
+                <li><a href="dl.html" class="nav-link">Deep Learning</a></li>
+                <li><a href="interactive-demos.html" class="nav-link active" aria-current="page">Demos</a></li>
+            </ul>
+            <div class="hamburger" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Interactive ML/DL Demonstrations</h1>
+            <p>Hands-on experience with machine learning concepts</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> <span>/</span> <span>Interactive Demos</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="interactive-demo">
+                <div class="demo-tabs">
+                    <button class="demo-tab-button active" onclick="showDemo('classification')">Classification</button>
+                    <button class="demo-tab-button" onclick="showDemo('regression')">Regression</button>
+                    <button class="demo-tab-button" onclick="showDemo('clustering')">Clustering</button>
+                    <button class="demo-tab-button" onclick="showDemo('neural-playground')">Neural Network</button>
+                </div>
+
+                <!-- Classification Demo -->
+                <div id="classification-demo" class="demo-content active">
+                    <h3>Binary Classification Demo</h3>
+                    <div class="demo-interface">
+                        <div class="demo-controls">
+                            <h4>Generate Data</h4>
+                            <div class="control-group">
+                                <label>Dataset Type:</label>
+                                <select id="dataset-type">
+                                    <option value="linear">Linear Separable</option>
+                                    <option value="circular">Circular</option>
+                                    <option value="moons">Two Moons</option>
+                                    <option value="blobs">Gaussian Blobs</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Number of Points:</label>
+                                <input type="range" id="num-points" min="50" max="500" value="200">
+                                <span id="points-value">200</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Noise Level:</label>
+                                <input type="range" id="noise-level" min="0" max="0.5" step="0.1" value="0.1">
+                                <span id="noise-value">0.1</span>
+                            </div>
+                            <button onclick="generateData()" class="demo-button">Generate Data</button>
+                            
+                            <h4>Train Model</h4>
+                            <div class="control-group">
+                                <label>Algorithm:</label>
+                                <select id="algorithm-type">
+                                    <option value="logistic">Logistic Regression</option>
+                                    <option value="svm">SVM</option>
+                                    <option value="knn">K-Nearest Neighbors</option>
+                                    <option value="tree">Decision Tree</option>
+                                </select>
+                            </div>
+                            <button onclick="trainModel()" class="demo-button">Train Model</button>
+                            <button onclick="clearAll()" class="demo-button secondary">Clear All</button>
+                        </div>
+                        
+                        <div class="demo-visualization">
+                            <h4>Data Visualization</h4>
+                            <canvas id="classification-canvas" width="500" height="400"></canvas>
+                            <div class="legend">
+                                <div class="legend-item">
+                                    <div class="legend-color class-0"></div>
+                                    <span>Class 0</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color class-1"></div>
+                                    <span>Class 1</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color decision-boundary"></div>
+                                    <span>Decision Boundary</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="demo-results">
+                            <h4>Model Performance</h4>
+                            <div class="results-grid">
+                                <div class="result-item">
+                                    <span class="result-label">Accuracy:</span>
+                                    <span class="result-value" id="demo-accuracy">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Precision:</span>
+                                    <span class="result-value" id="demo-precision">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Recall:</span>
+                                    <span class="result-value" id="demo-recall">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">F1-Score:</span>
+                                    <span class="result-value" id="demo-f1">--</span>
+                                </div>
+                            </div>
+                            <div class="confusion-matrix-demo">
+                                <h5>Confusion Matrix</h5>
+                                <table id="demo-confusion-matrix">
+                                    <tr>
+                                        <td></td>
+                                        <td>Pred 0</td>
+                                        <td>Pred 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td>True 0</td>
+                                        <td id="demo-tn">--</td>
+                                        <td id="demo-fp">--</td>
+                                    </tr>
+                                    <tr>
+                                        <td>True 1</td>
+                                        <td id="demo-fn">--</td>
+                                        <td id="demo-tp">--</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regression Demo -->
+                <div id="regression-demo" class="demo-content">
+                    <h3>Regression Demo</h3>
+                    <div class="demo-interface">
+                        <div class="demo-controls">
+                            <h4>Generate Data</h4>
+                            <div class="control-group">
+                                <label>Function Type:</label>
+                                <select id="function-type">
+                                    <option value="linear">Linear</option>
+                                    <option value="polynomial">Polynomial</option>
+                                    <option value="sine">Sine Wave</option>
+                                    <option value="exponential">Exponential</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Number of Points:</label>
+                                <input type="range" id="reg-num-points" min="20" max="200" value="100">
+                                <span id="reg-points-value">100</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Noise Level:</label>
+                                <input type="range" id="reg-noise-level" min="0" max="1" step="0.1" value="0.3">
+                                <span id="reg-noise-value">0.3</span>
+                            </div>
+                            <button onclick="generateRegressionData()" class="demo-button">Generate Data</button>
+                            
+                            <h4>Train Model</h4>
+                            <div class="control-group">
+                                <label>Model Type:</label>
+                                <select id="regression-algorithm">
+                                    <option value="linear">Linear Regression</option>
+                                    <option value="polynomial">Polynomial Regression</option>
+                                    <option value="ridge">Ridge Regression</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Polynomial Degree:</label>
+                                <input type="range" id="poly-degree" min="1" max="10" value="3">
+                                <span id="degree-value">3</span>
+                            </div>
+                            <button onclick="trainRegressionModel()" class="demo-button">Train Model</button>
+                        </div>
+                        
+                        <div class="demo-visualization">
+                            <h4>Regression Visualization</h4>
+                            <canvas id="regression-canvas" width="500" height="400"></canvas>
+                            <div class="legend">
+                                <div class="legend-item">
+                                    <div class="legend-color data-points"></div>
+                                    <span>Data Points</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color regression-line"></div>
+                                    <span>Fitted Line</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="demo-results">
+                            <h4>Model Performance</h4>
+                            <div class="results-grid">
+                                <div class="result-item">
+                                    <span class="result-label">R² Score:</span>
+                                    <span class="result-value" id="r2-score">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">MSE:</span>
+                                    <span class="result-value" id="mse-score">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">MAE:</span>
+                                    <span class="result-value" id="mae-score">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clustering Demo -->
+                <div id="clustering-demo" class="demo-content">
+                    <h3>Clustering Demo</h3>
+                    <div class="demo-interface">
+                        <div class="demo-controls">
+                            <h4>Generate Data</h4>
+                            <div class="control-group">
+                                <label>Data Distribution:</label>
+                                <select id="cluster-data-type">
+                                    <option value="blobs">Gaussian Blobs</option>
+                                    <option value="circles">Concentric Circles</option>
+                                    <option value="moons">Half Moons</option>
+                                    <option value="random">Random</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Number of Points:</label>
+                                <input type="range" id="cluster-num-points" min="50" max="300" value="150">
+                                <span id="cluster-points-value">150</span>
+                            </div>
+                            <button onclick="generateClusterData()" class="demo-button">Generate Data</button>
+                            
+                            <h4>Clustering Algorithm</h4>
+                            <div class="control-group">
+                                <label>Algorithm:</label>
+                                <select id="clustering-algorithm">
+                                    <option value="kmeans">K-Means</option>
+                                    <option value="dbscan">DBSCAN</option>
+                                    <option value="hierarchical">Hierarchical</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Number of Clusters (K):</label>
+                                <input type="range" id="num-clusters" min="2" max="8" value="3">
+                                <span id="clusters-value">3</span>
+                            </div>
+                            <button onclick="runClustering()" class="demo-button">Run Clustering</button>
+                        </div>
+                        
+                        <div class="demo-visualization">
+                            <h4>Clustering Results</h4>
+                            <canvas id="clustering-canvas" width="500" height="400"></canvas>
+                            <div class="legend">
+                                <div class="legend-item">
+                                    <div class="legend-color cluster-0"></div>
+                                    <span>Cluster 1</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color cluster-1"></div>
+                                    <span>Cluster 2</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color cluster-2"></div>
+                                    <span>Cluster 3</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color centroid"></div>
+                                    <span>Centroids</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="demo-results">
+                            <h4>Clustering Metrics</h4>
+                            <div class="results-grid">
+                                <div class="result-item">
+                                    <span class="result-label">Silhouette Score:</span>
+                                    <span class="result-value" id="silhouette-score">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Inertia:</span>
+                                    <span class="result-value" id="inertia-score">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Number of Clusters:</span>
+                                    <span class="result-value" id="final-clusters">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Neural Network Playground -->
+                <div id="neural-playground-demo" class="demo-content">
+                    <h3>Neural Network Playground</h3>
+                    <div class="demo-interface">
+                        <div class="demo-controls">
+                            <h4>Network Architecture</h4>
+                            <div class="control-group">
+                                <label>Hidden Layers:</label>
+                                <input type="range" id="num-layers" min="1" max="4" value="2">
+                                <span id="layers-value">2</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Neurons per Layer:</label>
+                                <input type="range" id="neurons-per-layer" min="2" max="10" value="4">
+                                <span id="neurons-value">4</span>
+                            </div>
+                            <div class="control-group">
+                                <label>Activation Function:</label>
+                                <select id="activation-function">
+                                    <option value="relu">ReLU</option>
+                                    <option value="sigmoid">Sigmoid</option>
+                                    <option value="tanh">Tanh</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Learning Rate:</label>
+                                <input type="range" id="nn-learning-rate" min="0.001" max="0.1" step="0.001" value="0.01">
+                                <span id="lr-value">0.01</span>
+                            </div>
+                            <button onclick="buildNetwork()" class="demo-button">Build Network</button>
+                            <button onclick="trainNetwork()" class="demo-button">Train Network</button>
+                            <button onclick="resetNetwork()" class="demo-button secondary">Reset</button>
+                        </div>
+                        
+                        <div class="demo-visualization">
+                            <h4>Network Visualization</h4>
+                            <div class="neural-network-viz" id="network-diagram"></div>
+                            <div class="training-progress">
+                                <h5>Training Progress</h5>
+                                <canvas id="loss-chart" width="400" height="200"></canvas>
+                                <div class="training-info">
+                                    <span>Epoch: <span id="current-nn-epoch">0</span></span>
+                                    <span>Loss: <span id="current-nn-loss">0.000</span></span>
+                                    <span>Accuracy: <span id="current-nn-accuracy">0%</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="demo-results">
+                            <h4>Network Details</h4>
+                            <div class="network-info">
+                                <div class="info-item">
+                                    <span class="info-label">Total Parameters:</span>
+                                    <span class="info-value" id="total-params">--</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Forward Pass Time:</span>
+                                    <span class="info-value" id="forward-time">--</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Training Time:</span>
+                                    <span class="info-value" id="training-time">--</span>
+                                </div>
+                            </div>
+                            <div class="weight-visualization">
+                                <h5>Weight Distributions</h5>
+                                <canvas id="weight-hist" width="300" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Instructions -->
+    <section class="demo-instructions">
+        <div class="container">
+            <h2>How to Use the Demos</h2>
+            <div class="instructions-grid">
+                <div class="instruction-card">
+                    <h3>🎯 Classification</h3>
+                    <ol>
+                        <li>Choose a dataset type and parameters</li>
+                        <li>Generate data points</li>
+                        <li>Select a classification algorithm</li>
+                        <li>Train the model and observe decision boundaries</li>
+                        <li>Analyze performance metrics</li>
+                    </ol>
+                </div>
+                <div class="instruction-card">
+                    <h3>📈 Regression</h3>
+                    <ol>
+                        <li>Select a function type to generate data</li>
+                        <li>Adjust noise level and number of points</li>
+                        <li>Choose regression algorithm</li>
+                        <li>Train and see the fitted curve</li>
+                        <li>Evaluate R², MSE, and MAE scores</li>
+                    </ol>
+                </div>
+                <div class="instruction-card">
+                    <h3>🎪 Clustering</h3>
+                    <ol>
+                        <li>Generate data with different distributions</li>
+                        <li>Select clustering algorithm</li>
+                        <li>Set number of clusters</li>
+                        <li>Run clustering and observe groupings</li>
+                        <li>Check silhouette score and inertia</li>
+                    </ol>
+                </div>
+                <div class="instruction-card">
+                    <h3>🧠 Neural Networks</h3>
+                    <ol>
+                        <li>Design network architecture</li>
+                        <li>Choose activation function and learning rate</li>
+                        <li>Build the network visualization</li>
+                        <li>Train and watch loss decrease</li>
+                        <li>Analyze parameter count and timing</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="page-navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="dl.html" class="nav-btn prev">
+                    <i class="fas fa-arrow-left"></i> Deep Learning
+                </a>
+                <a href="index.html" class="nav-btn next">
+                    Home <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines, stage by stage.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>1 &middot; Data Processing</h4>
+                <ul>
+                    <li><a href="tabular-data.html">Tabular Data Processing</a></li>
+                    <li><a href="nlp-pipeline.html">NLP Data Processing</a></li>
+                    <li><a href="image-processing.html">Image Data Processing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>2 &middot; Feature Engineering</h4>
+                <ul>
+                    <li><a href="encoding.html">Encoding &amp; Scaling</a></li>
+                    <li><a href="feature-selection.html">Feature Selection</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>3 &middot; Modelling</h4>
+                <ul>
+                    <li><a href="training-testing.html">Training &amp; Testing</a></li>
+                    <li><a href="hyperparameter-tuning.html">Hyperparameter Tuning</a></li>
+                    <li><a href="ensemble-techniques.html">Ensemble Techniques</a></li>
+                    <li><a href="advanced-topics.html">Advanced Topics</a></li>
+                    <li><a href="dl.html">Deep Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>4 &middot; Practice</h4>
+                <ul>
+                    <li><a href="interactive-demos.html">All Demos</a></li>
+                    <li><a href="interactive-demos.html#classification">Classification</a></li>
+                    <li><a href="interactive-demos.html#regression">Regression</a></li>
+                    <li><a href="interactive-demos.html#clustering">Clustering</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/interactive-demos.js"></script>
+</body>
+</html>

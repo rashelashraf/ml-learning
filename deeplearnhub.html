@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Deep Learning Hub</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.2.0/tf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        main {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .topic-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .topic-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+        }
+
+        .topic-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        .topic-card p {
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .demo-section {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .demo-section.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .demo-output {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .visualization-container {
+            width: 100%;
+            height: 400px;
+            margin: 1rem 0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            /* keep the author's newlines and indentation */
+            white-space: pre;
+            tab-size: 4;
+            line-height: 1.5;
+        }
+
+        /* a <code>/<pre> child must not restyle or re-wrap the sample */
+        .code-block code,
+        .code-block pre {
+            display: block;
+            font: inherit;
+            color: inherit;
+            background: none;
+            border: 0;
+            padding: 0;
+            margin: 0;
+            white-space: inherit;
+        }
+
+        .neural-network-viz {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .metric-card {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .metric-label {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .interactive-controls {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .slider-container {
+            margin: 1rem 0;
+        }
+
+        .slider-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .data-upload {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .data-upload:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .back-btn {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .topic-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .gan-visualization {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .generator-box, .discriminator-box {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: #667eea;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .federated-nodes {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+        }
+
+        .node {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .cv-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .image-input {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prediction-results {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .gan-visualization,
+            .cv-demo {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo" onclick="showHome()">🧠 DeepLearn Hub</a>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="#" onclick="showHome()">Home</a></li>
+                        <li><a href="#" onclick="showTopic('about')">About</a></li>
+                        <li><a href="#" onclick="showTopic('help')">Help</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Home Page -->
+            <section id="home" class="hero">
+                <h1>Advanced Deep Learning Hub</h1>
+                <p>Master cutting-edge AI concepts with interactive demos and hands-on learning</p>
+                
+                <div class="topics-grid">
+                    <div class="topic-card" onclick="showTopic('gan')">
+                        <h3>🎨 Generative Adversarial Networks</h3>
+                        <p>Explore the fascinating world of GANs - neural networks that can create realistic images, text, and more through adversarial training.</p>
+                        <button class="btn">Explore GANs</button>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('federated')">
+                        <h3>🌐 Federated Learning</h3>
+                        <p>Learn distributed machine learning where models are trained across decentralized data without sharing raw information.</p>
+                        <button class="btn">Try Federated Learning</button>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('split')">
+                        <h3>⚡ Split Learning</h3>
+                        <p>Discover how neural networks can be split across devices for privacy-preserving collaborative training.</p>
+                        <button class="btn">Explore Split Learning</button>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('cv')">
+                        <h3>👁️ Computer Vision</h3>
+                        <p>Master image recognition, object detection, and visual AI with practical demonstrations and real-time inference.</p>
+                        <button class="btn">Dive into CV</button>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('transfer')">
+                        <h3>🔄 Transfer Learning</h3>
+                        <p>Learn to leverage pre-trained models and adapt them for new tasks with minimal data and training time.</p>
+                        <button class="btn">Master Transfer Learning</button>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('pipeline')">
+                        <h3>🔧 Training Pipelines</h3>
+                        <p>Build robust data processing and model training pipelines from data ingestion to model deployment.</p>
+                        <button class="btn">Build Pipelines</button>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('classification')">
+                        <h3>📊 Classification Demo</h3>
+                        <p>Interactive classification models with real-time training and visualization of decision boundaries.</p>
+                        <button class="btn">Try Classification</button>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('regression')">
+                        <h3>📈 Regression Analysis</h3>
+                        <p>Explore regression techniques with interactive parameter tuning and real-time model performance visualization.</p>
+                        <button class="btn">Explore Regression</button>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('clustering')">
+                        <h3>🎯 Clustering</h3>
+                        <p>Visualize unsupervised learning algorithms like K-means, DBSCAN, and hierarchical clustering in action.</p>
+                        <button class="btn">Try Clustering</button>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('neural')">
+                        <h3>🧠 Neural Networks</h3>
+                        <p>Build and visualize neural networks from scratch, understanding backpropagation and gradient descent.</p>
+                        <button class="btn">Build Networks</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GAN Section -->
+            <section id="gan" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>🎨 Generative Adversarial Networks (GANs)</h2>
+                    <p>GANs consist of two neural networks competing against each other: a Generator that creates fake data and a Discriminator that tries to detect fakes.</p>
+                    
+                    <div class="gan-visualization">
+                        <div class="generator-box">
+                            <h4>Generator</h4>
+                            <p>Creates fake images from random noise</p>
+                            <canvas id="generatorCanvas" width="150" height="150"></canvas>
+                        </div>
+                        <div class="discriminator-box">
+                            <h4>Discriminator</h4>
+                            <p>Distinguishes real from fake</p>
+                            <div class="metric-card">
+                                <div class="metric-value" id="discriminatorAccuracy">87%</div>
+                                <div class="metric-label">Accuracy</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Training Controls</h4>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="startGanTraining()">Start Training</button>
+                            <button class="btn" onclick="generateSample()">Generate Sample</button>
+                            <button class="btn" onclick="resetGan()">Reset</button>
+                        </div>
+                        
+                        <div class="slider-container">
+                            <label>Learning Rate: <span id="ganLrValue">0.001</span></label>
+                            <input type="range" class="slider" id="ganLearningRate" min="0.0001" max="0.01" step="0.0001" value="0.001" onchange="updateGanLr(this.value)">
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="ganProgress"></div>
+                        </div>
+                        <p>Training Progress: <span id="ganEpoch">0</span> / 100 epochs</p>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Generated Samples</h4>
+                        <div id="ganSamples" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                    </div>
+
+                    <pre class="code-block"><code># Simple GAN Architecture
+class Generator(nn.Module):
+    def __init__(self, noise_dim=100, img_dim=784):
+        super().__init__()
+        self.gen = nn.Sequential(
+            nn.Linear(noise_dim, 256),
+            nn.ReLU(),
+            nn.Linear(256, 512),
+            nn.ReLU(),
+            nn.Linear(512, img_dim),
+            nn.Tanh()
+        )
+
+    def forward(self, x):
+        return self.gen(x)
+
+class Discriminator(nn.Module):
+    def __init__(self, img_dim=784):
+        super().__init__()
+        self.disc = nn.Sequential(
+            nn.Linear(img_dim, 512),
+            nn.LeakyReLU(0.2),
+            nn.Linear(512, 256),
+            nn.LeakyReLU(0.2),
+            nn.Linear(256, 1),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        return self.disc(x)</code></pre>
+                </div>
+            </section>
+
+            <!-- Federated Learning Section -->
+            <section id="federated" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>🌐 Federated Learning</h2>
+                    <p>Train machine learning models across decentralized devices without centralizing data, preserving privacy and reducing bandwidth.</p>
+                    
+                    <div class="federated-nodes">
+                        <div class="node" id="node1">Device 1</div>
+                        <div class="node" id="node2">Device 2</div>
+                        <div class="node" id="node3">Device 3</div>
+                        <div class="node" id="node4">Server</div>
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Federated Training Simulation</h4>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="startFederatedTraining()">Start Training</button>
+                            <button class="btn" onclick="aggregateModels()">Aggregate Models</button>
+                            <button class="btn" onclick="resetFederated()">Reset</button>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div class="metric-card">
+                                <div class="metric-value" id="federatedRound">0</div>
+                                <div class="metric-label">Round</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="globalAccuracy">0%</div>
+                                <div class="metric-label">Global Accuracy</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="participatingNodes">0</div>
+                                <div class="metric-label">Active Nodes</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Training Logs</h4>
+                        <div id="federatedLogs" style="height: 150px; overflow-y: auto; background: #2d3748; color: #e2e8f0; padding: 1rem; border-radius: 5px; font-family: monospace;"></div>
+                    </div>
+
+                    <pre class="code-block"><code># Federated Learning Implementation
+class FederatedLearning:
+    def __init__(self, global_model, clients):
+        self.global_model = global_model
+        self.clients = clients
+        self.round = 0
+
+    def federated_round(self):
+        # Client selection
+        selected_clients = random.sample(self.clients, k=min(10, len(self.clients)))
+
+        # Local training
+        client_updates = []
+        for client in selected_clients:
+            client_model = copy.deepcopy(self.global_model)
+            client_update = client.local_train(client_model)
+            client_updates.append(client_update)
+
+        # Aggregation (FedAvg)
+        self.global_model = self.aggregate(client_updates)
+        self.round += 1
+
+        return self.evaluate_global_model()</code></pre>
+                </div>
+            </section>
+
+            <!-- Split Learning Section -->
+            <section id="split" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>⚡ Split Learning</h2>
+                    <p>Split neural networks between client and server, where only intermediate activations are shared, not raw data or full gradients.</p>
+                    
+                    <div class="visualization-container">
+                        <canvas id="splitLearningViz" width="100%" height="300"></canvas>
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Split Learning Configuration</h4>
+                        <div class="slider-container">
+                            <label>Split Point (Layer): <span id="splitPointValue">3</span></label>
+                            <input type="range" class="slider" id="splitPoint" min="1" max="6" step="1" value="3" onchange="updateSplitPoint(this.value)">
+                        </div>
+
+                        <div class="demo-controls">
+                            <button class="btn" onclick="startSplitTraining()">Start Training</button>
+                            <button class="btn" onclick="showActivations()">Show Activations</button>
+                            <button class="btn" onclick="resetSplit()">Reset</button>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                            <div class="metric-card">
+                                <div class="metric-value" id="clientLayers">3</div>
+                                <div class="metric-label">Client Layers</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="serverLayers">3</div>
+                                <div class="metric-label">Server Layers</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Privacy Benefits</h4>
+                        <ul>
+                            <li>✅ Raw data never leaves client device</li>
+                            <li>✅ Server doesn't see input features</li>
+                            <li>✅ Client doesn't see full model</li>
+                            <li>✅ Reduced computational load on client</li>
+                        </ul>
+                    </div>
+
+                    <pre class="code-block"><code># Split Learning Implementation
+class SplitNN:
+    def __init__(self, client_model, server_model):
+        self.client_model = client_model
+        self.server_model = server_model
+
+    def forward_pass(self, x):
+        # Client-side forward pass
+        activations = self.client_model(x)
+
+        # Send activations to server (not raw data!)
+        server_output = self.server_model(activations)
+        return server_output
+
+    def backward_pass(self, loss):
+        # Server-side backward pass
+        server_gradients = self.server_model.backward(loss)
+
+        # Send gradients back to client
+        self.client_model.backward(server_gradients)</code></pre>
+                </div>
+            </section>
+
+            <!-- Computer Vision Section -->
+            <section id="cv" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>👁️ Computer Vision</h2>
+                    <p>Real-time image classification and object detection using pre-trained models and transfer learning.</p>
+                    
+                    <div class="cv-demo">
+                        <div class="image-input" onclick="document.getElementById('imageUpload').click()">
+                            <div>
+                                <p>📷 Click to upload image</p>
+                                <p style="font-size: 0.9rem; opacity: 0.7;">Supports: JPG, PNG, GIF</p>
+                            </div>
+                            <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                        </div>
+                        
+                        <div class="prediction-results">
+                            <h4>Predictions</h4>
+                            <div id="cvPredictions">
+                                <p>Upload an image to see predictions...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Model Settings</h4>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="loadMobileNet()">Load MobileNet</button>
+                            <button class="btn" onclick="loadResNet()">Load ResNet</button>
+                            <button class="btn" onclick="enableWebcam()">Use Webcam</button>
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Confidence Threshold: <span id="confidenceValue">0.5</span></label>
+                            <input type="range" class="slider" id="confidenceThreshold" min="0.1" max="1" step="0.1" value="0.5" onchange="updateConfidence(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Model Performance</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                            <div class="metric-card">
+                                <div class="metric-value" id="inferenceTime">0ms</div>
+                                <div class="metric-label">Inference Time</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="modelSize">0MB</div>
+                                <div class="metric-label">Model Size</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="topAccuracy">0%</div>
+                                <div class="metric-label">Top-1 Accuracy</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transfer Learning Section -->
+            <section id="transfer" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>🔄 Transfer Learning</h2>
+                    <p>Leverage pre-trained models and fine-tune them for custom tasks with minimal data and training time.</p>
+                    
+                    <div class="data-upload" onclick="document.getElementById('datasetUpload').click()">
+                        <h4>📁 Upload Custom Dataset</h4>
+                        <p>Upload images for fine-tuning (zip file with labeled folders)</p>
+                        <input type="file" id="datasetUpload" accept=".zip" style="display: none;" onchange="handleDatasetUpload(event)">
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Transfer Learning Configuration</h4>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="freezeBaseModel()">Freeze Base Model</button>
+                            <button class="btn" onclick="startFineTuning()">Start Fine-tuning</button>
+                            <button class="btn" onclick="evaluateModel()">Evaluate</button>
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Fine-tuning Learning Rate: <span id="ftLrValue">0.0001</span></label>
+                            <input type="range" class="slider" id="ftLearningRate" min="0.00001" max="0.001" step="0.00001" value="0.0001" onchange="updateFtLr(this.value)">
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Layers to Unfreeze: <span id="unfreezeValue">5</span></label>
+                            <input type="range" class="slider" id="unfreezeCount" min="0" max="20" step="1" value="5" onchange="updateUnfreeze(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Training Progress</h4>
+                        <canvas id="transferLearningChart" width="400" height="200"></canvas>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div class="metric-card">
+                                <div class="metric-value" id="transferEpoch">0</div>
+                                <div class="metric-label">Epoch</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="transferAccuracy">0%</div>
+                                <div class="metric-label">Validation Accuracy</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="transferLoss">0.0</div>
+                                <div class="metric-label">Loss</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <pre class="code-block"><code># Transfer Learning with TensorFlow/Keras
+def create_transfer_model(base_model_name, num_classes, img_size=(224, 224)):
+    # Load pre-trained base model
+    base_model = tf.keras.applications.ResNet50(
+        weights='imagenet',
+        include_top=False,
+        input_shape=(*img_size, 3)
+    )
+
+    # Freeze base model layers
+    base_model.trainable = False
+
+    # Add custom classifier
+    model = tf.keras.Sequential([
+        base_model,
+        tf.keras.layers.GlobalAveragePooling2D(),
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(num_classes, activation='softmax')
+    ])
+
+    return model
+
+# Fine-tuning strategy
+def fine_tune_model(model, unfreeze_layers=5):
+    # Unfreeze top layers
+    model.layers[0].trainable = True
+    for layer in model.layers[0].layers[:-unfreeze_layers]:
+        layer.trainable = False
+
+    # Lower learning rate for fine-tuning
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(1e-5),
+        loss='categorical_crossentropy',
+        metrics=['accuracy']
+    )</code></pre>
+                </div>
+            </section>
+
+            <!-- Training Pipeline Section -->
+            <section id="pipeline" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>🔧 Training Pipelines</h2>
+                    <p>Build end-to-end machine learning pipelines from data preprocessing to model deployment and monitoring.</p>
+                    
+                    <div class="visualization-container">
+                        <canvas id="pipelineViz" width="100%" height="400"></canvas>
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Pipeline Configuration</h4>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="startPipeline()">Start Pipeline</button>
+                            <button class="btn" onclick="pausePipeline()">Pause</button>
+                            <button class="btn" onclick="deployModel()">Deploy Model</button>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div class="metric-card">
+                                <div class="metric-value" id="pipelineStage">Data Loading</div>
+                                <div class="metric-label">Current Stage</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="pipelineProgress">0%</div>
+                                <div class="metric-label">Progress</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="pipelineTime">0s</div>
+                                <div class="metric-label">Elapsed Time</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Pipeline Stages</h4>
+                        <div id="pipelineStages">
+                            <div class="stage-item">✅ Data Ingestion</div>
+                            <div class="stage-item">🔄 Data Preprocessing</div>
+                            <div class="stage-item">⏳ Feature Engineering</div>
+                            <div class="stage-item">⏳ Model Training</div>
+                            <div class="stage-item">⏳ Model Validation</div>
+                            <div class="stage-item">⏳ Model Deployment</div>
+                        </div>
+                    </div>
+
+                    <pre class="code-block"><code># MLOps Pipeline with MLflow and Kubeflow
+class MLPipeline:
+    def __init__(self, config):
+        self.config = config
+        self.mlflow = MLflowTracker()
+
+    def run_pipeline(self):
+        with mlflow.start_run():
+            # Data ingestion
+            data = self.load_data(self.config.data_source)
+            mlflow.log_param("data_size", len(data))
+
+            # Preprocessing
+            X_train, X_val, y_train, y_val = self.preprocess(data)
+
+            # Feature engineering
+            X_train_features = self.engineer_features(X_train)
+            X_val_features = self.engineer_features(X_val)
+
+            # Model training
+            model = self.train_model(X_train_features, y_train)
+
+            # Validation
+            accuracy = self.validate_model(model, X_val_features, y_val)
+            mlflow.log_metric("validation_accuracy", accuracy)
+
+            # Model registration
+            if accuracy &gt; self.config.min_accuracy:
+                mlflow.sklearn.log_model(model, "model")
+                self.deploy_model(model)
+
+        return model, accuracy</code></pre>
+                </div>
+            </section>
+
+            <!-- Classification Demo Section -->
+            <section id="classification" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>📊 Interactive Classification</h2>
+                    <p>Train classification models in real-time and visualize decision boundaries with interactive data points.</p>
+                    
+                    <div class="visualization-container">
+                        <canvas id="classificationCanvas" width="500" height="400"></canvas>
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Model Configuration</h4>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="generateClassificationData()">Generate Data</button>
+                            <button class="btn" onclick="trainClassificationModel()">Train Model</button>
+                            <button class="btn" onclick="clearClassificationData()">Clear</button>
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Number of Classes: <span id="numClassesValue">3</span></label>
+                            <input type="range" class="slider" id="numClasses" min="2" max="5" step="1" value="3" onchange="updateNumClasses(this.value)">
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Model Complexity: <span id="complexityValue">2</span></label>
+                            <input type="range" class="slider" id="modelComplexity" min="1" max="5" step="1" value="2" onchange="updateComplexity(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Model Performance</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                            <div class="metric-card">
+                                <div class="metric-value" id="classificationAccuracy">0%</div>
+                                <div class="metric-label">Accuracy</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="classificationLoss">0.0</div>
+                                <div class="metric-label">Loss</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="trainingEpochs">0</div>
+                                <div class="metric-label">Epochs</div>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 1rem;">Click on the canvas to add data points of different classes!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Regression Demo Section -->
+            <section id="regression" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>📈 Regression Analysis</h2>
+                    <p>Explore different regression algorithms and see how they fit data with interactive parameter tuning.</p>
+                    
+                    <div class="visualization-container">
+                        <canvas id="regressionCanvas" width="500" height="400"></canvas>
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Regression Configuration</h4>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="generateRegressionData()">Generate Data</button>
+                            <button class="btn" onclick="trainRegressionModel()">Train Model</button>
+                            <button class="btn" onclick="addNoise()">Add Noise</button>
+                            <button class="btn" onclick="clearRegressionData()">Clear</button>
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Polynomial Degree: <span id="polyDegreeValue">2</span></label>
+                            <input type="range" class="slider" id="polyDegree" min="1" max="6" step="1" value="2" onchange="updatePolyDegree(this.value)">
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Regularization: <span id="regularizationValue">0.01</span></label>
+                            <input type="range" class="slider" id="regularization" min="0" max="1" step="0.01" value="0.01" onchange="updateRegularization(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Model Metrics</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                            <div class="metric-card">
+                                <div class="metric-value" id="rSquared">0.0</div>
+                                <div class="metric-label">R²</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="mse">0.0</div>
+                                <div class="metric-label">MSE</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="mae">0.0</div>
+                                <div class="metric-label">MAE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clustering Demo Section -->
+            <section id="clustering" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>🎯 Clustering Algorithms</h2>
+                    <p>Visualize unsupervised learning algorithms and see how they group similar data points together.</p>
+                    
+                    <div class="visualization-container">
+                        <canvas id="clusteringCanvas" width="500" height="400"></canvas>
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Clustering Configuration</h4>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="runKMeans()">K-Means</button>
+                            <button class="btn" onclick="runDBSCAN()">DBSCAN</button>
+                            <button class="btn" onclick="runHierarchical()">Hierarchical</button>
+                            <button class="btn" onclick="generateClusterData()">Generate Data</button>
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Number of Clusters: <span id="numClustersValue">3</span></label>
+                            <input type="range" class="slider" id="numClusters" min="2" max="8" step="1" value="3" onchange="updateNumClusters(this.value)">
+                        </div>
+
+                        <div class="slider-container">
+                            <label>DBSCAN Epsilon: <span id="epsilonValue">0.3</span></label>
+                            <input type="range" class="slider" id="epsilon" min="0.1" max="1" step="0.05" value="0.3" onchange="updateEpsilon(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Clustering Results</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                            <div class="metric-card">
+                                <div class="metric-value" id="silhouetteScore">0.0</div>
+                                <div class="metric-label">Silhouette Score</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="clustersFound">0</div>
+                                <div class="metric-label">Clusters Found</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="noisePoints">0</div>
+                                <div class="metric-label">Noise Points</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Neural Network Demo Section -->
+            <section id="neural" class="demo-section">
+                <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                <div class="topic-content">
+                    <h2>🧠 Neural Network Builder</h2>
+                    <p>Build, train, and visualize neural networks from scratch. Watch gradients flow through the network during training.</p>
+                    
+                    <div class="neural-network-viz">
+                        <canvas id="neuralNetworkCanvas" width="100%" height="300"></canvas>
+                    </div>
+
+                    <div class="interactive-controls">
+                        <h4>Network Architecture</h4>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="addLayer()">Add Layer</button>
+                            <button class="btn" onclick="removeLayer()">Remove Layer</button>
+                            <button class="btn" onclick="trainNeuralNetwork()">Train Network</button>
+                            <button class="btn" onclick="resetNetwork()">Reset</button>
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Hidden Neurons: <span id="hiddenNeuronsValue">10</span></label>
+                            <input type="range" class="slider" id="hiddenNeurons" min="5" max="50" step="5" value="10" onchange="updateHiddenNeurons(this.value)">
+                        </div>
+
+                        <div class="slider-container">
+                            <label>Learning Rate: <span id="neuralLrValue">0.01</span></label>
+                            <input type="range" class="slider" id="neuralLearningRate" min="0.001" max="0.1" step="0.001" value="0.01" onchange="updateNeuralLr(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="demo-output">
+                        <h4>Training Progress</h4>
+                        <canvas id="neuralLossChart" width="400" height="200"></canvas>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div class="metric-card">
+                                <div class="metric-value" id="neuralEpoch">0</div>
+                                <div class="metric-label">Epoch</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="neuralLoss">0.0</div>
+                                <div class="metric-label">Loss</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="neuralAccuracy">0%</div>
+                                <div class="metric-label">Accuracy</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <pre class="code-block"><code># Simple Neural Network Implementation
+class NeuralNetwork:
+    def __init__(self, layers):
+        self.layers = layers
+        self.weights = []
+        self.biases = []
+
+        # Initialize weights and biases
+        for i in range(len(layers) - 1):
+            w = np.random.randn(layers[i], layers[i+1]) * 0.01
+            b = np.zeros((1, layers[i+1]))
+            self.weights.append(w)
+            self.biases.append(b)
+
+    def forward(self, X):
+        self.activations = [X]
+
+        for i in range(len(self.weights)):
+            z = np.dot(self.activations[-1], self.weights[i]) + self.biases[i]
+            a = self.sigmoid(z)
+            self.activations.append(a)
+
+        return self.activations[-1]
+
+    def backward(self, X, y, learning_rate):
+        m = X.shape[0]
+
+        # Compute output layer error
+        delta = self.activations[-1] - y
+
+        # Backpropagate errors
+        for i in range(len(self.weights) - 1, -1, -1):
+            dW = np.dot(self.activations[i].T, delta) / m
+            db = np.sum(delta, axis=0, keepdims=True) / m
+
+            self.weights[i] -= learning_rate * dW
+            self.biases[i] -= learning_rate * db
+
+            if i &gt; 0:
+                delta = np.dot(delta, self.weights[i].T) * self.sigmoid_derivative(self.activations[i])</code></pre>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let currentTopic = 'home';
+        let ganTraining = false;
+        let federatedTraining = false;
+        let splitTraining = false;
+        let currentModel = null;
+        
+        // Initialize when page loads
+        window.onload = function() {
+            initializeCanvases();
+            generateClassificationData();
+            generateRegressionData();
+            generateClusterData();
+            drawNeuralNetwork();
+        };
+
+        // Navigation functions
+        function showHome() {
+            document.querySelectorAll('.demo-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('home').style.display = 'block';
+            currentTopic = 'home';
+        }
+
+        function showTopic(topic) {
+            document.getElementById('home').style.display = 'none';
+            document.querySelectorAll('.demo-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(topic).classList.add('active');
+            currentTopic = topic;
+        }
+
+        // Initialize all canvases
+        function initializeCanvases() {
+            // Initialize generator canvas with random pattern
+            const generatorCanvas = document.getElementById('generatorCanvas');
+            if (generatorCanvas) {
+                const ctx = generatorCanvas.getContext('2d');
+                drawRandomPattern(ctx, 150, 150);
+            }
+        }
+
+        // GAN Functions
+        function drawRandomPattern(ctx, width, height) {
+            const imageData = ctx.createImageData(width, height);
+            for (let i = 0; i < imageData.data.length; i += 4) {
+                imageData.data[i] = Math.random() * 255;     // Red
+                imageData.data[i + 1] = Math.random() * 255; // Green
+                imageData.data[i + 2] = Math.random() * 255; // Blue
+                imageData.data[i + 3] = 255;                 // Alpha
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function startGanTraining() {
+            ganTraining = true;
+            let epoch = 0;
+            const maxEpochs = 100;
+            
+            const trainingInterval = setInterval(() => {
+                if (!ganTraining || epoch >= maxEpochs) {
+                    clearInterval(trainingInterval);
+                    return;
+                }
+                
+                epoch++;
+                const progress = (epoch / maxEpochs) * 100;
+                
+                document.getElementById('ganProgress').style.width = progress + '%';
+                document.getElementById('ganEpoch').textContent = epoch;
+                
+                // Simulate improving discriminator accuracy
+                const accuracy = Math.min(95, 50 + (epoch / maxEpochs) * 45);
+                document.getElementById('discriminatorAccuracy').textContent = Math.round(accuracy) + '%';
+                
+                // Update generator canvas with improving pattern
+                const canvas = document.getElementById('generatorCanvas');
+                const ctx = canvas.getContext('2d');
+                drawEvolvingPattern(ctx, 150, 150, epoch / maxEpochs);
+                
+            }, 100);
+        }
+
+        function drawEvolvingPattern(ctx, width, height, progress) {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Create a more structured pattern as training progresses
+            for (let x = 0; x < width; x += 10) {
+                for (let y = 0; y < height; y += 10) {
+                    const noise = (1 - progress) * Math.random();
+                    const signal = progress * Math.sin(x * 0.1) * Math.cos(y * 0.1);
+                    const value = (noise + signal + 1) * 127.5;
+                    
+                    ctx.fillStyle = `rgb(${value}, ${value * 0.8}, ${value * 0.6})`;
+                    ctx.fillRect(x, y, 8, 8);
+                }
+            }
+        }
+
+        function generateSample() {
+            const samplesDiv = document.getElementById('ganSamples');
+            const newSample = document.createElement('canvas');
+            newSample.width = 50;
+            newSample.height = 50;
+            newSample.style.border = '1px solid #ccc';
+            newSample.style.borderRadius = '4px';
+            
+            const ctx = newSample.getContext('2d');
+            drawRandomPattern(ctx, 50, 50);
+            
+            samplesDiv.appendChild(newSample);
+            
+            // Limit to 10 samples
+            while (samplesDiv.children.length > 10) {
+                samplesDiv.removeChild(samplesDiv.firstChild);
+            }
+        }
+
+        function resetGan() {
+            ganTraining = false;
+            document.getElementById('ganProgress').style.width = '0%';
+            document.getElementById('ganEpoch').textContent = '0';
+            document.getElementById('discriminatorAccuracy').textContent = '87%';
+            document.getElementById('ganSamples').innerHTML = '';
+            
+            const canvas = document.getElementById('generatorCanvas');
+            const ctx = canvas.getContext('2d');
+            drawRandomPattern(ctx, 150, 150);
+        }
+
+        function updateGanLr(value) {
+            document.getElementById('ganLrValue').textContent = parseFloat(value).toFixed(4);
+        }
+
+        // Federated Learning Functions
+        function startFederatedTraining() {
+            federatedTraining = true;
+            let round = 0;
+            const logsDiv = document.getElementById('federatedLogs');
+            
+            const federatedInterval = setInterval(() => {
+                if (!federatedTraining || round >= 10) {
+                    clearInterval(federatedInterval);
+                    return;
+                }
+                
+                round++;
+                document.getElementById('federatedRound').textContent = round;
+                document.getElementById('participatingNodes').textContent = Math.floor(Math.random() * 3) + 2;
+                
+                const accuracy = Math.min(95, 60 + round * 3.5 + Math.random() * 5);
+                document.getElementById('globalAccuracy').textContent = Math.round(accuracy) + '%';
+                
+                // Add log entry
+                const logEntry = `Round ${round}: Global accuracy: ${Math.round(accuracy)}%, Participating nodes: ${document.getElementById('participatingNodes').textContent}`;
+                logsDiv.innerHTML += logEntry + '\n';
+                logsDiv.scrollTop = logsDiv.scrollHeight;
+                
+                // Animate nodes
+                animateNodes();
+                
+            }, 2000);
+        }
+
+        function animateNodes() {
+            document.querySelectorAll('.node').forEach((node, index) => {
+                if (index < 3) { // Client nodes
+                    node.style.animation = 'pulse 1s ease-in-out';
+                    setTimeout(() => {
+                        node.style.animation = 'pulse 2s infinite';
+                    }, 1000);
+                }
+            });
+        }
+
+        function aggregateModels() {
+            const logsDiv = document.getElementById('federatedLogs');
+            logsDiv.innerHTML += 'Aggregating client models using FedAvg...\n';
+            logsDiv.innerHTML += 'Global model updated successfully!\n';
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        function resetFederated() {
+            federatedTraining = false;
+            document.getElementById('federatedRound').textContent = '0';
+            document.getElementById('globalAccuracy').textContent = '0%';
+            document.getElementById('participatingNodes').textContent = '0';
+            document.getElementById('federatedLogs').innerHTML = '';
+        }
+
+        // Split Learning Functions
+        function updateSplitPoint(value) {
+            document.getElementById('splitPointValue').textContent = value;
+            document.getElementById('clientLayers').textContent = value;
+            document.getElementById('serverLayers').textContent = 6 - value;
+            drawSplitVisualization(value);
+        }
+
+        function drawSplitVisualization(splitPoint) {
+            const canvas = document.getElementById('splitLearningViz');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const totalLayers = 6;
+            const layerWidth = canvas.width / (totalLayers + 2);
+            const layerHeight = 40;
+            const startY = (canvas.height - layerHeight) / 2;
+            
+            // Draw layers
+            for (let i = 0; i <= totalLayers; i++) {
+                const x = layerWidth * (i + 1);
+                const isClient = i < splitPoint;
+                
+                ctx.fillStyle = isClient ? '#667eea' : '#764ba2';
+                ctx.fillRect(x - layerWidth/4, startY, layerWidth/2, layerHeight);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`L${i+1}`, x, startY + layerHeight/2 + 4);
+                
+                // Draw arrows
+                if (i < totalLayers) {
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x + layerWidth/4, startY + layerHeight/2);
+                    ctx.lineTo(x + layerWidth*3/4, startY + layerHeight/2);
+                    ctx.stroke();
+                    
+                    // Arrow head
+                    ctx.beginPath();
+                    ctx.moveTo(x + layerWidth*3/4 - 5, startY + layerHeight/2 - 3);
+                    ctx.lineTo(x + layerWidth*3/4, startY + layerHeight/2);
+                    ctx.lineTo(x + layerWidth*3/4 - 5, startY + layerHeight/2 + 3);
+                    ctx.stroke();
+                }
+            }
+            
+            // Draw split line
+            const splitX = layerWidth * (splitPoint + 0.5);
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(splitX, 20);
+            ctx.lineTo(splitX, canvas.height - 20);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Labels
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Client Device', layerWidth * splitPoint / 2 + layerWidth/2, 15);
+            ctx.fillText('Server', layerWidth * (splitPoint + totalLayers) / 2 + layerWidth, 15);
+        }
+
+        function startSplitTraining() {
+            const canvas = document.getElementById('splitLearningViz');
+            // Add training animation here
+        }
+
+        function showActivations() {
+            // Highlight the split point with activation visualization
+        }
+
+        function resetSplit() {
+            updateSplitPoint(3);
+        }
+
+        // Computer Vision Functions
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const img = new Image();
+            img.onload = async function() {
+                // Simulate image classification
+                const startTime = performance.now();
+                
+                // Mock predictions
+                const predictions = [
+                    { class: 'Dog', confidence: 0.87 },
+                    { class: 'Cat', confidence: 0.11 },
+                    { class: 'Bird', confidence: 0.02 }
+                ];
+                
+                const endTime = performance.now();
+                const inferenceTime = Math.round(endTime - startTime);
+                
+                displayPredictions(predictions);
+                updateCVMetrics(inferenceTime);
+            };
+            
+            img.src = URL.createObjectURL(file);
+        }
+
+        function displayPredictions(predictions) {
+            const predictionsDiv = document.getElementById('cvPredictions');
+            predictionsDiv.innerHTML = '';
+            
+            predictions.forEach(pred => {
+                const predDiv = document.createElement('div');
+                predDiv.style.cssText = 'margin: 0.5rem 0; padding: 0.5rem; background: #f0f0f0; border-radius: 5px;';
+                predDiv.innerHTML = `
+                    <strong>${pred.class}</strong>: ${(pred.confidence * 100).toFixed(1)}%
+                    <div style="width: 100%; height: 4px; background: #ddd; border-radius: 2px; margin-top: 4px;">
+                        <div style="width: ${pred.confidence * 100}%; height: 100%; background: #667eea; border-radius: 2px;"></div>
+                    </div>
+                `;
+                predictionsDiv.appendChild(predDiv);
+            });
+        }
+
+        function updateCVMetrics(inferenceTime) {
+            document.getElementById('inferenceTime').textContent = inferenceTime + 'ms';
+            document.getElementById('modelSize').textContent = '23MB';
+            document.getElementById('topAccuracy').textContent = '87%';
+        }
+
+        function loadMobileNet() {
+            document.getElementById('modelSize').textContent = '17MB';
+            updateCVInfo('MobileNet loaded');
+        }
+
+        function loadResNet() {
+            document.getElementById('modelSize').textContent = '98MB';
+            updateCVInfo('ResNet loaded');
+        }
+
+        function enableWebcam() {
+            updateCVInfo('Webcam access requested');
+        }
+
+        function updateConfidence(value) {
+            document.getElementById('confidenceValue').textContent = value;
+        }
+
+        function updateCVInfo(message) {
+            // Display info message
+        }
+
+        // Transfer Learning Functions
+        function handleDatasetUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Simulate dataset processing
+            setTimeout(() => {
+                updateTransferInfo('Dataset uploaded: 1000 images, 5 classes');
+            }, 1000);
+        }
+
+        function freezeBaseModel() {
+            updateTransferInfo('Base model layers frozen');
+        }
+
+        function startFineTuning() {
+            let epoch = 0;
+            const maxEpochs = 20;
+            
+            const trainingInterval = setInterval(() => {
+                if (epoch >= maxEpochs) {
+                    clearInterval(trainingInterval);
+                    return;
+                }
+                
+                epoch++;
+                const accuracy = Math.min(95, 70 + epoch * 1.2 + Math.random() * 3);
+                const loss = Math.max(0.1, 2.0 - epoch * 0.08 + Math.random() * 0.1);
+                
+                document.getElementById('transferEpoch').textContent = epoch;
+                document.getElementById('transferAccuracy').textContent = Math.round(accuracy) + '%';
+                document.getElementById('transferLoss').textContent = loss.toFixed(3);
+                
+            }, 500);
+        }
+
+        function evaluateModel() {
+            updateTransferInfo('Model evaluation complete - Validation accuracy: 89.3%');
+        }
+
+        function updateFtLr(value) {
+            document.getElementById('ftLrValue').textContent = parseFloat(value).toFixed(5);
+        }
+
+        function updateUnfreeze(value) {
+            document.getElementById('unfreezeValue').textContent = value;
+        }
+
+        function updateTransferInfo(message) {
+            // Display transfer learning info
+        }
+
+        // Pipeline Functions
+        function startPipeline() {
+            const stages = [
+                'Data Loading', 'Data Preprocessing', 'Feature Engineering',
+                'Model Training', 'Model Validation', 'Model Deployment'
+            ];
+            
+            let currentStage = 0;
+            const startTime = Date.now();
+            
+            const pipelineInterval = setInterval(() => {
+                if (currentStage >= stages.length) {
+                    clearInterval(pipelineInterval);
+                    return;
+                }
+                
+                const progress = ((currentStage + 1) / stages.length) * 100;
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                
+                document.getElementById('pipelineStage').textContent = stages[currentStage];
+                document.getElementById('pipelineProgress').textContent = Math.round(progress) + '%';
+                document.getElementById('pipelineTime').textContent = elapsedTime + 's';
+                
+                // Update stage visualization
+                updatePipelineStages(currentStage);
+                
+                currentStage++;
+            }, 2000);
+        }
+
+        function updatePipelineStages(currentStage) {
+            const stageItems = document.querySelectorAll('.stage-item');
+            stageItems.forEach((item, index) => {
+                if (index < currentStage) {
+                    item.innerHTML = item.innerHTML.replace(/[⏳🔄]/, '✅');
+                } else if (index === currentStage) {
+                    item.innerHTML = item.innerHTML.replace(/[⏳✅]/, '🔄');
+                }
+            });
+        }
+
+        function pausePipeline() {
+            // Pause pipeline logic
+        }
+
+        function deployModel() {
+            updatePipelineInfo('Model deployed successfully!');
+        }
+
+        function updatePipelineInfo(message) {
+            // Display pipeline info
+        }
+
+        // Classification Functions
+        let classificationData = [];
+        let classificationModel = null;
+
+        function generateClassificationData() {
+            const canvas = document.getElementById('classificationCanvas');
+            if (!canvas) return;
+            
+            classificationData = [];
+            const numClasses = parseInt(document.getElementById('numClasses').value);
+            const pointsPerClass = 50;
+            
+            for (let cls = 0; cls < numClasses; cls++) {
+                const centerX = (cls + 1) * canvas.width / (numClasses + 1);
+                const centerY = Math.random() * canvas.height * 0.6 + canvas.height * 0.2;
+                
+                for (let i = 0; i < pointsPerClass; i++) {
+                    const angle = Math.random() * 2 * Math.PI;
+                    const radius = Math.random() * 60 + 20;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+                        classificationData.push({ x, y, class: cls });
+                    }
+                }
+            }
+            
+            drawClassificationData();
+        }
+
+        function drawClassificationData() {
+            const canvas = document.getElementById('classificationCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+            
+            classificationData.forEach(point => {
+                ctx.fillStyle = colors[point.class % colors.length];
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        }
+
+        function trainClassificationModel() {
+            // Simulate training
+            let epoch = 0;
+            const maxEpochs = 50;
+            
+            const trainingInterval = setInterval(() => {
+                if (epoch >= maxEpochs) {
+                    clearInterval(trainingInterval);
+                    return;
+                }
+                
+                epoch++;
+                const accuracy = Math.min(95, 60 + epoch * 0.7 + Math.random() * 5);
+                const loss = Math.max(0.1, 2.0 - epoch * 0.035 + Math.random() * 0.1);
+                
+                document.getElementById('classificationAccuracy').textContent = Math.round(accuracy) + '%';
+                document.getElementById('classificationLoss').textContent = loss.toFixed(3);
+                document.getElementById('trainingEpochs').textContent = epoch;
+                
+            }, 100);
+        }
+
+        function clearClassificationData() {
+            classificationData = [];
+            drawClassificationData();
+            document.getElementById('classificationAccuracy').textContent = '0%';
+            document.getElementById('classificationLoss').textContent = '0.0';
+            document.getElementById('trainingEpochs').textContent = '0';
+        }
+
+        function updateNumClasses(value) {
+            document.getElementById('numClassesValue').textContent = value;
+            generateClassificationData();
+        }
+
+        function updateComplexity(value) {
+            document.getElementById('complexityValue').textContent = value;
+        }
+
+        // Regression Functions
+        let regressionData = [];
+
+        function generateRegressionData() {
+            const canvas = document.getElementById('regressionCanvas');
+            if (!canvas) return;
+            
+            regressionData = [];
+            const numPoints = 100;
+            
+            for (let i = 0; i < numPoints; i++) {
+                const x = (i / numPoints) * canvas.width;
+                const y = canvas.height / 2 + Math.sin(x * 0.02) * 100 + (Math.random() - 0.5) * 50;
+                regressionData.push({ x, y });
+            }
+            
+            drawRegressionData();
+        }
+
+        function drawRegressionData() {
+            const canvas = document.getElementById('regressionCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#667eea';
+            regressionData.forEach(point => {
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 2, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        }
+
+        function trainRegressionModel() {
+            // Draw regression line
+            const canvas = document.getElementById('regressionCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            for (let x = 0; x < canvas.width; x += 5) {
+                const y = canvas.height / 2 + Math.sin(x * 0.02) * 100;
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+            
+            // Update metrics
+            document.getElementById('rSquared').textContent = '0.89';
+            document.getElementById('mse').textContent = '124.5';
+            document.getElementById('mae').textContent = '8.7';
+        }
+
+        function addNoise() {
+            regressionData.forEach(point => {
+                point.y += (Math.random() - 0.5) * 30;
+            });
+            drawRegressionData();
+        }
+
+        function clearRegressionData() {
+            regressionData = [];
+            const canvas = document.getElementById('regressionCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            document.getElementById('rSquared').textContent = '0.0';
+            document.getElementById('mse').textContent = '0.0';
+            document.getElementById('mae').textContent = '0.0';
+        }
+
+        function updatePolyDegree(value) {
+            document.getElementById('polyDegreeValue').textContent = value;
+        }
+
+        function updateRegularization(value) {
+            document.getElementById('regularizationValue').textContent = value;
+        }
+
+        // Clustering Functions
+        let clusteringData = [];
+
+        function generateClusterData() {
+            const canvas = document.getElementById('clusteringCanvas');
+            if (!canvas) return;
+            
+            clusteringData = [];
+            const numClusters = 4;
+            const pointsPerCluster = 30;
+            
+            for (let cluster = 0; cluster < numClusters; cluster++) {
+                const centerX = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
+                const centerY = Math.random() * canvas.height * 0.8 + canvas.height * 0.1;
+                
+                for (let i = 0; i < pointsPerCluster; i++) {
+                    const angle = Math.random() * 2 * Math.PI;
+                    const radius = Math.random() * 40 + 10;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+                        clusteringData.push({ x, y, cluster: -1 });
+                    }
+                }
+            }
+            
+            drawClusteringData();
+        }
+
+        function drawClusteringData() {
+            const canvas = document.getElementById('clusteringCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#6c5ce7', '#fd79a8', '#00b894'];
+            
+            clusteringData.forEach(point => {
+                ctx.fillStyle = point.cluster >= 0 ? colors[point.cluster % colors.length] : '#999';
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        }
+
+        function runKMeans() {
+            const k = parseInt(document.getElementById('numClusters').value);
+            
+            // Simple K-means simulation
+            clusteringData.forEach(point => {
+                point.cluster = Math.floor(Math.random() * k);
+            });
+            
+            drawClusteringData();
+            updateClusteringMetrics(k, 0, 0.73);
+        }
+
+        function runDBSCAN() {
+            // Simple DBSCAN simulation
+            let clusterId = 0;
+            const visited = new Set();
+            
+            clusteringData.forEach((point, index) => {
+                if (!visited.has(index)) {
+                    const neighbors = findNeighbors(point, parseFloat(document.getElementById('epsilon').value));
+                    if (neighbors.length >= 3) {
+                        point.cluster = clusterId++;
+                        neighbors.forEach(neighborIndex => {
+                            clusteringData[neighborIndex].cluster = point.cluster;
+                            visited.add(neighborIndex);
+                        });
+                    } else {
+                        point.cluster = -1; // Noise
+                    }
+                    visited.add(index);
+                }
+            });
+            
+            drawClusteringData();
+            const noisePts = clusteringData.filter(p => p.cluster === -1).length;
+            updateClusteringMetrics(clusterId, noisePts, 0.68);
+        }
+
+        function findNeighbors(point, epsilon) {
+            const neighbors = [];
+            const epsilonPixels = epsilon * 100; // Convert to pixels
+            
+            clusteringData.forEach((otherPoint, index) => {
+                const distance = Math.sqrt(
+                    Math.pow(point.x - otherPoint.x, 2) + 
+                    Math.pow(point.y - otherPoint.y, 2)
+                );
+                if (distance <= epsilonPixels) {
+                    neighbors.push(index);
+                }
+            });
+            
+            return neighbors;
+        }
+
+        function runHierarchical() {
+            // Simple hierarchical clustering simulation
+            const k = parseInt(document.getElementById('numClusters').value);
+            
+            clusteringData.forEach(point => {
+                point.cluster = Math.floor(Math.random() * k);
+            });
+            
+            drawClusteringData();
+            updateClusteringMetrics(k, 0, 0.71);
+        }
+
+        function updateClusteringMetrics(clusters, noise, silhouette) {
+            document.getElementById('clustersFound').textContent = clusters;
+            document.getElementById('noisePoints').textContent = noise;
+            document.getElementById('silhouetteScore').textContent = silhouette.toFixed(2);
+        }
+
+        function updateNumClusters(value) {
+            document.getElementById('numClustersValue').textContent = value;
+        }
+
+        function updateEpsilon(value) {
+            document.getElementById('epsilonValue').textContent = value;
+        }
+
+        // Neural Network Functions
+        function drawNeuralNetwork() {
+            const canvas = document.getElementById('neuralNetworkCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const layers = [4, 6, 4, 3]; // Input, hidden1, hidden2, output
+            const layerWidth = canvas.width / layers.length;
+            const maxNeurons = Math.max(...layers);
+            
+            // Draw connections
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 1;
+            
+            for (let l = 0; l < layers.length - 1; l++) {
+                const currentLayerSize = layers[l];
+                const nextLayerSize = layers[l + 1];
+                
+                for (let i = 0; i < currentLayerSize; i++) {
+                    for (let j = 0; j < nextLayerSize; j++) {
+                        const x1 = (l + 0.5) * layerWidth;
+                        const y1 = (i + 1) * (canvas.height / (currentLayerSize + 1));
+                        const x2 = (l + 1.5) * layerWidth;
+                        const y2 = (j + 1) * (canvas.height / (nextLayerSize + 1));
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            // Draw neurons
+            layers.forEach((layerSize, layerIndex) => {
+                const x = (layerIndex + 0.5) * layerWidth;
+                
+                for (let neuronIndex = 0; neuronIndex < layerSize; neuronIndex++) {
+                    const y = (neuronIndex + 1) * (canvas.height / (layerSize + 1));
+                    
+                    ctx.fillStyle = layerIndex === 0 ? '#4ecdc4' : 
+                                   layerIndex === layers.length - 1 ? '#ff6b6b' : '#667eea';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 15, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            });
+            
+            // Layer labels
+            ctx.fillStyle = '#333';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Input', layerWidth * 0.5, canvas.height - 10);
+            ctx.fillText('Hidden 1', layerWidth * 1.5, canvas.height - 10);
+            ctx.fillText('Hidden 2', layerWidth * 2.5, canvas.height - 10);
+            ctx.fillText('Output', layerWidth * 3.5, canvas.height - 10);
+        }
+
+        function addLayer() {
+            // Add layer logic
+            drawNeuralNetwork();
+        }
+
+        function removeLayer() {
+            // Remove layer logic
+            drawNeuralNetwork();
+        }
+
+        function trainNeuralNetwork() {
+            let epoch = 0;
+            const maxEpochs = 100;
+            
+            const trainingInterval = setInterval(() => {
+                if (epoch >= maxEpochs) {
+                    clearInterval(trainingInterval);
+                    return;
+                }
+                
+                epoch++;
+                const loss = Math.max(0.01, 1.0 - epoch * 0.01 + Math.random() * 0.05);
+                const accuracy = Math.min(98, 70 + epoch * 0.28 + Math.random() * 2);
+                
+                document.getElementById('neuralEpoch').textContent = epoch;
+                document.getElementById('neuralLoss').textContent = loss.toFixed(3);
+                document.getElementById('neuralAccuracy').textContent = Math.round(accuracy) + '%';
+                
+                // Animate network training
+                animateNetworkTraining(epoch / maxEpochs);
+                
+            }, 100);
+        }
+
+        function animateNetworkTraining(progress) {
+            // Add visual feedback for training
+            const canvas = document.getElementById('neuralNetworkCanvas');
+            if (!canvas) return;
+            
+            // Redraw with some animation effects
+            drawNeuralNetwork();
+        }
+
+        function resetNetwork() {
+            document.getElementById('neuralEpoch').textContent = '0';
+            document.getElementById('neuralLoss').textContent = '0.0';
+            document.getElementById('neuralAccuracy').textContent = '0%';
+            drawNeuralNetwork();
+        }
+
+        function updateHiddenNeurons(value) {
+            document.getElementById('hiddenNeuronsValue').textContent = value;
+            drawNeuralNetwork();
+        }
+
+        function updateNeuralLr(value) {
+            document.getElementById('neuralLrValue').textContent = parseFloat(value).toFixed(3);
+        }
+    </script>
+</body>
+</html>

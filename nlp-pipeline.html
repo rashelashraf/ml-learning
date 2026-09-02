@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLP Pipeline - ML/DL Learning Hub</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="tabular-data.html" class="nav-link">Tabular Data</a></li>
+                <li><a href="nlp-pipeline.html" class="nav-link active" aria-current="page">NLP Data</a></li>
+                <li><a href="image-processing.html" class="nav-link">Image Data</a></li>
+                <li><a href="encoding.html" class="nav-link">Encoding</a></li>
+                <li><a href="feature-selection.html" class="nav-link">Feature Selection</a></li>
+                <li><a href="training-testing.html" class="nav-link">Training</a></li>
+                <li><a href="hyperparameter-tuning.html" class="nav-link">Tuning</a></li>
+                <li><a href="ensemble-techniques.html" class="nav-link">Ensembles</a></li>
+                <li><a href="advanced-topics.html" class="nav-link">Advanced Topics</a></li>
+                <li><a href="dl.html" class="nav-link">Deep Learning</a></li>
+                <li><a href="interactive-demos.html" class="nav-link">Demos</a></li>
+            </ul>
+            <div class="hamburger" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Natural Language Processing Pipeline</h1>
+            <p>Understanding how machines process and understand human language</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> <span>/</span> <span>NLP Pipeline</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- NLP Pipeline Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="pipeline-container">
+                <div class="pipeline-stage" data-stage="1">
+                    <div class="stage-header">
+                        <div class="stage-number">1</div>
+                        <h3>Text Input & Preprocessing</h3>
+                    </div>
+                    <div class="stage-content">
+                        <div class="stage-layout">
+                            <div class="stage-explanation">
+                                <h4>Raw Text Processing</h4>
+                                <p>The first step in any NLP pipeline involves preparing raw text for machine learning models.</p>
+                                <ul>
+                                    <li><strong>Tokenization:</strong> Breaking text into words, subwords, or characters</li>
+                                    <li><strong>Normalization:</strong> Converting to lowercase, removing punctuation</li>
+                                    <li><strong>Cleaning:</strong> Removing noise, HTML tags, special characters</li>
+                                    <li><strong>Language Detection:</strong> Identifying the language of the text</li>
+                                </ul>
+                                <div class="code-example">
+                                    <h5>Example Process:</h5>
+                                    <pre><code>Input: "Hello World! How are you today?"
+↓ Tokenization ↓
+["Hello", "World", "!", "How", "are", "you", "today", "?"]
+↓ Normalization ↓
+["hello", "world", "how", "are", "you", "today"]</code></pre>
+                                </div>
+                            </div>
+                            <div class="stage-demo">
+                                <div class="demo-input">
+                                    <label>Input Text:</label>
+                                    <textarea id="nlp-input" placeholder="Enter text to see tokenization...">"Hello World! How are you today?"</textarea>
+                                </div>
+                                <div class="demo-output">
+                                    <label>Tokenized Output:</label>
+                                    <div id="nlp-tokens">["Hello", "World", "!", "How", "are", "you", "today", "?"]</div>
+                                </div>
+                                <button onclick="tokenizeText()" class="demo-button">Tokenize Text</button>
+                                <div class="preprocessing-options">
+                                    <h5>Preprocessing Options:</h5>
+                                    <label><input type="checkbox" id="lowercase" checked> Convert to lowercase</label>
+                                    <label><input type="checkbox" id="remove-punct" checked> Remove punctuation</label>
+                                    <label><input type="checkbox" id="remove-stop" checked> Remove stop words</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pipeline-arrow">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+
+                <div class="pipeline-stage" data-stage="2">
+                    <div class="stage-header">
+                        <div class="stage-number">2</div>
+                        <h3>Embeddings & Encoding</h3>
+                    </div>
+                    <div class="stage-content">
+                        <div class="stage-layout">
+                            <div class="stage-explanation">
+                                <h4>Converting Text to Numbers</h4>
+                                <p>Machine learning models require numerical input, so we convert text tokens into dense vector representations.</p>
+                                <ul>
+                                    <li><strong>Word Embeddings:</strong> Dense vector representations that capture semantic meaning (e.g., "king" is close to "queen", "man" is close to "woman")</li>
+                                    <li><strong>Word Embeddings Algorithms:</strong> Word2Vec (by Google), GloVe (by Stanford), FastText (by Facebook)</li>
+                                    <li><strong>Positional Encoding:</strong> Adding position information to preserve word order</li>
+                                    <li><strong>Attention Mechanisms:</strong> Learning relationships between different words</li>
+                                    <li><strong>Contextualization:</strong> Understanding words based on their context</li>
+                                </ul>
+                            </div>
+                            <div class="embedding-visualization">
+                                <h4>Word Embedding Examples</h4>
+                                <div class="embedding-grid">
+                                    <div class="word-embedding">
+                                        <span class="word">"cat"</span>
+                                        <div class="vector">[0.2, -0.1, 0.8, 0.3, ...]</div>
+                                        <div class="similarity">Similar to: dog, pet, animal</div>
+                                    </div>
+                                    <div class="word-embedding">
+                                        <span class="word">"king"</span>
+                                        <div class="vector">[0.1, -0.2, 0.7, 0.4, ...]</div>
+                                        <div class="similarity">Similar to: queen, ruler, monarch</div>
+                                    </div>
+                                    <div class="word-embedding">
+                                        <span class="word">"happy"</span>
+                                        <div class="vector">[0.5, 0.3, -0.1, 0.9, ...]</div>
+                                        <div class="similarity">Similar to: joyful, glad, pleased</div>
+                                    </div>
+                                </div>
+                                <div class="embedding-math">
+                                    <h5>Vector Mathematics:</h5>
+                                    <div class="math-example">
+                                        <code>king - man + woman ≈ queen</code>
+                                        <p>Embeddings capture semantic relationships through vector arithmetic</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pipeline-arrow">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+
+                <div class="pipeline-stage" data-stage="3">
+                    <div class="stage-header">
+                        <div class="stage-number">3</div>
+                        <h3>Transformer Processing</h3>
+                    </div>
+                    <div class="stage-content">
+                        <div class="transformer-section">
+                            <div class="transformer-explanation">
+                                <h4>The Heart of Modern NLP</h4>
+                                <p>Transformers revolutionized NLP by using self-attention mechanisms to process entire sequences simultaneously.</p>
+                            </div>
+                            
+                            <div class="transformer-architecture">
+                                <div class="attention-demo">
+                                    <h4>Self-Attention Visualization</h4>
+                                    <p>See how different words attend to each other in the sentence:</p>
+                                    <div class="sentence-example">"The cat sat on the mat"</div>
+                                    <div class="attention-matrix">
+                                        <div class="attention-row">
+                                            <span class="word-label">The</span>
+                                            <div class="attention-weights">
+                                                <div class="weight high" title="High attention"></div>
+                                                <div class="weight med" title="Medium attention"></div>
+                                                <div class="weight low" title="Low attention"></div>
+                                                <div class="weight low"></div>
+                                                <div class="weight med"></div>
+                                                <div class="weight low"></div>
+                                            </div>
+                                        </div>
+                                        <div class="attention-row">
+                                            <span class="word-label">cat</span>
+                                            <div class="attention-weights">
+                                                <div class="weight med"></div>
+                                                <div class="weight high"></div>
+                                                <div class="weight med"></div>
+                                                <div class="weight low"></div>
+                                                <div class="weight low"></div>
+                                                <div class="weight high"></div>
+                                            </div>
+                                        </div>
+                                        <div class="attention-row">
+                                            <span class="word-label">sat</span>
+                                            <div class="attention-weights">
+                                                <div class="weight low"></div>
+                                                <div class="weight high"></div>
+                                                <div class="weight high"></div>
+                                                <div class="weight med"></div>
+                                                <div class="weight low"></div>
+                                                <div class="weight med"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="attention-legend">
+                                        <span class="legend-item"><div class="weight high"></div> High Attention</span>
+                                        <span class="legend-item"><div class="weight med"></div> Medium Attention</span>
+                                        <span class="legend-item"><div class="weight low"></div> Low Attention</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="transformer-components">
+                                    <h4>Transformer Components</h4>
+                                    <div class="components-grid">
+                                        <div class="component">
+                                            <h5>Multi-Head Attention</h5>
+                                            <p>Multiple attention mechanisms running in parallel, each learning different types of relationships</p>
+                                        </div>
+                                        <div class="component">
+                                            <h5>Feed Forward Networks</h5>
+                                            <p>Dense layers that process the attention outputs with non-linear transformations</p>
+                                        </div>
+                                        <div class="component">
+                                            <h5>Layer Normalization</h5>
+                                            <p>Stabilizes training and enables very deep networks</p>
+                                        </div>
+                                        <div class="component">
+                                            <h5>Residual Connections</h5>
+                                            <p>Skip connections that help with gradient flow and training stability</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pipeline-arrow">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+
+                <div class="pipeline-stage" data-stage="4">
+                    <div class="stage-header">
+                        <div class="stage-number">4</div>
+                        <h3>Task-Specific Output</h3>
+                    </div>
+                    <div class="stage-content">
+                        <div class="nlp-applications">
+                            <h4>NLP Applications & Tasks</h4>
+                            <div class="nlp-tasks">
+                                <div class="task-card">
+                                    <div class="task-icon">📝</div>
+                                    <h4>Text Classification</h4>
+                                    <div class="task-example">
+                                        <div class="example-input">Input: "I love this movie!"</div>
+                                        <div class="example-output">Output: Positive (89% confidence)</div>
+                                    </div>
+                                    <div class="task-applications">
+                                        <span>Sentiment Analysis</span>
+                                        <span>Spam Detection</span>
+                                        <span>Topic Classification</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="task-card">
+                                    <div class="task-icon">🏷️</div>
+                                    <h4>Named Entity Recognition</h4>
+                                    <div class="task-example">
+                                        <div class="example-input">Input: "John works at Google in California"</div>
+                                        <div class="example-output">
+                                            <span class="entity person">John</span>: PERSON<br>
+                                            <span class="entity org">Google</span>: ORGANIZATION<br>
+                                            <span class="entity loc">California</span>: LOCATION
+                                        </div>
+                                    </div>
+                                    <div class="task-applications">
+                                        <span>Information Extraction</span>
+                                        <span>Knowledge Graphs</span>
+                                        <span>Document Processing</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="task-card">
+                                    <div class="task-icon">✍️</div>
+                                    <h4>Text Generation</h4>
+                                    <div class="task-example">
+                                        <div class="example-input">Input: "Once upon a time"</div>
+                                        <div class="example-output">Output: "there was a brave knight who embarked on a magical quest..."</div>
+                                    </div>
+                                    <div class="task-applications">
+                                        <span>Story Writing</span>
+                                        <span>Code Generation</span>
+                                        <span>Translation</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="task-card">
+                                    <div class="task-icon">❓</div>
+                                    <h4>Question Answering</h4>
+                                    <div class="task-example">
+                                        <div class="example-input">
+                                            Context: "The Eiffel Tower is located in Paris, France."<br>
+                                            Question: "Where is the Eiffel Tower?"
+                                        </div>
+                                        <div class="example-output">Answer: "Paris, France"</div>
+                                    </div>
+                                    <div class="task-applications">
+                                        <span>Chatbots</span>
+                                        <span>Search Systems</span>
+                                        <span>Virtual Assistants</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Concepts Section -->
+    <section class="concepts-section">
+        <div class="container">
+            <h2>Key NLP Concepts</h2>
+            <div class="concepts-grid">
+                <div class="concept-card">
+                    <h3>Tokenization Strategies</h3>
+                    <ul>
+                        <li><strong>Word-level:</strong> Split by spaces and punctuation</li>
+                        <li><strong>Subword:</strong> BPE, WordPiece for handling rare words</li>
+                        <li><strong>Character-level:</strong> Individual characters as tokens</li>
+                        <li><strong>Sentence-level:</strong> Entire sentences as units</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h3>Attention Mechanisms</h3>
+                    <ul>
+                        <li><strong>Self-attention:</strong> Words attend to other words in same sequence</li>
+                        <li><strong>Cross-attention:</strong> Attending between different sequences</li>
+                        <li><strong>Multi-head:</strong> Multiple attention patterns in parallel</li>
+                        <li><strong>Scaled dot-product:</strong> Efficient attention computation</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h3>Model Architectures</h3>
+                    <ul>
+                        <li><strong>BERT:</strong> Bidirectional encoder for understanding</li>
+                        <li><strong>GPT:</strong> Autoregressive decoder for generation</li>
+                        <li><strong>T5:</strong> Text-to-text unified framework</li>
+                        <li><strong>RoBERTa:</strong> Robustly optimized BERT approach</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="page-navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="tabular-data.html" class="nav-btn prev">
+                    <i class="fas fa-arrow-left"></i> Tabular Data Processing
+                </a>
+                <a href="image-processing.html" class="nav-btn next">
+                    Image Data Processing <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines, stage by stage.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>1 &middot; Data Processing</h4>
+                <ul>
+                    <li><a href="tabular-data.html">Tabular Data Processing</a></li>
+                    <li><a href="nlp-pipeline.html">NLP Data Processing</a></li>
+                    <li><a href="image-processing.html">Image Data Processing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>2 &middot; Feature Engineering</h4>
+                <ul>
+                    <li><a href="encoding.html">Encoding &amp; Scaling</a></li>
+                    <li><a href="feature-selection.html">Feature Selection</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>3 &middot; Modelling</h4>
+                <ul>
+                    <li><a href="training-testing.html">Training &amp; Testing</a></li>
+                    <li><a href="hyperparameter-tuning.html">Hyperparameter Tuning</a></li>
+                    <li><a href="ensemble-techniques.html">Ensemble Techniques</a></li>
+                    <li><a href="advanced-topics.html">Advanced Topics</a></li>
+                    <li><a href="dl.html">Deep Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>4 &middot; Practice</h4>
+                <ul>
+                    <li><a href="interactive-demos.html">All Demos</a></li>
+                    <li><a href="interactive-demos.html#classification">Classification</a></li>
+                    <li><a href="interactive-demos.html#regression">Regression</a></li>
+                    <li><a href="interactive-demos.html#clustering">Clustering</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/nlp.js"></script>
+</body>
+</html>

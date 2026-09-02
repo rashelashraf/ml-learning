@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabular Data Processing - ML/DL Learning Hub</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="tabular-data.html" class="nav-link active" aria-current="page">Tabular Data</a></li>
+                <li><a href="nlp-pipeline.html" class="nav-link">NLP Data</a></li>
+                <li><a href="image-processing.html" class="nav-link">Image Data</a></li>
+                <li><a href="encoding.html" class="nav-link">Encoding</a></li>
+                <li><a href="feature-selection.html" class="nav-link">Feature Selection</a></li>
+                <li><a href="training-testing.html" class="nav-link">Training</a></li>
+                <li><a href="hyperparameter-tuning.html" class="nav-link">Tuning</a></li>
+                <li><a href="ensemble-techniques.html" class="nav-link">Ensembles</a></li>
+                <li><a href="advanced-topics.html" class="nav-link">Advanced Topics</a></li>
+                <li><a href="dl.html" class="nav-link">Deep Learning</a></li>
+                <li><a href="interactive-demos.html" class="nav-link">Demos</a></li>
+            </ul>
+            <div class="hamburger" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Tabular Data Processing Pipeline</h1>
+            <p>Learn how to handle structured data for machine learning</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> <span>/</span> <span>Tabular Data</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="tabular-pipeline">
+                <div class="data-flow">
+                    <div class="flow-step">
+                        <h3><span class="step-number">1</span> Data Loading & Exploration</h3>
+                        <div class="step-content">
+                            <div class="data-table-demo">
+                                <h4>Sample Dataset</h4>
+                                <table class="sample-data">
+                                    <thead>
+                                        <tr>
+                                            <th>Age</th>
+                                            <th>Income</th>
+                                            <th>Education</th>
+                                            <th>Experience</th>
+                                            <th>Target</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>25</td>
+                                            <td>50000</td>
+                                            <td>Bachelor</td>
+                                            <td>2</td>
+                                            <td>0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>35</td>
+                                            <td>75000</td>
+                                            <td>Master</td>
+                                            <td>8</td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr class="missing-data">
+                                            <td>?</td>
+                                            <td>60000</td>
+                                            <td>Bachelor</td>
+                                            <td>?</td>
+                                            <td>?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>45</td>
+                                            <td>90000</td>
+                                            <td>PhD</td>
+                                            <td>15</td>
+                                            <td>1</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="data-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Total Rows:</span>
+                                    <span class="stat-value">1,000</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Missing Values:</span>
+                                    <span class="stat-value">45</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Categorical Features:</span>
+                                    <span class="stat-value">1</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Numerical Features:</span>
+                                    <span class="stat-value">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <h3><span class="step-number">2</span> Data Cleaning & Preprocessing</h3>
+                        <div class="step-content">
+                            <div class="preprocessing-steps">
+                                <div class="preprocessing-card">
+                                    <h4>Handle Missing Values</h4>
+                                    <div class="method-options">
+                                        <button class="method-btn active" onclick="selectMethod(this, 'mean')">Mean Imputation</button>
+                                        <button class="method-btn" onclick="selectMethod(this, 'median')">Median</button>
+                                        <button class="method-btn" onclick="selectMethod(this, 'drop')">Drop Rows</button>
+                                        <button class="method-btn" onclick="selectMethod(this, 'forward')">Forward Fill</button>
+                                    </div>
+                                    <div class="method-result" id="missing-result">
+                                        Age: ? → 35 (mean), Experience: ? → 8.3 (mean)
+                                    </div>
+                                    <div class="method-explanation">
+                                        <p><strong>Mean Imputation:</strong> Replace missing values with the average of non-missing values. Good for normally distributed data.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="preprocessing-card">
+                                    <h4>Encode Categorical Variables</h4>
+                                    <div class="encoding-demo">
+                                        <div class="before-after">
+                                            <div class="before">
+                                                <strong>Original Education Column:</strong><br>
+                                                Bachelor, Master, PhD, Bachelor, Master
+                                            </div>
+                                            <div class="encoding-arrow">→</div>
+                                            <div class="after">
+                                                <strong>One-Hot Encoded:</strong><br>
+                                                <table class="encoding-table">
+                                                    <tr><th>Bachelor</th><th>Master</th><th>PhD</th></tr>
+                                                    <tr><td>1</td><td>0</td><td>0</td></tr>
+                                                    <tr><td>0</td><td>1</td><td>0</td></tr>
+                                                    <tr><td>0</td><td>0</td><td>1</td></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <h3><span class="step-number">3</span> Feature Engineering</h3>
+                        <div class="step-content">
+                            <div class="feature-engineering">
+                                <div class="feature-type">
+                                    <h4>Scaling & Normalization</h4>
+                                    <div class="scaling-visual">
+                                        <div class="scale-before">
+                                            <strong>Original Values:</strong><br>
+                                            Age: [25, 35, 45]<br>
+                                            Income: [50000, 75000, 90000]<br>
+                                            Experience: [2, 8, 15]
+                                        </div>
+                                        <div class="scale-arrow">StandardScaler →</div>
+                                        <div class="scale-after">
+                                            <strong>Standardized:</strong><br>
+                                            Age: [-1.22, 0.00, 1.22]<br>
+                                            Income: [-1.22, 0.00, 1.22]<br>
+                                            Experience: [-1.22, 0.00, 1.22]
+                                        </div>
+                                    </div>
+                                    <div class="scaling-options">
+                                        <div class="scaling-method">
+                                            <h5>StandardScaler</h5>
+                                            <p>Mean = 0, Std = 1</p>
+                                            <code>(x - μ) / σ</code>
+                                        </div>
+                                        <div class="scaling-method">
+                                            <h5>MinMaxScaler</h5>
+                                            <p>Range [0, 1]</p>
+                                            <code>(x - min) / (max - min)</code>
+                                        </div>
+                                        <div class="scaling-method">
+                                            <h5>RobustScaler</h5>
+                                            <p>Uses median and IQR</p>
+                                            <code>(x - median) / IQR</code>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-type">
+                                    <h4>Feature Creation</h4>
+                                    <div class="feature-examples">
+                                        <div class="feature-example">
+                                            <strong>Interaction Features:</strong><br>
+                                            Age × Experience → Career_Intensity
+                                        </div>
+                                        <div class="feature-example">
+                                            <strong>Ratio Features:</strong><br>
+                                            Income ÷ Age → Income_per_Year_of_Life
+                                        </div>
+                                        <div class="feature-example">
+                                            <strong>Polynomial Features:</strong><br>
+                                            Age² + Experience² → Quadratic_Features
+                                        </div>
+                                        <div class="feature-example">
+                                            <strong>Binning:</strong><br>
+                                            Age → [Young, Middle, Senior]
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <h3><span class="step-number">4</span> Model-Ready Data</h3>
+                        <div class="step-content">
+                            <div class="final-data">
+                                <h4>Processed Dataset</h4>
+                                <table class="processed-data">
+                                    <thead>
+                                        <tr>
+                                            <th>Age_scaled</th>
+                                            <th>Income_scaled</th>
+                                            <th>Experience_scaled</th>
+                                            <th>Edu_Bachelor</th>
+                                            <th>Edu_Master</th>
+                                            <th>Edu_PhD</th>
+                                            <th>Target</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>-1.22</td>
+                                            <td>-1.22</td>
+                                            <td>-1.22</td>
+                                            <td>1</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                            <td>0</td>
+                                            <td>1</td>
+                                            <td>0</td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td>1.22</td>
+                                            <td>1.22</td>
+                                            <td>1.22</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>1</td>
+                                            <td>1</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="data-ready-indicator">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Data ready for ML models!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Practices Section -->
+    <section class="best-practices">
+        <div class="container">
+            <h2>Data Processing Best Practices</h2>
+            <div class="practices-grid">
+                <div class="practice-card">
+                    <h3>🔍 Data Quality Assessment</h3>
+                    <ul>
+                        <li>Check for missing values and outliers</li>
+                        <li>Validate data types and ranges</li>
+                        <li>Identify duplicate records</li>
+                        <li>Assess data distribution and skewness</li>
+                    </ul>
+                </div>
+                <div class="practice-card">
+                    <h3>⚡ Feature Selection</h3>
+                    <ul>
+                        <li>Remove highly correlated features</li>
+                        <li>Use statistical tests for relevance</li>
+                        <li>Apply dimensionality reduction techniques</li>
+                        <li>Consider domain knowledge</li>
+                    </ul>
+                </div>
+                <div class="practice-card">
+                    <h3>🎯 Preprocessing Pipeline</h3>
+                    <ul>
+                        <li>Separate numerical and categorical preprocessing</li>
+                        <li>Apply transformations consistently</li>
+                        <li>Use pipelines for reproducibility</li>
+                        <li>Validate on hold-out data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="page-navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-btn prev">
+                    <i class="fas fa-arrow-left"></i> Home
+                </a>
+                <a href="nlp-pipeline.html" class="nav-btn next">
+                    NLP Data Processing <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines, stage by stage.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>1 &middot; Data Processing</h4>
+                <ul>
+                    <li><a href="tabular-data.html">Tabular Data Processing</a></li>
+                    <li><a href="nlp-pipeline.html">NLP Data Processing</a></li>
+                    <li><a href="image-processing.html">Image Data Processing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>2 &middot; Feature Engineering</h4>
+                <ul>
+                    <li><a href="encoding.html">Encoding &amp; Scaling</a></li>
+                    <li><a href="feature-selection.html">Feature Selection</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>3 &middot; Modelling</h4>
+                <ul>
+                    <li><a href="training-testing.html">Training &amp; Testing</a></li>
+                    <li><a href="hyperparameter-tuning.html">Hyperparameter Tuning</a></li>
+                    <li><a href="ensemble-techniques.html">Ensemble Techniques</a></li>
+                    <li><a href="advanced-topics.html">Advanced Topics</a></li>
+                    <li><a href="dl.html">Deep Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>4 &middot; Practice</h4>
+                <ul>
+                    <li><a href="interactive-demos.html">All Demos</a></li>
+                    <li><a href="interactive-demos.html#classification">Classification</a></li>
+                    <li><a href="interactive-demos.html#regression">Regression</a></li>
+                    <li><a href="interactive-demos.html#clustering">Clustering</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+</body>
+</html>

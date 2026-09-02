@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML/DL Learning Hub - Home</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
+                <li><a href="tabular-data.html" class="nav-link">Tabular Data</a></li>
+                <li><a href="nlp-pipeline.html" class="nav-link">NLP Data</a></li>
+                <li><a href="image-processing.html" class="nav-link">Image Data</a></li>
+                <li><a href="encoding.html" class="nav-link">Encoding</a></li>
+                <li><a href="feature-selection.html" class="nav-link">Feature Selection</a></li>
+                <li><a href="training-testing.html" class="nav-link">Training</a></li>
+                <li><a href="hyperparameter-tuning.html" class="nav-link">Tuning</a></li>
+                <li><a href="ensemble-techniques.html" class="nav-link">Ensembles</a></li>
+                <li><a href="advanced-topics.html" class="nav-link">Advanced Topics</a></li>
+                <li><a href="dl.html" class="nav-link">Deep Learning</a></li>
+                <li><a href="interactive-demos.html" class="nav-link">Demos</a></li>
+            </ul>
+            <div class="hamburger" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Master Machine Learning &amp; Deep Learning</h1>
+                <p class="hero-subtitle">An interactive walk through the full ML pipeline &mdash; from raw tabular, text and image data, through feature engineering, to training, evaluation and deployment.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>11 Pipeline Modules</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-code"></i>
+                        <span>Interactive Demos</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Student Friendly</span>
+                    </div>
+                </div>
+                <a href="tabular-data.html" class="cta-button">Start with Stage 1 &rarr;</a>
+            </div>
+            <div class="hero-visual">
+                <div class="pipeline-preview">
+                    <div class="pipeline-node" data-tooltip="Raw Data">📊</div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-node" data-tooltip="Preprocessing">🧹</div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-node" data-tooltip="Feature Engineering">⚙️</div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-node" data-tooltip="Model Training">🧠</div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-node" data-tooltip="Evaluation & Prediction">🎯</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modules, ordered by the machine learning pipeline -->
+        <div class="stage-block">
+            <h2 class="stage-group-title">Stage 1 &middot; Data Processing</h2>
+            <div class="features-grid">
+                <a class="feature-card" href="tabular-data.html">
+                    <span class="pipeline-badge">1</span>
+                    <div class="feature-icon">📊</div>
+                    <h3>Tabular Data Processing</h3>
+                    <p>Load, explore and clean structured data: missing values, outliers, type conversion and the feature engineering that follows.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">Data Cleaning</span>
+                        <span class="highlight">Missing Values</span>
+                        <span class="highlight">Scaling</span>
+                    </div>
+                </a>
+                <a class="feature-card" href="nlp-pipeline.html">
+                    <span class="pipeline-badge">2</span>
+                    <div class="feature-icon">🔤</div>
+                    <h3>NLP Data Processing</h3>
+                    <p>Turn raw text into model-ready tensors: normalisation, tokenization, embeddings, attention and transformer architectures.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">Tokenization</span>
+                        <span class="highlight">Embeddings</span>
+                        <span class="highlight">Transformers</span>
+                    </div>
+                </a>
+                <a class="feature-card" href="image-processing.html">
+                    <span class="pipeline-badge">3</span>
+                    <div class="feature-icon">🖼️</div>
+                    <h3>Image Data Processing</h3>
+                    <p>Read images as arrays of numbers: pixels, channels, colour spaces, resizing, convolution filters and the preprocessing a vision model expects.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">Pixels &amp; Channels</span>
+                        <span class="highlight">Kernels</span>
+                        <span class="highlight">Augmentation</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="stage-block">
+            <h2 class="stage-group-title">Stage 2 &middot; Feature Engineering</h2>
+            <div class="features-grid">
+                <a class="feature-card" href="encoding.html">
+                    <span class="pipeline-badge">4</span>
+                    <div class="feature-icon">🔢</div>
+                    <h3>Encoding &amp; Scaling</h3>
+                    <p>Convert categorical and numerical columns into formats algorithms can consume, and choose the right method for each data type.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">One-Hot</span>
+                        <span class="highlight">Ordinal</span>
+                        <span class="highlight">Normalisation</span>
+                    </div>
+                </a>
+                <a class="feature-card" href="feature-selection.html">
+                    <span class="pipeline-badge">5</span>
+                    <div class="feature-icon">🔍</div>
+                    <h3>Feature Selection</h3>
+                    <p>Cut noise and dimensionality with filter, wrapper and embedded methods so models train faster and generalise better.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">Filter</span>
+                        <span class="highlight">Wrapper</span>
+                        <span class="highlight">Embedded</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="stage-block">
+            <h2 class="stage-group-title">Stage 3 &middot; Model Training</h2>
+            <div class="features-grid">
+                <a class="feature-card" href="training-testing.html">
+                    <span class="pipeline-badge">6</span>
+                    <div class="feature-icon">🎯</div>
+                    <h3>Training &amp; Testing</h3>
+                    <p>Split data correctly, tune hyperparameters, cross-validate and read the metrics that actually tell you if a model works.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">Train/Val/Test</span>
+                        <span class="highlight">Cross-Validation</span>
+                        <span class="highlight">Metrics</span>
+                    </div>
+                </a>
+                <a class="feature-card" href="hyperparameter-tuning.html">
+                    <span class="pipeline-badge">7</span>
+                    <div class="feature-icon">🎛️</div>
+                    <h3>Hyperparameter Tuning</h3>
+                    <p>Search the settings you choose rather than the ones the model learns: grid, random, Bayesian and successive halving, scored honestly.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">Grid vs Random</span>
+                        <span class="highlight">Bayesian</span>
+                        <span class="highlight">Nested CV</span>
+                    </div>
+                </a>
+                <a class="feature-card" href="ensemble-techniques.html">
+                    <span class="pipeline-badge">8</span>
+                    <div class="feature-icon">🧩</div>
+                    <h3>Ensemble Techniques</h3>
+                    <p>Combine models to beat any single learner &mdash; bagging, boosting, stacking and voting, with the bias/variance trade-offs explained.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">Bagging</span>
+                        <span class="highlight">Boosting</span>
+                        <span class="highlight">Stacking</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="stage-block">
+            <h2 class="stage-group-title">Stage 4 &middot; Advanced &amp; Practice</h2>
+            <div class="features-grid">
+                <a class="feature-card" href="advanced-topics.html">
+                    <span class="pipeline-badge">9</span>
+                    <div class="feature-icon">🚀</div>
+                    <h3>Advanced Topics</h3>
+                    <p>Explore GANs, federated learning, split learning, computer vision and transfer learning once the fundamentals are in place.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">GANs</span>
+                        <span class="highlight">Federated Learning</span>
+                        <span class="highlight">Transfer Learning</span>
+                    </div>
+                </a>
+                <a class="feature-card" href="dl.html">
+                    <span class="pipeline-badge">10</span>
+                    <div class="feature-icon">🧠</div>
+                    <h3>Deep Learning</h3>
+                    <p>Neural network foundations through to modern architectures: perceptrons, backpropagation, CNNs, RNNs and optimisation.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">Backprop</span>
+                        <span class="highlight">CNNs</span>
+                        <span class="highlight">Optimisers</span>
+                    </div>
+                </a>
+                <a class="feature-card" href="interactive-demos.html">
+                    <span class="pipeline-badge">11</span>
+                    <div class="feature-icon">🎮</div>
+                    <h3>Interactive Demos</h3>
+                    <p>Put the whole pipeline to work: hands-on classification, regression, clustering and neural network playgrounds.</p>
+                    <div class="feature-highlights">
+                        <span class="highlight">Classification</span>
+                        <span class="highlight">Regression</span>
+                        <span class="highlight">Clustering</span>
+                    </div>
+                </a>
+                <div class="feature-card overview-card">
+                    <span class="pipeline-badge"><i class="fas fa-route"></i></span>
+                    <div class="feature-icon">📚</div>
+                    <h3>Suggested Learning Path</h3>
+                    <p>New here? Work through the stages in order &mdash; each module assumes the one before it.</p>
+                    <div class="learning-path">
+                        <div class="path-step">1. Process your data (tabular, text, images)</div>
+                        <div class="path-step">2. Engineer and select features</div>
+                        <div class="path-step">3. Train, validate and ensemble</div>
+                        <div class="path-step">4. Go advanced, then practise</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Overview Section -->
+    <section class="overview-section">
+        <div class="container">
+            <h2>What You'll Learn</h2>
+            <div class="overview-grid">
+                <div class="overview-item">
+                    <div class="overview-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Data Fundamentals</h3>
+                    <p>Handle, clean and prepare structured, text and image data for machine learning models</p>
+                </div>
+                <div class="overview-item">
+                    <div class="overview-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Feature Engineering</h3>
+                    <p>Encode, scale and select the features that give a model the signal it needs</p>
+                </div>
+                <div class="overview-item">
+                    <div class="overview-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Model Architecture</h3>
+                    <p>Understand architectures from simple linear models through ensembles to deep neural networks</p>
+                </div>
+                <div class="overview-item">
+                    <div class="overview-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Performance Evaluation</h3>
+                    <p>Evaluate and improve model performance using the right metrics for the right problem</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">11</div>
+                    <div class="stat-label">Pipeline Modules</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Pipeline Stages</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">25+</div>
+                    <div class="stat-label">Interactive Demos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Hands-on Learning</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines, stage by stage.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>1 &middot; Data Processing</h4>
+                <ul>
+                    <li><a href="tabular-data.html">Tabular Data Processing</a></li>
+                    <li><a href="nlp-pipeline.html">NLP Data Processing</a></li>
+                    <li><a href="image-processing.html">Image Data Processing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>2 &middot; Feature Engineering</h4>
+                <ul>
+                    <li><a href="encoding.html">Encoding &amp; Scaling</a></li>
+                    <li><a href="feature-selection.html">Feature Selection</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>3 &middot; Modelling</h4>
+                <ul>
+                    <li><a href="training-testing.html">Training &amp; Testing</a></li>
+                    <li><a href="hyperparameter-tuning.html">Hyperparameter Tuning</a></li>
+                    <li><a href="ensemble-techniques.html">Ensemble Techniques</a></li>
+                    <li><a href="advanced-topics.html">Advanced Topics</a></li>
+                    <li><a href="dl.html">Deep Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>4 &middot; Practice</h4>
+                <ul>
+                    <li><a href="interactive-demos.html">All Demos</a></li>
+                    <li><a href="interactive-demos.html#classification">Classification</a></li>
+                    <li><a href="interactive-demos.html#regression">Regression</a></li>
+                    <li><a href="interactive-demos.html#clustering">Clustering</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/home.js"></script>
+</body>
+</html>

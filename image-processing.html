@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML/DL Learning Hub - Image Data Processing</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ---------- shared code sample styling (matches the other modules) ---- */
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            border-left: 4px solid #667eea;
+            /* keep the author's newlines and indentation */
+            white-space: pre;
+            tab-size: 4;
+            line-height: 1.5;
+        }
+
+        .code-block code {
+            display: block;
+            font: inherit;
+            color: inherit;
+            background: none;
+            border: 0;
+            padding: 0;
+            margin: 0;
+            white-space: inherit;
+        }
+
+        /* ---------- hero visual: three stacked channel planes ----------------- */
+        .hero-tensor {
+            position: relative;
+            width: 260px;
+            height: 250px;
+        }
+
+        .hero-plane {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.55);
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 0.5rem 0.65rem;
+            font-weight: 700;
+            color: #fff;
+            background-size: 15px 15px;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.22) 1px, transparent 1px);
+        }
+
+        .plane-r {
+            top: 0;
+            left: 0;
+            background-color: rgba(211, 59, 50, 0.85);
+        }
+
+        .plane-g {
+            top: 30px;
+            left: 42px;
+            background-color: rgba(63, 143, 74, 0.85);
+        }
+
+        .plane-b {
+            top: 60px;
+            left: 84px;
+            background-color: rgba(74, 111, 212, 0.9);
+        }
+
+        .hero-shape {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        /* ---------- page scaffolding ------------------------------------------ */
+        .topic-section {
+            margin-bottom: 3.5rem;
+            scroll-margin-top: 90px;
+        }
+
+        .topic-section > h2 {
+            color: #2c3e50;
+            font-size: 1.9rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .topic-lead {
+            color: #5a6577;
+            max-width: 70ch;
+            margin-bottom: 1.5rem;
+        }
+
+        .topic-section h3 {
+            color: #667eea;
+            margin: 1.75rem 0 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .topic-section p {
+            max-width: 78ch;
+            margin-bottom: 0.9rem;
+        }
+
+        .topic-section ul {
+            max-width: 78ch;
+            margin: 0 0 1rem 1.25rem;
+        }
+
+        .topic-section li {
+            margin-bottom: 0.45rem;
+        }
+
+        .jump-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.75rem;
+            border-bottom: 2px solid #eef0f6;
+        }
+
+        .jump-bar a {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 999px;
+            background: #f1f3fa;
+            color: #4a5468;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .jump-bar a:hover,
+        .jump-bar a:focus-visible {
+            background: #667eea;
+            color: #fff;
+        }
+
+        /* ---------- callouts and cards ---------------------------------------- */
+        .note-box {
+            background: #f6f8ff;
+            border-left: 4px solid #667eea;
+            border-radius: 0 10px 10px 0;
+            padding: 1.1rem 1.35rem;
+            margin: 1.5rem 0;
+        }
+
+        .note-box.warn {
+            background: #fff8f0;
+            border-left-color: #ff9800;
+        }
+
+        .note-box h4 {
+            margin-bottom: 0.4rem;
+            color: #2c3e50;
+        }
+
+        .note-box p:last-child,
+        .note-box ul:last-child {
+            margin-bottom: 0;
+        }
+
+        .fact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .fact-card {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .fact-card h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1.02rem;
+        }
+
+        .fact-card p {
+            font-size: 0.92rem;
+            color: #5a6577;
+            margin: 0;
+        }
+
+        /* narrow screens scroll the table instead of widening the page */
+        .table-scroll {
+            overflow-x: auto;
+            margin: 1.25rem 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .spec-table {
+            width: 100%;
+            min-width: 420px;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .spec-table th {
+            background: #667eea;
+            color: #fff;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+        }
+
+        .spec-table td {
+            padding: 0.7rem 1rem;
+            border-top: 1px solid #eef0f6;
+            vertical-align: top;
+        }
+
+        .spec-table tbody tr:nth-child(even) {
+            background: #fafbff;
+        }
+
+        .spec-table code {
+            background: #eef0f8;
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        /* ---------- interactive demo shell ------------------------------------ */
+        .demo-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+            color: #fff;
+        }
+
+        .demo-panel h3 {
+            color: #fff;
+            margin: 0 0 0.35rem;
+            font-size: 1.25rem;
+        }
+
+        .demo-panel > p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.92rem;
+            max-width: 70ch;
+            margin-bottom: 1.25rem;
+        }
+
+        .demo-surface {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 10px;
+            padding: 1.5rem;
+            color: #333;
+        }
+
+        .ip-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .ip-controls label {
+            font-size: 0.88rem;
+            color: #4a5468;
+            font-weight: 600;
+        }
+
+        .ip-controls select,
+        .ip-controls button {
+            font: inherit;
+            font-size: 0.88rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 8px;
+            border: 2px solid #d9deec;
+            background: #fff;
+            color: #3c4457;
+            cursor: pointer;
+        }
+
+        .ip-controls button.active,
+        .ip-controls button:hover {
+            background: #667eea;
+            border-color: #667eea;
+            color: #fff;
+        }
+
+        .ip-controls select:focus-visible,
+        .ip-controls button:focus-visible {
+            outline: 2px solid #764ba2;
+            outline-offset: 2px;
+        }
+
+        /* pixel grid demo */
+        .pixel-layout {
+            display: grid;
+            grid-template-columns: minmax(300px, 1.15fr) minmax(240px, 1fr);
+            gap: 1.75rem;
+            align-items: start;
+        }
+
+        .pixel-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .pixel {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.62rem;
+            font-family: 'Courier New', monospace;
+            border-radius: 2px;
+            cursor: crosshair;
+            border: 1px solid transparent;
+        }
+
+        .pixel.is-active {
+            border-color: #ff5722;
+            box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.35);
+        }
+
+        .pixel-readout {
+            max-width: 340px;
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 1.1rem 1.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.88rem;
+            line-height: 1.9;
+        }
+
+        /* two columns so every label and every value lines up */
+        .pixel-readout .rline {
+            display: grid;
+            grid-template-columns: 5.5rem 1fr;
+            gap: 0.5rem;
+        }
+
+        .pixel-readout .rk {
+            color: #9fb3ff;
+        }
+
+        .pixel-swatch {
+            width: 100%;
+            height: 40px;
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        /* canvas demos */
+        .canvas-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        /* a before/after pair should sit together, not spread across the row */
+        .canvas-row.pair {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .canvas-row.pair .canvas-tile {
+            flex: 0 0 190px;
+        }
+
+        /* the convolution demo shows only two tiles; don't let them drift apart */
+        .canvas-row.is-pair {
+            grid-template-columns: repeat(2, minmax(140px, 210px));
+            justify-content: center;
+            gap: 2.5rem;
+        }
+
+        .canvas-tile {
+            text-align: center;
+        }
+
+        .canvas-tile canvas {
+            width: 100%;
+            max-width: 190px;
+            height: auto;
+            image-rendering: pixelated;
+            border-radius: 8px;
+            border: 2px solid #e3e7f3;
+            background: #fff;
+        }
+
+        .canvas-tile figcaption {
+            margin-top: 0.5rem;
+            font-size: 0.82rem;
+            color: #5a6577;
+            font-weight: 600;
+        }
+
+        .kernel-readout {
+            display: inline-block;
+            margin-top: 1rem;
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre;
+            line-height: 1.6;
+        }
+
+        .demo-caption {
+            font-size: 0.86rem;
+            color: #5a6577;
+            margin: 1rem 0 0;
+            max-width: 72ch;
+        }
+
+        /* ---------- do / don't ------------------------------------------------ */
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .practice-col {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-top: 4px solid #4caf50;
+        }
+
+        .practice-col.avoid {
+            border-top-color: #f44336;
+        }
+
+        .practice-col h3 {
+            margin: 0 0 0.9rem;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+
+        .practice-col ul {
+            margin: 0;
+            padding-left: 1.15rem;
+        }
+
+        .practice-col li {
+            margin-bottom: 0.6rem;
+            font-size: 0.93rem;
+            color: #4a5468;
+        }
+
+        @media (max-width: 760px) {
+            .pixel-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .jump-bar a,
+            .ip-controls button {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="tabular-data.html" class="nav-link">Tabular Data</a></li>
+                <li><a href="nlp-pipeline.html" class="nav-link">NLP Data</a></li>
+                <li><a href="image-processing.html" class="nav-link active" aria-current="page">Image Data</a></li>
+                <li><a href="encoding.html" class="nav-link">Encoding</a></li>
+                <li><a href="feature-selection.html" class="nav-link">Feature Selection</a></li>
+                <li><a href="training-testing.html" class="nav-link">Training</a></li>
+                <li><a href="hyperparameter-tuning.html" class="nav-link">Tuning</a></li>
+                <li><a href="ensemble-techniques.html" class="nav-link">Ensembles</a></li>
+                <li><a href="advanced-topics.html" class="nav-link">Advanced Topics</a></li>
+                <li><a href="dl.html" class="nav-link">Deep Learning</a></li>
+                <li><a href="interactive-demos.html" class="nav-link">Demos</a></li>
+            </ul>
+            <div class="hamburger" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="container breadcrumb-bar">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> / <strong>Image Data Processing</strong>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero-section">
+        <div class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Image Data Processing</h1>
+                <p class="hero-subtitle">Start from a single pixel and work up to a batch of tensors a model can train on. Every idea here is the groundwork for convolutional networks later in the pipeline.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-th"></i>
+                        <span>Pixels &amp; Channels</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-palette"></i>
+                        <span>Colour Spaces</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-vector-square"></i>
+                        <span>Filters &amp; Kernels</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-tensor">
+                    <div class="hero-plane plane-r"><span>R</span></div>
+                    <div class="hero-plane plane-g"><span>G</span></div>
+                    <div class="hero-plane plane-b"><span>B</span></div>
+                    <p class="hero-shape">(224, 224, 3)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="main-content">
+        <div class="container">
+
+            <nav class="jump-bar" aria-label="Sections on this page">
+                <a href="#grid">1. A grid of numbers</a>
+                <a href="#intensity">2. Intensity &amp; bit depth</a>
+                <a href="#channels">3. Channels &amp; colour</a>
+                <a href="#shape">4. Shape &amp; layout</a>
+                <a href="#loading">5. Loading images</a>
+                <a href="#geometry">6. Resize, crop, rotate</a>
+                <a href="#convolution">7. Convolution</a>
+                <a href="#histogram">8. Histograms</a>
+                <a href="#formats">9. File formats</a>
+                <a href="#pipeline">10. The full pipeline</a>
+                <a href="#augmentation">11. Augmentation</a>
+            </nav>
+
+            <!-- 1 -->
+            <div class="topic-section" id="grid">
+                <h2>1. An image is a grid of numbers</h2>
+                <p class="topic-lead">Nothing about an image is special to a computer. It is a rectangular array of numbers, and every operation in this module is arithmetic on that array.</p>
+
+                <p>A grayscale image of height <code>H</code> and width <code>W</code> is an <code>H &times; W</code> matrix. Each entry is one <strong>pixel</strong> — short for picture element — and its value is a brightness. Position is given as <code>(row, column)</code>, with the origin at the <strong>top-left</strong>, rows increasing downward.</p>
+
+                <div class="note-box">
+                    <h4>Two coordinate conventions, one common bug</h4>
+                    <p>Array libraries index <code>image[row, column]</code>, which is <code>(y, x)</code>. Most drawing and geometry APIs take <code>(x, y)</code>. Mixing them silently transposes your image or puts boxes in the wrong place, and it will not raise an error on a square image — which is exactly why it survives testing.</p>
+                </div>
+
+                <div class="demo-panel">
+                    <h3>Pixel inspector</h3>
+                    <p>A 12 &times; 12 grayscale image. Hover or focus a cell to read the value the array actually stores. The shape you can see is nothing more than a region of high numbers next to a region of low ones.</p>
+                    <div class="demo-surface">
+                        <div class="ip-controls">
+                            <button type="button" id="pxToggleNumbers" class="active">Hide values</button>
+                            <button type="button" id="pxInvert">Invert (255 &minus; v)</button>
+                            <button type="button" id="pxReset">Reset</button>
+                        </div>
+                        <div class="pixel-layout">
+                            <div class="pixel-grid" id="pixelGrid" role="img" aria-label="A 12 by 12 grayscale pixel grid showing the letter shape"></div>
+                            <div class="pixel-readout" id="pixelReadout">
+                                <div class="pixel-swatch" id="pixelSwatch"></div>
+                                <div class="rline"><span class="rk">row, col</span><span>&mdash;</span></div>
+                                <div class="rline"><span class="rk">value</span><span>&mdash;</span></div>
+                                <div class="rline"><span class="rk">scaled</span><span>&mdash;</span></div>
+                                <div class="rline"><span class="rk">as RGB</span><span>&mdash;</span></div>
+                            </div>
+                        </div>
+                        <p class="demo-caption">The grid holds 144 numbers. A 1920 &times; 1080 photo holds just over two million per channel &mdash; the same idea, more of it.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="topic-section" id="intensity">
+                <h2>2. Intensity, bit depth and dynamic range</h2>
+                <p class="topic-lead">What a pixel value <em>means</em> depends on its data type, and that is where most silent image bugs come from.</p>
+
+                <p>The common case is 8-bit unsigned integers: whole numbers from <code>0</code> (black) to <code>255</code> (white). Eight bits gives 2<sup>8</sup> = 256 distinct levels per channel. That is the <strong>bit depth</strong>. Scientific and medical imaging often uses 12- or 16-bit data, and rendering pipelines use floats.</p>
+
+                <div class="table-scroll"><table class="spec-table">
+                    <thead>
+                        <tr><th>Type</th><th>Range</th><th>Levels</th><th>Where you meet it</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>uint8</code></td><td>0 &ndash; 255</td><td>256</td><td>JPEG, PNG, webcams, almost every dataset</td></tr>
+                        <tr><td><code>uint16</code></td><td>0 &ndash; 65535</td><td>65536</td><td>Medical (DICOM), satellite, raw camera files</td></tr>
+                        <tr><td><code>float32</code> [0, 1]</td><td>0.0 &ndash; 1.0</td><td>continuous</td><td>Model input after scaling</td></tr>
+                        <tr><td><code>float32</code> standardised</td><td>roughly &minus;2.5 &ndash; 2.5</td><td>continuous</td><td>Model input after mean/std normalisation</td></tr>
+                    </tbody>
+                </table></div>
+
+                <div class="note-box warn">
+                    <h4>Integer overflow wraps, it does not clip</h4>
+                    <p>Brightening a <code>uint8</code> image by adding 50 turns a pixel of 220 into 14, not 255. Cast to a wider type, do the arithmetic, clip, then cast back.</p>
+                </div>
+
+                <pre class="code-block"><code>import numpy as np
+
+img = np.array([[220, 240]], dtype=np.uint8)
+
+img + 50                                  # [[14, 34]]  wrapped around
+np.clip(img.astype(np.int16) + 50, 0, 255).astype(np.uint8)   # [[255, 255]]
+
+# Scaling to floats is a separate step from normalising
+img_float = img.astype(np.float32) / 255.0        # now in [0, 1]</code></pre>
+
+                <h3>Contrast and dynamic range</h3>
+                <p><strong>Dynamic range</strong> is the spread between the darkest and brightest pixel actually present. An underexposed photo might only use values 0&ndash;60, so it looks flat even though 256 levels are available. Stretching that range back across the full scale is <em>contrast stretching</em>, and it is one of the cheapest preprocessing wins available.</p>
+
+                <pre class="code-block"><code># Min-max contrast stretch to the full 0-255 range
+lo, hi = img.min(), img.max()
+stretched = ((img - lo) / max(hi - lo, 1) * 255).astype(np.uint8)</code></pre>
+            </div>
+
+            <!-- 3 -->
+            <div class="topic-section" id="channels">
+                <h2>3. Channels and colour</h2>
+                <p class="topic-lead">Colour is just several grayscale images stacked on top of each other, one per channel.</p>
+
+                <div class="fact-grid">
+                    <div class="fact-card">
+                        <h4>Grayscale &mdash; 1 channel</h4>
+                        <p>One brightness value per pixel. Shape <code>(H, W)</code>. Smallest and fastest; fine when colour carries no signal.</p>
+                    </div>
+                    <div class="fact-card">
+                        <h4>RGB &mdash; 3 channels</h4>
+                        <p>Red, green and blue intensities that add to make a colour. Shape <code>(H, W, 3)</code>. The default for natural images.</p>
+                    </div>
+                    <div class="fact-card">
+                        <h4>RGBA &mdash; 4 channels</h4>
+                        <p>RGB plus alpha (opacity). Shape <code>(H, W, 4)</code>. Drop or composite the alpha before training or it becomes a phantom feature.</p>
+                    </div>
+                    <div class="fact-card">
+                        <h4>Multispectral &mdash; N channels</h4>
+                        <p>Satellite and medical imagery can carry dozens of bands, including infrared. Same array, larger last axis.</p>
+                    </div>
+                </div>
+
+                <div class="demo-panel">
+                    <h3>Channel splitter</h3>
+                    <p>The same picture, then each colour channel shown on its own as a grayscale image. A bright area in the red channel means that pixel has a high red value &mdash; nothing more.</p>
+                    <div class="demo-surface">
+                        <div class="ip-controls">
+                            <label for="channelView">View:</label>
+                            <select id="channelView">
+                                <option value="channels">Separate R, G, B</option>
+                                <option value="tinted">R, G, B tinted</option>
+                                <option value="gray">Grayscale conversions</option>
+                            </select>
+                        </div>
+                        <div class="canvas-row" id="channelRow"></div>
+                        <p class="demo-caption" id="channelCaption"></p>
+                    </div>
+                </div>
+
+                <h3>Grayscale conversion is a weighted sum</h3>
+                <p>Averaging the three channels is not how it is normally done. Human vision is far more sensitive to green than to blue, so the standard luminance formula weights them accordingly:</p>
+
+                <pre class="code-block"><code>Y = 0.299 * R + 0.587 * G + 0.114 * B      # ITU-R BT.601 luma
+
+gray = (0.299 * rgb[..., 0]
+        + 0.587 * rgb[..., 1]
+        + 0.114 * rgb[..., 2]).astype(np.uint8)</code></pre>
+
+                <h3>Other colour spaces</h3>
+                <ul>
+                    <li><strong>HSV</strong> (hue, saturation, value) separates <em>which</em> colour from <em>how bright</em>. Useful for colour-based thresholding, because a red object stays red-hued in shadow while its RGB values all drop.</li>
+                    <li><strong>LAB</strong> separates lightness from two colour axes and is designed so equal numeric distances look like equal perceptual differences.</li>
+                    <li><strong>YCbCr</strong> splits luma from chroma, which is what lets JPEG compress colour more aggressively than brightness.</li>
+                </ul>
+            </div>
+
+            <!-- 4 -->
+            <div class="topic-section" id="shape">
+                <h2>4. Shape, memory layout and batching</h2>
+                <p class="topic-lead">Two frameworks, two conventions for the same array. Getting this wrong produces shape errors at best and quietly wrong results at worst.</p>
+
+                <div class="table-scroll"><table class="spec-table">
+                    <thead>
+                        <tr><th>Layout</th><th>Shape</th><th>Used by</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>HWC</strong> (channels last)</td><td><code>(224, 224, 3)</code></td><td>NumPy, PIL, OpenCV, TensorFlow</td></tr>
+                        <tr><td><strong>CHW</strong> (channels first)</td><td><code>(3, 224, 224)</code></td><td>PyTorch tensors</td></tr>
+                        <tr><td><strong>NHWC</strong> batched</td><td><code>(32, 224, 224, 3)</code></td><td>TensorFlow / Keras batches</td></tr>
+                        <tr><td><strong>NCHW</strong> batched</td><td><code>(32, 3, 224, 224)</code></td><td>PyTorch batches</td></tr>
+                    </tbody>
+                </table></div>
+
+                <p><code>N</code> is the batch dimension: how many images are pushed through the model at once. Models are written to expect a batch, so a single image still needs that leading axis of size 1.</p>
+
+                <pre class="code-block"><code>import numpy as np
+
+img = np.zeros((224, 224, 3), dtype=np.uint8)   # HWC, one image
+
+chw   = img.transpose(2, 0, 1)      # (3, 224, 224)   HWC -> CHW
+batch = chw[np.newaxis, ...]        # (1, 3, 224, 224) add the batch axis
+
+# In PyTorch the same two steps:
+import torch
+t = torch.from_numpy(img).permute(2, 0, 1).unsqueeze(0)
+print(t.shape)                      # torch.Size([1, 3, 224, 224])</code></pre>
+
+                <div class="note-box">
+                    <h4>How much memory does a batch cost?</h4>
+                    <p>A batch of 32 RGB images at 224 &times; 224 in <code>float32</code> is 32 &times; 3 &times; 224 &times; 224 &times; 4 bytes &asymp; <strong>19 MB</strong> for the input alone. The activations each layer keeps for the backward pass are typically many times that, which is why batch size is the first thing to cut when you hit an out-of-memory error.</p>
+                </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="topic-section" id="loading">
+                <h2>5. Loading images in Python</h2>
+                <p class="topic-lead">Three libraries dominate, and they disagree about channel order.</p>
+
+                <pre class="code-block"><code>import numpy as np
+
+# --- Pillow (PIL): the general-purpose reader -------------------------
+from PIL import Image
+
+img = Image.open("cat.jpg")         # lazy: header only until you use it
+print(img.size, img.mode)           # (640, 480) RGB   -- note (width, height)
+
+img = img.convert("RGB")            # drop alpha / expand palette images
+arr = np.asarray(img)               # (480, 640, 3) uint8, RGB order
+
+# --- OpenCV: fast, and BGR by default --------------------------------
+import cv2
+
+bgr = cv2.imread("cat.jpg")                     # (480, 640, 3) uint8, BGR
+rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)      # fix the channel order
+gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)    # (480, 640)
+
+# --- torchvision: straight to a normalised tensor --------------------
+from torchvision.io import read_image
+tensor = read_image("cat.jpg")      # (3, 480, 640) uint8 CHW</code></pre>
+
+                <div class="note-box warn">
+                    <h4>The classic OpenCV bug</h4>
+                    <p><code>cv2.imread</code> returns <strong>BGR</strong>, not RGB. Train on OpenCV-loaded data and infer on PIL-loaded data and your red and blue channels are swapped between the two. The model still runs, the loss still falls, and accuracy is quietly worse. Pick one convention and convert at the boundary.</p>
+                </div>
+
+                <p>Two more habits worth building: <code>Image.open</code> is lazy, so a corrupt file may only fail later — call <code>img.load()</code> or wrap reads in a try/except when scanning a dataset. And check <code>img.mode</code> rather than assuming: real datasets mix RGB, grayscale, palette and CMYK files, and a stray single-channel image will break a batch collation.</p>
+            </div>
+
+            <!-- 6 -->
+            <div class="topic-section" id="geometry">
+                <h2>6. Resize, crop, flip and rotate</h2>
+                <p class="topic-lead">Models need every input the same size. How you get there changes what the model sees.</p>
+
+                <h3>Resizing and interpolation</h3>
+                <p>Resizing invents pixel values that were never measured, and the <strong>interpolation</strong> method decides how. Nearest-neighbour copies the closest pixel and keeps hard edges — the right choice for segmentation masks, where a label of 3 must not be averaged into 2.5. Bilinear and bicubic blend neighbours and look smoother, which is what you want for photographs.</p>
+
+                <pre class="code-block"><code>from PIL import Image
+
+img = Image.open("cat.jpg")
+
+img.resize((224, 224), Image.BILINEAR)   # photographs
+img.resize((224, 224), Image.NEAREST)    # label masks: never blend class IDs
+
+# Preserve aspect ratio, then pad or centre-crop to the target
+img.thumbnail((224, 224))                # in-place, keeps the ratio</code></pre>
+
+                <div class="note-box">
+                    <h4>Squash or crop?</h4>
+                    <p>Resizing a 1600 &times; 900 image straight to 224 &times; 224 stretches it and distorts every shape. The usual alternative is to resize the short side to 224 and centre-crop, which keeps proportions but discards the edges. Neither is free; choose based on whether your objects sit centrally and whether aspect ratio carries information.</p>
+                </div>
+
+                <h3>Flips and rotations</h3>
+                <p>Horizontal flips are cheap and usually safe for natural photos. They are not safe when orientation is meaningful: flipping a photo of text, a road sign, or a chest X-ray creates an image that could not exist. Rotation by an arbitrary angle also leaves empty corners, which have to be filled by reflecting, replicating the edge, or padding with a constant.</p>
+
+                <pre class="code-block"><code>import cv2
+
+flipped = cv2.flip(img, 1)                            # 1 = horizontal, 0 = vertical
+
+h, w = img.shape[:2]
+M = cv2.getRotationMatrix2D((w / 2, h / 2), 15, 1.0)  # 15 degrees about the centre
+rotated = cv2.warpAffine(img, M, (w, h),
+                         borderMode=cv2.BORDER_REFLECT)  # fill the empty corners</code></pre>
+            </div>
+
+            <!-- 7 -->
+            <div class="topic-section" id="convolution">
+                <h2>7. Convolution: the operation behind every filter</h2>
+                <p class="topic-lead">Slide a small matrix over the image, multiply, add up. Blur, sharpen and edge detection are all the same operation with different numbers &mdash; and it is exactly what a convolutional layer learns.</p>
+
+                <p>A <strong>kernel</strong> (or filter) is a small matrix, usually 3 &times; 3. For each pixel, line the kernel up on its neighbourhood, multiply each kernel weight by the pixel underneath, and sum the nine products. That sum becomes the output pixel. Do that for every position and you have convolved the image.</p>
+
+                <pre class="code-block"><code>output[y, x] = sum over (i, j) of  kernel[i, j] * image[y + i - 1, x + j - 1]</code></pre>
+
+                <div class="demo-panel">
+                    <h3>Kernel playground</h3>
+                    <p>Pick a kernel and watch what it does to the same source image. The blur kernel is a local average; the Sobel kernels subtract one side of a pixel from the other, so flat regions cancel to zero and only edges survive. Each colour channel is filtered separately, which is why the edges come out tinted.</p>
+                    <div class="demo-surface">
+                        <div class="ip-controls">
+                            <label for="kernelPick">Kernel:</label>
+                            <select id="kernelPick">
+                                <option value="identity">Identity (no change)</option>
+                                <option value="boxblur">Box blur 3&times;3</option>
+                                <option value="gaussian">Gaussian blur 3&times;3</option>
+                                <option value="sharpen">Sharpen</option>
+                                <option value="sobelx">Sobel X (vertical edges)</option>
+                                <option value="sobely">Sobel Y (horizontal edges)</option>
+                                <option value="laplacian">Laplacian (all edges)</option>
+                                <option value="emboss">Emboss</option>
+                            </select>
+                        </div>
+                        <div class="canvas-row is-pair">
+                            <figure class="canvas-tile">
+                                <canvas id="convSource" width="140" height="140"></canvas>
+                                <figcaption>Source</figcaption>
+                            </figure>
+                            <figure class="canvas-tile">
+                                <canvas id="convResult" width="140" height="140"></canvas>
+                                <figcaption>Filtered</figcaption>
+                            </figure>
+                        </div>
+                        <div class="kernel-readout" id="kernelReadout"></div>
+                        <p class="demo-caption" id="kernelCaption"></p>
+                    </div>
+                </div>
+
+                <h3>Padding, stride and output size</h3>
+                <ul>
+                    <li><strong>Padding</strong> &mdash; the kernel has no neighbours to read at the border. Adding a ring of pixels around the image (zeros, or a reflection of the edge) keeps the output the same size as the input.</li>
+                    <li><strong>Stride</strong> &mdash; how far the kernel moves each step. Stride 2 samples every other position and halves the output dimensions.</li>
+                    <li>Output size for a square input: <code>(W - K + 2P) / S + 1</code>, where <code>K</code> is the kernel size, <code>P</code> the padding and <code>S</code> the stride.</li>
+                </ul>
+
+                <div class="note-box">
+                    <h4>Why this matters later</h4>
+                    <p>Hand-designed kernels like Sobel were how computer vision worked for decades. A convolutional network uses the identical operation but <em>learns</em> the nine weights from data, and stacks many such filters. When you reach the Deep Learning module, the convolution layer is this demo with the numbers filled in by gradient descent.</p>
+                </div>
+            </div>
+
+            <!-- 8 -->
+            <div class="topic-section" id="histogram">
+                <h2>8. Histograms and thresholding</h2>
+                <p class="topic-lead">A histogram counts how many pixels hold each value. It is the fastest way to diagnose an image you cannot look at, one of several million in a dataset.</p>
+
+                <p>The shape tells you the exposure at a glance: bunched at the left means underexposed, a spike at 255 means blown-out highlights where information is gone for good, and two separated humps usually mean a bright subject on a dark background.</p>
+
+                <pre class="code-block"><code>import numpy as np
+
+hist, bins = np.histogram(gray, bins=256, range=(0, 256))
+
+# Equalisation: redistribute values so the histogram is roughly flat,
+# which pulls detail out of a low-contrast image
+import cv2
+equalised = cv2.equalizeHist(gray)
+
+# Otsu picks the threshold that best separates the two humps
+thresh, binary = cv2.threshold(gray, 0, 255,
+                               cv2.THRESH_BINARY + cv2.THRESH_OTSU)</code></pre>
+
+                <p><strong>Thresholding</strong> turns a grayscale image into a binary mask: every pixel above the threshold becomes 1, everything else 0. It is the simplest possible segmentation, and it still works well for documents, microscopy and any scene with even lighting. When lighting varies across the frame, a single global threshold fails and adaptive thresholding — computing a local threshold per region — is the fix.</p>
+            </div>
+
+            <!-- 9 -->
+            <div class="topic-section" id="formats">
+                <h2>9. File formats and compression</h2>
+                <p class="topic-lead">The format decides whether the numbers you read back are the numbers that were written.</p>
+
+                <div class="table-scroll"><table class="spec-table">
+                    <thead>
+                        <tr><th>Format</th><th>Compression</th><th>Good for</th><th>Watch out for</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>JPEG</td><td>Lossy</td><td>Photographs, large datasets</td><td>Blocky artefacts; re-saving degrades it again each time</td></tr>
+                        <tr><td>PNG</td><td>Lossless</td><td>Masks, diagrams, screenshots</td><td>Much larger files for photographs</td></tr>
+                        <tr><td>TIFF</td><td>Either</td><td>Scientific, 16-bit, multi-page</td><td>Wide variation in what readers support</td></tr>
+                        <tr><td>WebP / AVIF</td><td>Either</td><td>Web delivery at small sizes</td><td>Older tooling may not decode them</td></tr>
+                        <tr><td>Raw camera</td><td>None or lossless</td><td>Full sensor data before processing</td><td>Vendor-specific; needs a dedicated reader</td></tr>
+                    </tbody>
+                </table></div>
+
+                <div class="note-box warn">
+                    <h4>Never store segmentation masks as JPEG</h4>
+                    <p>Lossy compression changes pixel values. In a photo you will not notice; in a mask where the value <em>is</em> the class label, a region of class 3 comes back as a smear of 2s, 3s and 4s with corrupted boundaries. Masks are PNG or TIFF, always.</p>
+                </div>
+            </div>
+
+            <!-- 10 -->
+            <div class="topic-section" id="pipeline">
+                <h2>10. The preprocessing pipeline</h2>
+                <p class="topic-lead">Putting it together: from a file on disk to a normalised batch the model accepts.</p>
+
+                <p>The order matters. Resize first so everything downstream is cheap and uniformly shaped, convert to float, then normalise last so the statistics apply to the values the model actually receives.</p>
+
+                <pre class="code-block"><code>from torchvision import transforms
+
+# ImageNet channel statistics - use these whenever you start from a
+# model pretrained on ImageNet, so inputs match what it was trained on
+IMAGENET_MEAN = [0.485, 0.456, 0.406]
+IMAGENET_STD  = [0.229, 0.224, 0.225]
+
+train_tf = transforms.Compose([
+    transforms.RandomResizedCrop(224),        # resize + random crop
+    transforms.RandomHorizontalFlip(),        # augmentation: training only
+    transforms.ToTensor(),                    # HWC uint8 -> CHW float in [0, 1]
+    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+])
+
+# Validation and test: deterministic, no augmentation
+eval_tf = transforms.Compose([
+    transforms.Resize(256),                   # short side to 256
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+])</code></pre>
+
+                <p>Normalisation subtracts a per-channel mean and divides by a per-channel standard deviation, centring each channel near zero with unit variance. That keeps gradients well-scaled and is the same reasoning behind standardising tabular features in the Encoding module.</p>
+
+                <div class="note-box warn">
+                    <h4>Augment training data only</h4>
+                    <p>Random crops and flips belong in the training transform. Apply them at validation or test time and your metric changes every time you run it, so you can no longer tell an improvement from noise. The evaluation transform must be deterministic.</p>
+                </div>
+            </div>
+
+            <!-- 11 -->
+            <div class="topic-section" id="augmentation">
+                <h2>11. Data augmentation</h2>
+                <p class="topic-lead">Show the model transformed copies of the images you already have, so it learns the object rather than the photograph.</p>
+
+                <p>Augmentation is regularisation. If every training photo of a cat faces left, the model can learn "left-facing" as part of "cat". Randomly flipping half of them removes that shortcut. The rule for choosing transforms is simple: <em>the label must survive the transform</em>.</p>
+
+                <div class="fact-grid">
+                    <div class="fact-card">
+                        <h4>Geometric</h4>
+                        <p>Flip, rotate, crop, scale, translate, small perspective warps. Cheap and broadly effective.</p>
+                    </div>
+                    <div class="fact-card">
+                        <h4>Photometric</h4>
+                        <p>Brightness, contrast, saturation and hue jitter. Teaches invariance to lighting and camera differences.</p>
+                    </div>
+                    <div class="fact-card">
+                        <h4>Noise and occlusion</h4>
+                        <p>Gaussian noise, blur, and random erasing of patches. Forces the model to use more than one cue.</p>
+                    </div>
+                    <div class="fact-card">
+                        <h4>Mixing</h4>
+                        <p>Mixup and CutMix blend two images and their labels together. Strong regularisers for large datasets.</p>
+                    </div>
+                </div>
+
+                <pre class="code-block"><code>import albumentations as A
+
+train_aug = A.Compose([
+    A.RandomResizedCrop(224, 224, scale=(0.7, 1.0)),
+    A.HorizontalFlip(p=0.5),
+    A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, p=0.5),
+    A.GaussNoise(p=0.2),
+    A.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
+])
+
+augmented = train_aug(image=rgb_array)["image"]</code></pre>
+
+                <div class="note-box">
+                    <h4>When a transform destroys the label</h4>
+                    <p>Vertical flips break document text and X-rays. Heavy hue jitter breaks any task where colour <em>is</em> the class, like ripe versus unripe fruit. Rotation past a few degrees breaks digit recognition, where a rotated 6 becomes a 9. Always look at a batch of your augmented images before training on them.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Key concepts -->
+    <section class="concepts-section">
+        <div class="container">
+            <h2>Key Concepts</h2>
+            <div class="fact-grid">
+                <div class="fact-card">
+                    <h4>Pixel</h4>
+                    <p>One cell of the grid, holding a brightness value per channel. Indexed <code>(row, column)</code> from the top-left.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Bit depth</h4>
+                    <p>How many distinct levels a pixel can take. 8-bit gives 256; the data type decides whether arithmetic clips or wraps.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Channel</h4>
+                    <p>One full grayscale plane. Stack three for RGB; the count is the size of the channel axis.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Kernel</h4>
+                    <p>A small weight matrix slid over the image. Blur, sharpen and edge detection differ only in its numbers.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Interpolation</h4>
+                    <p>How resizing invents values it never measured. Nearest for masks, bilinear or bicubic for photographs.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Normalisation</h4>
+                    <p>Subtract the channel mean, divide by the channel standard deviation, so inputs are centred and well-scaled.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best practices -->
+    <section class="best-practices">
+        <div class="container">
+            <h2>Best Practices</h2>
+            <div class="practice-grid">
+                <div class="practice-col">
+                    <h3><i class="fas fa-check-circle" style="color:#4caf50"></i> Do this</h3>
+                    <ul>
+                        <li>Print <code>shape</code>, <code>dtype</code> and <code>min/max</code> the moment you load an image &mdash; it catches most bugs in one line.</li>
+                        <li>Fix channel order at the point of loading, then use one convention everywhere.</li>
+                        <li>Use the exact normalisation statistics the pretrained model was trained with.</li>
+                        <li>Resize masks with nearest-neighbour so class IDs are never blended.</li>
+                        <li>Display a grid of augmented training images before you train on them.</li>
+                        <li>Keep the evaluation transform deterministic and identical to what you will run in production.</li>
+                    </ul>
+                </div>
+                <div class="practice-col avoid">
+                    <h3><i class="fas fa-times-circle" style="color:#f44336"></i> Avoid this</h3>
+                    <ul>
+                        <li>Doing <code>uint8</code> arithmetic without casting first &mdash; it wraps around silently.</li>
+                        <li>Assuming <code>cv2.imread</code> gives RGB. It gives BGR.</li>
+                        <li>Saving segmentation masks as JPEG.</li>
+                        <li>Applying random augmentation at validation or test time.</li>
+                        <li>Squashing to a square without checking whether aspect ratio carries information.</li>
+                        <li>Computing normalisation statistics over the whole dataset before splitting &mdash; that leaks test data into training.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prev / next -->
+    <section class="page-navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="nlp-pipeline.html" class="nav-btn prev">
+                    <i class="fas fa-arrow-left"></i> NLP Data Processing
+                </a>
+                <a href="encoding.html" class="nav-btn next">
+                    Encoding &amp; Scaling <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines, stage by stage.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>1 &middot; Data Processing</h4>
+                <ul>
+                    <li><a href="tabular-data.html">Tabular Data Processing</a></li>
+                    <li><a href="nlp-pipeline.html">NLP Data Processing</a></li>
+                    <li><a href="image-processing.html">Image Data Processing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>2 &middot; Feature Engineering</h4>
+                <ul>
+                    <li><a href="encoding.html">Encoding &amp; Scaling</a></li>
+                    <li><a href="feature-selection.html">Feature Selection</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>3 &middot; Modelling</h4>
+                <ul>
+                    <li><a href="training-testing.html">Training &amp; Testing</a></li>
+                    <li><a href="hyperparameter-tuning.html">Hyperparameter Tuning</a></li>
+                    <li><a href="ensemble-techniques.html">Ensemble Techniques</a></li>
+                    <li><a href="advanced-topics.html">Advanced Topics</a></li>
+                    <li><a href="dl.html">Deep Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>4 &middot; Practice</h4>
+                <ul>
+                    <li><a href="interactive-demos.html">All Demos</a></li>
+                    <li><a href="interactive-demos.html#classification">Classification</a></li>
+                    <li><a href="interactive-demos.html#regression">Regression</a></li>
+                    <li><a href="interactive-demos.html#clustering">Clustering</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/image-processing.js"></script>
+</body>
+</html>

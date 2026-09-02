@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training & Testing - ML/DL Learning Hub</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="tabular-data.html" class="nav-link">Tabular Data</a></li>
+                <li><a href="nlp-pipeline.html" class="nav-link">NLP Data</a></li>
+                <li><a href="image-processing.html" class="nav-link">Image Data</a></li>
+                <li><a href="encoding.html" class="nav-link">Encoding</a></li>
+                <li><a href="feature-selection.html" class="nav-link">Feature Selection</a></li>
+                <li><a href="training-testing.html" class="nav-link active" aria-current="page">Training</a></li>
+                <li><a href="hyperparameter-tuning.html" class="nav-link">Tuning</a></li>
+                <li><a href="ensemble-techniques.html" class="nav-link">Ensembles</a></li>
+                <li><a href="advanced-topics.html" class="nav-link">Advanced Topics</a></li>
+                <li><a href="dl.html" class="nav-link">Deep Learning</a></li>
+                <li><a href="interactive-demos.html" class="nav-link">Demos</a></li>
+            </ul>
+            <div class="hamburger" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Model Training & Testing Pipeline</h1>
+            <p>Complete workflow from data splitting to model evaluation</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> <span>/</span> <span>Training & Testing</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="training-pipeline">
+                <div class="pipeline-overview">
+                    <div class="training-stage">
+                        <h3><span class="step-number">1</span> Data Splitting</h3>
+                        <div class="data-split-visual">
+                            <div class="data-portion train-data">
+                                <span>Training Set (70%)</span>
+                                <div class="data-bars">
+                                    <div class="data-bar" style="width: 70%"></div>
+                                </div>
+                                <p>Used to train the model and learn patterns from the data</p>
+                            </div>
+                            <div class="data-portion val-data">
+                                <span>Validation Set (15%)</span>
+                                <div class="data-bars">
+                                    <div class="data-bar" style="width: 15%"></div>
+                                </div>
+                                <p>Used to tune hyperparameters and prevent overfitting</p>
+                            </div>
+                            <div class="data-portion test-data">
+                                <span>Test Set (15%)</span>
+                                <div class="data-bars">
+                                    <div class="data-bar" style="width: 15%"></div>
+                                </div>
+                                <p>Used for final evaluation of model performance</p>
+                            </div>
+                        </div>
+                        <div class="split-explanation">
+                            <h4>Why Split Data?</h4>
+                            <ul>
+                                <li><strong>Training:</strong> Learn patterns and parameters from this subset</li>
+                                <li><strong>Validation:</strong> Tune hyperparameters without touching test data</li>
+                                <li><strong>Test:</strong> Unbiased evaluation of final model performance</li>
+                                <li><strong>Prevent Overfitting:</strong> Ensure model generalizes to unseen data</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="training-stage">
+                        <h3><span class="step-number">2</span> Model Selection & Architecture</h3>
+                        <div class="model-options">
+                            <div class="model-card" onclick="selectModel('linear')">
+                                <div class="model-icon">📈</div>
+                                <h4>Linear Regression</h4>
+                                <p>Simple, interpretable, fast training</p>
+                                <div class="model-details">
+                                    <span>Linear relationships</span>
+                                    <span>Low complexity</span>
+                                </div>
+                            </div>
+                            <div class="model-card" onclick="selectModel('tree')">
+                                <div class="model-icon">🌳</div>
+                                <h4>Decision Tree</h4>
+                                <p>Non-linear, rule-based decisions</p>
+                                <div class="model-details">
+                                    <span>Interpretable rules</span>
+                                    <span>Handles non-linearity</span>
+                                </div>
+                            </div>
+                            <div class="model-card active" onclick="selectModel('neural')">
+                                <div class="model-icon">🧠</div>
+                                <h4>Neural Network</h4>
+                                <p>Complex patterns, high capacity</p>
+                                <div class="model-details">
+                                    <span>Universal approximator</span>
+                                    <span>Requires more data</span>
+                                </div>
+                            </div>
+                            <div class="model-card" onclick="selectModel('ensemble')">
+                                <div class="model-icon">🎯</div>
+                                <h4>Random Forest</h4>
+                                <p>Ensemble method, robust</p>
+                                <div class="model-details">
+                                    <span>Reduces overfitting</span>
+                                    <span>Feature importance</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="selected-model-details" id="model-details">
+                            <h4>Neural Network Architecture</h4>
+                            <div class="nn-architecture">
+                                <div class="nn-layer">
+                                    <div class="layer-name">Input Layer</div>
+                                    <div class="layer-neurons">
+                                        <div class="neuron"></div>
+                                        <div class="neuron"></div>
+                                        <div class="neuron"></div>
+                                        <div class="neuron"></div>
+                                    </div>
+                                    <div class="layer-info">4 features</div>
+                                </div>
+                                <div class="nn-layer">
+                                    <div class="layer-name">Hidden Layer 1</div>
+                                    <div class="layer-neurons">
+                                        <div class="neuron"></div>
+                                        <div class="neuron"></div>
+                                        <div class="neuron"></div>
+                                    </div>
+                                    <div class="layer-info">ReLU activation</div>
+                                </div>
+                                <div class="nn-layer">
+                                    <div class="layer-name">Hidden Layer 2</div>
+                                    <div class="layer-neurons">
+                                        <div class="neuron"></div>
+                                        <div class="neuron"></div>
+                                    </div>
+                                    <div class="layer-info">ReLU activation</div>
+                                </div>
+                                <div class="nn-layer">
+                                    <div class="layer-name">Output Layer</div>
+                                    <div class="layer-neurons">
+                                        <div class="neuron"></div>
+                                    </div>
+                                    <div class="layer-info">Sigmoid activation</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="training-stage">
+                        <h3><span class="step-number">3</span> Training Process</h3>
+                        <div class="training-process">
+                            <div class="training-controls">
+                                <button id="start-training" onclick="startTraining()" class="train-button">
+                                    <i class="fas fa-play"></i> Start Training
+                                </button>
+                                <div class="training-params">
+                                    <div class="param-group">
+                                        <label>Learning Rate:</label>
+                                        <input type="range" id="lr-slider" min="0.001" max="0.1" step="0.001" value="0.01">
+                                        <span id="lr-display">0.01</span>
+                                    </div>
+                                    <div class="param-group">
+                                        <label>Batch Size:</label>
+                                        <input type="range" id="batch-slider" min="16" max="128" step="16" value="32">
+                                        <span id="batch-display">32</span>
+                                    </div>
+                                    <div class="param-group">
+                                        <label>Epochs:</label>
+                                        <input type="range" id="epoch-slider" min="10" max="200" step="10" value="100">
+                                        <span id="epoch-display">100</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="training-visualization">
+                                <div class="loss-chart">
+                                    <h4>Training Progress</h4>
+                                    <canvas id="loss-canvas" width="500" height="300"></canvas>
+                                    <div class="chart-legend">
+                                        <span class="legend-item">
+                                            <div class="legend-color" style="background: #ff6b6b;"></div>
+                                            Training Loss
+                                        </span>
+                                        <span class="legend-item">
+                                            <div class="legend-color" style="background: #4ecdc4;"></div>
+                                            Validation Loss
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="training-stats">
+                                    <div class="stat">
+                                        <span>Epoch:</span>
+                                        <span id="current-epoch">0/100</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span>Training Loss:</span>
+                                        <span id="train-loss">0.000</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span>Validation Loss:</span>
+                                        <span id="val-loss">0.000</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span>Accuracy:</span>
+                                        <span id="accuracy">0.0%</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span>Training Time:</span>
+                                        <span id="training-time">0s</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="training-stage">
+                        <h3><span class="step-number">4</span> Model Evaluation</h3>
+                        <div class="evaluation-metrics">
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <h4>Confusion Matrix</h4>
+                                    <div class="confusion-matrix">
+                                        <table>
+                                            <tr>
+                                                <td></td>
+                                                <td><strong>Pred 0</strong></td>
+                                                <td><strong>Pred 1</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>True 0</strong></td>
+                                                <td class="tn">85</td>
+                                                <td class="fp">5</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>True 1</strong></td>
+                                                <td class="fn">10</td>
+                                                <td class="tp">90</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="matrix-explanation">
+                                        <p><strong>TP:</strong> True Positives (correctly predicted positive)</p>
+                                        <p><strong>TN:</strong> True Negatives (correctly predicted negative)</p>
+                                        <p><strong>FP:</strong> False Positives (incorrectly predicted positive)</p>
+                                        <p><strong>FN:</strong> False Negatives (incorrectly predicted negative)</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-card">
+                                    <h4>Performance Metrics</h4>
+                                    <div class="metrics-list">
+                                        <div class="metric-item">
+                                            <span>Accuracy:</span>
+                                            <span class="metric-value">92.1%</span>
+                                            <div class="metric-formula">Accuracy = (TP + TN) / Total</div>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span>Precision:</span>
+                                            <span class="metric-value">94.7%</span>
+                                            <div class="metric-formula">Precision = TP / (TP + FP)</div>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span>Recall:</span>
+                                            <span class="metric-value">90.0%</span>
+                                            <div class="metric-formula">Recall = TP / (TP + FN)</div>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span>F1-Score:</span>
+                                            <span class="metric-value">92.3%</span>
+                                            <div class="metric-formula">F1 = 2 × (Precision × Recall) / (Precision + Recall)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-card">
+                                    <h4>ROC Curve</h4>
+                                    <div class="roc-curve">
+                                        <canvas id="roc-canvas" width="250" height="250"></canvas>
+                                        <div class="auc-score">AUC: 0.95</div>
+                                        <p>Area Under Curve measures the model's ability to distinguish between classes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Concepts Section -->
+    <section class="concepts-section">
+        <div class="container">
+            <h2>Key Training Concepts</h2>
+            <div class="concepts-grid">
+                <div class="concept-card">
+                    <h3>🎯 Overfitting vs Underfitting</h3>
+                    <div class="concept-visual">
+                        <div class="fitting-example">
+                            <div class="fit-type">
+                                <h5>Underfitting</h5>
+                                <p>Model is too simple</p>
+                                <div class="fit-indicator poor">High bias, low variance</div>
+                            </div>
+                            <div class="fit-type">
+                                <h5>Good Fit</h5>
+                                <p>Model is just right</p>
+                                <div class="fit-indicator good">Balanced bias-variance</div>
+                            </div>
+                            <div class="fit-type">
+                                <h5>Overfitting</h5>
+                                <p>Model is too complex</p>
+                                <div class="fit-indicator poor">Low bias, high variance</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="concept-card">
+                    <h3>📊 Cross-Validation</h3>
+                    <div class="cv-visual">
+                        <p>K-Fold Cross-Validation (K=5)</p>
+                        <div class="cv-folds">
+                            <div class="fold">
+                                <div class="fold-train">Train</div>
+                                <div class="fold-train">Train</div>
+                                <div class="fold-train">Train</div>
+                                <div class="fold-train">Train</div>
+                                <div class="fold-val">Val</div>
+                            </div>
+                            <div class="fold">
+                                <div class="fold-train">Train</div>
+                                <div class="fold-train">Train</div>
+                                <div class="fold-train">Train</div>
+                                <div class="fold-val">Val</div>
+                                <div class="fold-train">Train</div>
+                            </div>
+                        </div>
+                        <p>Each fold serves as validation set once</p>
+                    </div>
+                </div>
+                
+                <div class="concept-card">
+                    <h3>⚡ Optimization Algorithms</h3>
+                    <ul>
+                        <li><strong>SGD:</strong> Stochastic Gradient Descent - simple but effective</li>
+                        <li><strong>Adam:</strong> Adaptive moments - combines momentum and RMSprop</li>
+                        <li><strong>RMSprop:</strong> Root Mean Square propagation - adaptive learning rates</li>
+                        <li><strong>Momentum:</strong> Accelerates gradients in relevant direction</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card">
+                    <h3>🔧 Regularization Techniques</h3>
+                    <ul>
+                        <li><strong>L1 Regularization:</strong> Adds sum of absolute weights to loss</li>
+                        <li><strong>L2 Regularization:</strong> Adds sum of squared weights to loss</li>
+                        <li><strong>Dropout:</strong> Randomly sets neurons to zero during training</li>
+                        <li><strong>Early Stopping:</strong> Stop training when validation loss increases</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="page-navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="feature-selection.html" class="nav-btn prev">
+                    <i class="fas fa-arrow-left"></i> Feature Selection
+                </a>
+                <a href="hyperparameter-tuning.html" class="nav-btn next">
+                    Hyperparameter Tuning <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines, stage by stage.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>1 &middot; Data Processing</h4>
+                <ul>
+                    <li><a href="tabular-data.html">Tabular Data Processing</a></li>
+                    <li><a href="nlp-pipeline.html">NLP Data Processing</a></li>
+                    <li><a href="image-processing.html">Image Data Processing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>2 &middot; Feature Engineering</h4>
+                <ul>
+                    <li><a href="encoding.html">Encoding &amp; Scaling</a></li>
+                    <li><a href="feature-selection.html">Feature Selection</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>3 &middot; Modelling</h4>
+                <ul>
+                    <li><a href="training-testing.html">Training &amp; Testing</a></li>
+                    <li><a href="hyperparameter-tuning.html">Hyperparameter Tuning</a></li>
+                    <li><a href="ensemble-techniques.html">Ensemble Techniques</a></li>
+                    <li><a href="advanced-topics.html">Advanced Topics</a></li>
+                    <li><a href="dl.html">Deep Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>4 &middot; Practice</h4>
+                <ul>
+                    <li><a href="interactive-demos.html">All Demos</a></li>
+                    <li><a href="interactive-demos.html#classification">Classification</a></li>
+                    <li><a href="interactive-demos.html#regression">Regression</a></li>
+                    <li><a href="interactive-demos.html#clustering">Clustering</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/training.js"></script>
+</body>
+</html>

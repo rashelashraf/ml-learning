@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Topics - ML/DL Learning Hub</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Page-specific styles only — shared chrome lives in styles/main.css */
+
+
+        /* Topic Tabs */
+        .topic-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Topic Content */
+        .topic-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .topic-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .topic-content h3 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        /* GAN Styles */
+        .gan-players {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .player {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .discriminator {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .vs {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .player-goal {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+
+        .player-process {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        /* GAN Steps */
+        .gan-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .gan-step {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-visual {
+            background: #e3f2fd;
+            padding: 0.5rem;
+            border-radius: 10px;
+            font-family: monospace;
+            margin: 0.5rem 0;
+        }
+
+        /* Application Grid */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .app-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .app-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .app-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-desc {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .app-example {
+            background: #f0f4ff;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #667eea;
+        }
+
+        /* Federated Learning Styles */
+        .federated-architecture {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+
+        .central-server {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .server-tasks {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .server-tasks span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .federated-clients {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .client-device {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .device-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .device-label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+
+        .local-data {
+            font-size: 0.9rem;
+            color: #666;
+            background: #f8f9ff;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        /* FL Steps */
+        .fl-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .fl-step {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Benefits Grid */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .benefit-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Split Learning Styles */
+        .split-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .client-side, .server-side {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .network-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .layer {
+            padding: 0.8rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .client-layer {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .server-layer {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .communication-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .arrow-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .advantages-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-item h5 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* Computer Vision Styles */
+        .cv-pipeline {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .cv-stage {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-transformations {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .transform-step {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .transform-name {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-placeholder {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+        }
+
+        .transform-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .transform-arrow {
+            font-size: 1.5rem;
+            color: #667eea;
+        }
+
+        .cnn-architecture {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .cnn-layer {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .layer-name {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .feature-maps {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .feature-map {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 5px;
+        }
+
+        .feature-map.large {
+            width: 30px;
+            height: 30px;
+        }
+
+        .feature-map.medium {
+            width: 20px;
+            height: 20px;
+        }
+
+        .feature-map.small {
+            width: 15px;
+            height: 15px;
+        }
+
+        .layer-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .cv-tasks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .task-example {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-example h5 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .classification-result {
+            margin: 1rem 0;
+        }
+
+        .class-prob {
+            padding: 0.5rem;
+            margin: 0.3rem 0;
+            border-radius: 5px;
+        }
+
+        .class-prob.high {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .class-prob.medium {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .class-prob.low {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .detection-result {
+            margin: 1rem 0;
+        }
+
+        .bounding-box {
+            border: 2px solid #667eea;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .bbox-label {
+            background: #667eea;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+            position: absolute;
+            top: -10px;
+            left: 5px;
+        }
+
+        .segmentation-result {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .segment {
+            padding: 0.5rem;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .segment.person {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .segment.car {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .segment.road {
+            background: #e1bee7;
+            color: #7b1fa2;
+        }
+
+        .segment.sky {
+            background: #bbdefb;
+            color: #1565c0;
+        }
+
+        .architecture-timeline {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .arch-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .arch-year {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .arch-name {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .arch-desc {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .arch-stats {
+            background: #f8f9ff;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            color: #667eea;
+        }
+
+        /* Transfer Learning Styles */
+        .transfer-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .source-task, .target-task {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .source-task h5, .target-task h5 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .task-info > div {
+            padding: 0.5rem;
+            background: #f8f9ff;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .transfer-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .arrow-icon {
+            font-size: 2rem;
+        }
+
+        .strategies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .strategy-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .strategy-card h5 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .layer-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .layer {
+            padding: 0.8rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .layer.frozen {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .layer.trainable {
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            color: white;
+        }
+
+        .layer.slow {
+            background: linear-gradient(135deg, #ff9800, #ffc107);
+            color: white;
+        }
+
+        .layer.fast {
+            background: linear-gradient(135deg, #f44336, #e91e63);
+            color: white;
+        }
+
+        .layer.adapted {
+            background: linear-gradient(135deg, #9c27b0, #673ab7);
+            color: white;
+        }
+
+        .layer.new {
+            background: linear-gradient(135deg, #2196f3, #03a9f4);
+            color: white;
+        }
+
+        .strategy-pros {
+            background: #f0f4ff;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #667eea;
+        }
+
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .application {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .application h5 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .topic-tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .gan-players {
+                flex-direction: column;
+            }
+
+            .vs {
+                transform: rotate(90deg);
+            }
+
+            .split-diagram,
+            .transfer-diagram {
+                flex-direction: column;
+            }
+
+            .communication-arrow .arrow,
+            .transfer-arrow .arrow-icon {
+                transform: rotate(90deg);
+            }
+
+            .image-transformations,
+            .cnn-architecture,
+            .architecture-timeline {
+                flex-direction: column;
+            }
+
+            .transform-arrow {
+                transform: rotate(90deg);
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>ML/DL Learning Hub</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="tabular-data.html" class="nav-link">Tabular Data</a></li>
+                <li><a href="nlp-pipeline.html" class="nav-link">NLP Data</a></li>
+                <li><a href="image-processing.html" class="nav-link">Image Data</a></li>
+                <li><a href="encoding.html" class="nav-link">Encoding</a></li>
+                <li><a href="feature-selection.html" class="nav-link">Feature Selection</a></li>
+                <li><a href="training-testing.html" class="nav-link">Training</a></li>
+                <li><a href="hyperparameter-tuning.html" class="nav-link">Tuning</a></li>
+                <li><a href="ensemble-techniques.html" class="nav-link">Ensembles</a></li>
+                <li><a href="advanced-topics.html" class="nav-link active" aria-current="page">Advanced Topics</a></li>
+                <li><a href="dl.html" class="nav-link">Deep Learning</a></li>
+                <li><a href="interactive-demos.html" class="nav-link">Demos</a></li>
+            </ul>
+            <div class="hamburger" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Advanced Deep Learning Topics</h1>
+            <p>Explore cutting-edge techniques and recent trends in deep learning</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> <span>/</span> <span>Advanced Topics</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="advanced-topics">
+                <div class="topic-tabs">
+                    <button class="tab-button active" onclick="showTopic('gan')">GANs</button>
+                    <button class="tab-button" onclick="showTopic('federated')">Federated Learning</button>
+                    <button class="tab-button" onclick="showTopic('split')">Split Learning</button>
+                    <button class="tab-button" onclick="showTopic('cv')">Computer Vision</button>
+                    <button class="tab-button" onclick="showTopic('transfer')">Transfer Learning</button>
+                </div>
+
+                <!-- GANs Topic -->
+                <div id="gan-topic" class="topic-content active">
+                    <h3>Generative Adversarial Networks (GANs)</h3>
+                    <div class="gan-explanation">
+                        <div class="gan-concept">
+                            <h4>The GAN Game</h4>
+                            <p>Two neural networks competing against each other in a game-theoretic framework:</p>
+                            <div class="gan-players">
+                                <div class="player generator">
+                                    <h5>Generator 🎨</h5>
+                                    <p>Creates fake data to fool the discriminator</p>
+                                    <div class="player-goal">Goal: Generate realistic data</div>
+                                    <div class="player-process">
+                                        <span>Noise → Neural Network → Fake Image</span>
+                                    </div>
+                                </div>
+                                <div class="vs">VS</div>
+                                <div class="player discriminator">
+                                    <h5>Discriminator 🕵️</h5>
+                                    <p>Distinguishes between real and fake data</p>
+                                    <div class="player-goal">Goal: Detect fake data</div>
+                                    <div class="player-process">
+                                        <span>Image → Neural Network → Real/Fake</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="gan-process">
+                            <h4>Training Process</h4>
+                            <div class="gan-steps">
+                                <div class="gan-step">
+                                    <div class="step-number">1</div>
+                                    <div class="step-description">
+                                        <strong>Generator creates fake data</strong>
+                                        <div class="step-visual">Random Noise → 🎨 Generator → 🖼️ Fake Image</div>
+                                        <p>Generator takes random noise and produces synthetic data</p>
+                                    </div>
+                                </div>
+                                <div class="gan-step">
+                                    <div class="step-number">2</div>
+                                    <div class="step-description">
+                                        <strong>Discriminator evaluates both real and fake</strong>
+                                        <div class="step-visual">🖼️ Real/Fake → 🕵️ Discriminator → Real/Fake Score</div>
+                                        <p>Discriminator learns to distinguish real from fake data</p>
+                                    </div>
+                                </div>
+                                <div class="gan-step">
+                                    <div class="step-number">3</div>
+                                    <div class="step-description">
+                                        <strong>Both networks improve through competition</strong>
+                                        <div class="step-visual">📈 Adversarial Training → Better Generator & Discriminator 📈</div>
+                                        <p>Networks improve in a competitive feedback loop</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="gan-applications">
+                            <h4>GAN Applications</h4>
+                            <div class="app-grid">
+                                <div class="app-card">
+                                    <div class="app-icon">🖼️</div>
+                                    <div class="app-name">Image Generation</div>
+                                    <div class="app-desc">Creating realistic images from random noise</div>
+                                    <div class="app-example">DCGAN, StyleGAN, BigGAN</div>
+                                </div>
+                                <div class="app-card">
+                                    <div class="app-icon">🎭</div>
+                                    <div class="app-name">Style Transfer</div>
+                                    <div class="app-desc">Artistic style transformation and image editing</div>
+                                    <div class="app-example">CycleGAN, StarGAN</div>
+                                </div>
+                                <div class="app-card">
+                                    <div class="app-icon">📊</div>
+                                    <div class="app-name">Data Augmentation</div>
+                                    <div class="app-desc">Generating synthetic training data</div>
+                                    <div class="app-example">Medical imaging, Rare events</div>
+                                </div>
+                                <div class="app-card">
+                                    <div class="app-icon">🎵</div>
+                                    <div class="app-name">Music Generation</div>
+                                    <div class="app-desc">Creating new musical compositions</div>
+                                    <div class="app-example">MuseGAN, WaveGAN</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Federated Learning Topic -->
+                <div id="federated-topic" class="topic-content">
+                    <h3>Federated Learning</h3>
+                    <div class="federated-explanation">
+                        <div class="federated-concept">
+                            <h4>Privacy-Preserving Distributed Learning</h4>
+                            <p>Train models across multiple devices without centralizing sensitive data</p>
+                            <div class="federated-architecture">
+                                <div class="central-server">
+                                    <h5>🏢 Central Server</h5>
+                                    <p>Coordinates training and aggregates model updates</p>
+                                    <div class="server-tasks">
+                                        <span>Model Aggregation</span>
+                                        <span>Global Coordination</span>
+                                        <span>Update Distribution</span>
+                                    </div>
+                                </div>
+                                <div class="federated-clients">
+                                    <div class="client-device">
+                                        <div class="device-icon">📱</div>
+                                        <div class="device-label">Mobile Device</div>
+                                        <div class="local-data">Personal Photos, Messages</div>
+                                    </div>
+                                    <div class="client-device">
+                                        <div class="device-icon">💻</div>
+                                        <div class="device-label">Laptop</div>
+                                        <div class="local-data">Documents, Browsing Data</div>
+                                    </div>
+                                    <div class="client-device">
+                                        <div class="device-icon">🏥</div>
+                                        <div class="device-label">Hospital</div>
+                                        <div class="local-data">Patient Medical Records</div>
+                                    </div>
+                                    <div class="client-device">
+                                        <div class="device-icon">🏢</div>
+                                        <div class="device-label">Company</div>
+                                        <div class="local-data">Business Analytics Data</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="federated-process">
+                            <h4>Federated Learning Process</h4>
+                            <div class="fl-steps">
+                                <div class="fl-step">
+                                    <div class="step-icon">📤</div>
+                                    <div class="step-text">
+                                        <strong>1. Distribute Model</strong><br>
+                                        Server sends current global model to participating clients
+                                    </div>
+                                </div>
+                                <div class="fl-step">
+                                    <div class="step-icon">🔄</div>
+                                    <div class="step-text">
+                                        <strong>2. Local Training</strong><br>
+                                        Each client trains the model on their local private data
+                                    </div>
+                                </div>
+                                <div class="fl-step">
+                                    <div class="step-icon">📥</div>
+                                    <div class="step-text">
+                                        <strong>3. Send Updates</strong><br>
+                                        Clients send only model updates (gradients/weights), not raw data
+                                    </div>
+                                </div>
+                                <div class="fl-step">
+                                    <div class="step-icon">⚖️</div>
+                                    <div class="step-text">
+                                        <strong>4. Aggregate Updates</strong><br>
+                                        Server combines updates using federated averaging algorithms
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="federated-benefits">
+                            <h4>Key Benefits & Challenges</h4>
+                            <div class="benefits-grid">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">🔒</div>
+                                    <div class="benefit-text">
+                                        <strong>Privacy Protection</strong><br>
+                                        Raw data never leaves local devices, preserving user privacy
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">⚡</div>
+                                    <div class="benefit-text">
+                                        <strong>Reduced Bandwidth</strong><br>
+                                        Only model updates transmitted, reducing communication costs
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">🌐</div>
+                                    <div class="benefit-text">
+                                        <strong>Scalability</strong><br>
+                                        Leverage distributed computing power across many devices
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">📋</div>
+                                    <div class="benefit-text">
+                                        <strong>Regulatory Compliance</strong><br>
+                                        Meets data protection regulations like GDPR and HIPAA
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split Learning Topic -->
+                <div id="split-topic" class="topic-content">
+                    <h3>Split Learning</h3>
+                    <div class="split-explanation">
+                        <div class="split-concept">
+                            <h4>Distributed Neural Network Training</h4>
+                            <p>Split a single neural network across multiple parties for enhanced privacy</p>
+                            <div class="split-architecture">
+                                <div class="split-diagram">
+                                    <div class="client-side">
+                                        <h5>👤 Client Side</h5>
+                                        <div class="network-layers">
+                                            <div class="layer client-layer">Input Layer</div>
+                                            <div class="layer client-layer">Hidden Layer 1</div>
+                                            <div class="layer client-layer">Hidden Layer 2</div>
+                                        </div>
+                                        <div class="raw-data">📊 Raw Sensitive Data</div>
+                                        <div class="data-flow">Data never leaves client</div>
+                                    </div>
+                                    <div class="communication-arrow">
+                                        <div class="arrow-label">Intermediate Activations</div>
+                                        <div class="arrow">→</div>
+                                    </div>
+                                    <div class="server-side">
+                                        <h5>🏢 Server Side</h5>
+                                        <div class="network-layers">
+                                            <div class="layer server-layer">Hidden Layer 3</div>
+                                            <div class="layer server-layer">Hidden Layer 4</div>
+                                            <div class="layer server-layer">Output Layer</div>
+                                        </div>
+                                        <div class="predictions">🎯 Final Predictions</div>
+                                        <div class="data-flow">Only processed features</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="split-advantages">
+                            <h4>Advantages of Split Learning</h4>
+                            <div class="advantages-comparison">
+                                <div class="comparison-item">
+                                    <h5>🔐 Enhanced Privacy</h5>
+                                    <p>Raw data never leaves the client device. Only intermediate representations are shared, making it extremely difficult to reconstruct original data.</p>
+                                </div>
+                                <div class="comparison-item">
+                                    <h5>💾 Reduced Storage</h5>
+                                    <p>Clients only store part of the model, significantly reducing memory requirements compared to full model training.</p>
+                                </div>
+                                <div class="comparison-item">
+                                    <h5>⚡ Lower Computation</h5>
+                                    <p>Computational load is distributed between client and server, making it feasible for resource-constrained devices.</p>
+                                </div>
+                                <div class="comparison-item">
+                                    <h5>🛡️ Attack Resistance</h5>
+                                    <p>More resistant to various privacy attacks compared to federated learning, as intermediate features are harder to exploit.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Computer Vision Topic -->
+                <div id="cv-topic" class="topic-content">
+                    <h3>Computer Vision Pipeline</h3>
+                    <div class="cv-explanation">
+                        <div class="cv-pipeline">
+                            <div class="cv-stage">
+                                <h4>1. Image Preprocessing</h4>
+                                <div class="cv-demo">
+                                    <div class="image-transformations">
+                                        <div class="transform-step">
+                                            <div class="transform-name">Original Image</div>
+                                            <div class="image-placeholder original">🖼️</div>
+                                            <div class="transform-desc">Raw input image</div>
+                                        </div>
+                                        <div class="transform-arrow">→</div>
+                                        <div class="transform-step">
+                                            <div class="transform-name">Resize & Crop</div>
+                                            <div class="image-placeholder resized">📏</div>
+                                            <div class="transform-desc">Standard dimensions</div>
+                                        </div>
+                                        <div class="transform-arrow">→</div>
+                                        <div class="transform-step">
+                                            <div class="transform-name">Normalize</div>
+                                            <div class="image-placeholder normalized">⚖️</div>
+                                            <div class="transform-desc">Pixel value scaling</div>
+                                        </div>
+                                        <div class="transform-arrow">→</div>
+                                        <div class="transform-step">
+                                            <div class="transform-name">Augment</div>
+                                            <div class="image-placeholder augmented">🔄</div>
+                                            <div class="transform-desc">Data augmentation</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="cv-stage">
+                                <h4>2. Feature Extraction (CNN)</h4>
+                                <div class="cnn-architecture">
+                                    <div class="cnn-layer">
+                                        <div class="layer-name">Convolution + ReLU</div>
+                                        <div class="feature-maps">
+                                            <div class="feature-map large"></div>
+                                            <div class="feature-map large"></div>
+                                            <div class="feature-map large"></div>
+                                        </div>
+                                        <div class="layer-desc">Extract low-level features</div>
+                                    </div>
+                                    <div class="cnn-layer">
+                                        <div class="layer-name">Max Pooling</div>
+                                        <div class="feature-maps">
+                                            <div class="feature-map medium"></div>
+                                            <div class="feature-map medium"></div>
+                                        </div>
+                                        <div class="layer-desc">Reduce spatial dimensions</div>
+                                    </div>
+                                    <div class="cnn-layer">
+                                        <div class="layer-name">Convolution + ReLU</div>
+                                        <div class="feature-maps">
+                                            <div class="feature-map small"></div>
+                                        </div>
+                                        <div class="layer-desc">Extract high-level features</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="cv-stage">
+                                <h4>3. Tasks & Applications</h4>
+                                <div class="cv-tasks">
+                                    <div class="task-example">
+                                        <h5>Image Classification</h5>
+                                        <div class="classification-result">
+                                            <div class="class-prob high">🐱 Cat: 85%</div>
+                                            <div class="class-prob medium">🐶 Dog: 12%</div>
+                                            <div class="class-prob low">🐭 Mouse: 3%</div>
+                                        </div>
+                                        <p>Assign single label to entire image</p>
+                                    </div>
+                                    <div class="task-example">
+                                        <h5>Object Detection</h5>
+                                        <div class="detection-result">
+                                            <div class="bounding-box">
+                                                <div class="bbox-label">Person (92%)</div>
+                                            </div>
+                                            <div class="bounding-box">
+                                                <div class="bbox-label">Car (78%)</div>
+                                            </div>
+                                        </div>
+                                        <p>Locate and classify multiple objects</p>
+                                    </div>
+                                    <div class="task-example">
+                                        <h5>Semantic Segmentation</h5>
+                                        <div class="segmentation-result">
+                                            <div class="segment person">Person</div>
+                                            <div class="segment car">Car</div>
+                                            <div class="segment road">Road</div>
+                                            <div class="segment sky">Sky</div>
+                                        </div>
+                                        <p>Classify every pixel in the image</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="cv-architectures">
+                            <h4>Evolution of CNN Architectures</h4>
+                            <div class="architecture-timeline">
+                                <div class="arch-item">
+                                    <div class="arch-year">2012</div>
+                                    <div class="arch-name">AlexNet</div>
+                                    <div class="arch-desc">First deep CNN to win ImageNet</div>
+                                    <div class="arch-stats">8 layers, 60M parameters</div>
+                                </div>
+                                <div class="arch-item">
+                                    <div class="arch-year">2014</div>
+                                    <div class="arch-name">VGGNet</div>
+                                    <div class="arch-desc">Very deep networks with small filters</div>
+                                    <div class="arch-stats">19 layers, 144M parameters</div>
+                                </div>
+                                <div class="arch-item">
+                                    <div class="arch-year">2015</div>
+                                    <div class="arch-name">ResNet</div>
+                                    <div class="arch-desc">Residual connections enable very deep networks</div>
+                                    <div class="arch-stats">152 layers, 60M parameters</div>
+                                </div>
+                                <div class="arch-item">
+                                    <div class="arch-year">2020</div>
+                                    <div class="arch-name">EfficientNet</div>
+                                    <div class="arch-desc">Optimized scaling of depth, width, and resolution</div>
+                                    <div class="arch-stats">Variable depth, 66M parameters</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transfer Learning Topic -->
+                <div id="transfer-topic" class="topic-content">
+                    <h3>Transfer Learning</h3>
+                    <div class="transfer-explanation">
+                        <div class="transfer-concept">
+                            <h4>Leveraging Pre-trained Models</h4>
+                            <p>Use knowledge learned from one task to improve performance on a related task</p>
+                            <div class="transfer-diagram">
+                                <div class="source-task">
+                                    <h5>🌐 Source Task</h5>
+                                    <div class="task-info">
+                                        <div class="dataset">ImageNet Dataset</div>
+                                        <div class="data-size">14M+ images, 1000 classes</div>
+                                        <div class="model">Pre-trained CNN</div>
+                                        <div class="knowledge">General visual features</div>
+                                    </div>
+                                </div>
+                                <div class="transfer-arrow">
+                                    <div class="arrow-icon">🔄</div>
+                                    <div class="arrow-label">Transfer Knowledge</div>
+                                </div>
+                                <div class="target-task">
+                                    <h5>🎯 Target Task</h5>
+                                    <div class="task-info">
+                                        <div class="dataset">Medical Images</div>
+                                        <div class="data-size">1K images, 5 classes</div>
+                                        <div class="model">Fine-tuned Model</div>
+                                        <div class="knowledge">Specialized medical features</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="transfer-strategies">
+                            <h4>Transfer Learning Strategies</h4>
+                            <div class="strategies-grid">
+                                <div class="strategy-card">
+                                    <h5>🔒 Feature Extraction</h5>
+                                    <div class="strategy-desc">
+                                        <p>Freeze pre-trained layers and train only the final classifier</p>
+                                        <div class="layer-diagram">
+                                            <div class="layer frozen">Frozen Conv Layers</div>
+                                            <div class="layer frozen">Frozen Conv Layers</div>
+                                            <div class="layer trainable">New Classifier</div>
+                                        </div>
+                                        <div class="strategy-pros">
+                                            <strong>Best for:</strong> Small datasets, limited computational resources
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="strategy-card">
+                                    <h5>🎛️ Fine-tuning</h5>
+                                    <div class="strategy-desc">
+                                        <p>Train the entire network with a very low learning rate</p>
+                                        <div class="layer-diagram">
+                                            <div class="layer slow">Slow Learning Conv</div>
+                                            <div class="layer slow">Slow Learning Conv</div>
+                                            <div class="layer fast">Fast Learning Classifier</div>
+                                        </div>
+                                        <div class="strategy-pros">
+                                            <strong>Best for:</strong> Medium datasets, similar domains
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="strategy-card">
+                                    <h5>🎯 Task-specific Adaptation</h5>
+                                    <div class="strategy-desc">
+                                        <p>Modify architecture and training for specific domain requirements</p>
+                                        <div class="layer-diagram">
+                                            <div class="layer adapted">Domain-Adapted Layers</div>
+                                            <div class="layer new">New Task-Specific Layers</div>
+                                            <div class="layer new">Custom Output Layer</div>
+                                        </div>
+                                        <div class="strategy-pros">
+                                            <strong>Best for:</strong> Large datasets, different domains
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="transfer-applications">
+                            <h4>Real-World Applications</h4>
+                            <div class="applications-grid">
+                                <div class="application">
+                                    <h5>🏥 Medical Imaging</h5>
+                                    <p>Transfer from natural images to X-rays, MRIs, and CT scans for disease detection</p>
+                                </div>
+                                <div class="application">
+                                    <h5>🚗 Autonomous Vehicles</h5>
+                                    <p>Adapt general object detection models for traffic sign and pedestrian recognition</p>
+                                </div>
+                                <div class="application">
+                                    <h5>🌾 Agriculture</h5>
+                                    <p>Transfer plant recognition models to detect crop diseases and optimize farming</p>
+                                </div>
+                                <div class="application">
+                                    <h5>🎨 Art & Style</h5>
+                                    <p>Apply artistic style transfer and creative image generation techniques</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="page-navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="ensemble-techniques.html" class="nav-btn prev">
+                    <i class="fas fa-arrow-left"></i> Ensemble Techniques
+                </a>
+                <a href="dl.html" class="nav-btn next">
+                    Deep Learning <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ML/DL Learning Hub</h3>
+                <p>Interactive platform for understanding machine learning and deep learning pipelines, stage by stage.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>1 &middot; Data Processing</h4>
+                <ul>
+                    <li><a href="tabular-data.html">Tabular Data Processing</a></li>
+                    <li><a href="nlp-pipeline.html">NLP Data Processing</a></li>
+                    <li><a href="image-processing.html">Image Data Processing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>2 &middot; Feature Engineering</h4>
+                <ul>
+                    <li><a href="encoding.html">Encoding &amp; Scaling</a></li>
+                    <li><a href="feature-selection.html">Feature Selection</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>3 &middot; Modelling</h4>
+                <ul>
+                    <li><a href="training-testing.html">Training &amp; Testing</a></li>
+                    <li><a href="hyperparameter-tuning.html">Hyperparameter Tuning</a></li>
+                    <li><a href="ensemble-techniques.html">Ensemble Techniques</a></li>
+                    <li><a href="advanced-topics.html">Advanced Topics</a></li>
+                    <li><a href="dl.html">Deep Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>4 &middot; Practice</h4>
+                <ul>
+                    <li><a href="interactive-demos.html">All Demos</a></li>
+                    <li><a href="interactive-demos.html#classification">Classification</a></li>
+                    <li><a href="interactive-demos.html#regression">Regression</a></li>
+                    <li><a href="interactive-demos.html#clustering">Clustering</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ML/DL Learning Hub. Built for educational purposes.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Tab switching functionality
+        function showTopic(topicId) {
+            // Hide all topic content
+            const allTopics = document.querySelectorAll('.topic-content');
+            allTopics.forEach(topic => {
+                topic.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            const allTabs = document.querySelectorAll('.tab-button');
+            allTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected topic
+            const selectedTopic = document.getElementById(topicId + '-topic');
+            if (selectedTopic) {
+                selectedTopic.classList.add('active');
+            }
+            
+            // Add active class to clicked tab
+            const clickedTab = event.target;
+            clickedTab.classList.add('active');
+        }
+
+        // Mobile navigation toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }));
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add some interactive hover effects
+        document.querySelectorAll('.app-card, .benefit-item, .comparison-item, .task-example, .application, .arch-item').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+                this.style.transition = 'all 0.3s ease';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add loading animation for content
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeIn 0.6s ease forwards';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.topic-content > div').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+    <script src="js/main.js"></script>
+</body>
+</html>
